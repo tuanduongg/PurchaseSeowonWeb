@@ -1,6 +1,6 @@
 // assets
 import { IconKey } from '@tabler/icons';
-
+import { ConfigPath } from 'routes/DefinePath';
 // constant
 const icons = {
   IconKey
@@ -25,14 +25,7 @@ const pages = {
           id: 'login3',
           title: 'Login',
           type: 'item',
-          url: '/pages/login/login3',
-          target: true
-        },
-        {
-          id: 'register3',
-          title: 'Register',
-          type: 'item',
-          url: '/pages/register/register3',
+          url: ConfigPath.login,
           target: true
         }
       ]
