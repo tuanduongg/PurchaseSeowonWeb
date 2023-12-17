@@ -1,4 +1,5 @@
 export const ConfigPath = {
     home : '/',
-    login : '/login'
+    login : '/login',
+    samplePage : '/sample-page',
 };

@@ -33,7 +33,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 // project imports
 import MainCard from 'ui-component/cards/MainCard';
 import Transitions from 'ui-component/extended/Transitions';
-import User1 from 'assets/images/users/user-round.svg';
+import User1 from 'assets/images/users/profile.png';
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
@@ -96,6 +96,7 @@ const ProfileSection = () => {
           transition: 'all .2s ease-in-out',
           borderColor: theme.palette.primary.light,
           backgroundColor: theme.palette.primary.light,
+          border: '1px solid #ddd',
           '&[aria-controls="menu-list-grow"], &:hover': {
             borderColor: theme.palette.primary.main,
             background: `${theme.palette.primary.main}!important`,
@@ -114,12 +115,13 @@ const ProfileSection = () => {
             sx={{
               ...theme.typography.mediumAvatar,
               margin: '8px 0 8px 8px !important',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              backgroundColor: 'white'
             }}
             ref={anchorRef}
             aria-controls={open ? 'menu-list-grow' : undefined}
             aria-haspopup="true"
-            color="inherit"
+            color="white"
           />
         }
         label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
@@ -160,7 +162,7 @@ const ProfileSection = () => {
                       </Stack>
                       <Typography variant="subtitle2">Project Admin</Typography>
                     </Stack>
-                    <OutlinedInput
+                    {/* <OutlinedInput
                       sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
                       id="input-search-profile"
                       value={value}
@@ -175,12 +177,12 @@ const ProfileSection = () => {
                       inputProps={{
                         'aria-label': 'weight'
                       }}
-                    />
-                    <Divider />
+                    /> */}
+                    {/* <Divider /> */}
                   </Box>
                   <PerfectScrollbar style={{ height: '100%', maxHeight: 'calc(100vh - 250px)', overflowX: 'hidden' }}>
                     <Box sx={{ p: 2 }}>
-                      <Divider />
+                      {/* <Divider />
                       <Card
                         sx={{
                           bgcolor: theme.palette.primary.light,
@@ -222,8 +224,8 @@ const ProfileSection = () => {
                             </Grid>
                           </Grid>
                         </CardContent>
-                      </Card>
-                      <Divider />
+                      </Card> */}
+                      {/* <Divider /> */}
                       <List
                         component="nav"
                         sx={{
@@ -264,7 +266,7 @@ const ProfileSection = () => {
                                 <Grid item>
                                   <Typography variant="body2">Social Profile</Typography>
                                 </Grid>
-                                <Grid item>
+                                {/* <Grid item>
                                   <Chip
                                     label="02"
                                     size="small"
@@ -273,7 +275,7 @@ const ProfileSection = () => {
                                       color: theme.palette.background.default
                                     }}
                                   />
-                                </Grid>
+                                </Grid> */}
                               </Grid>
                             }
                           />

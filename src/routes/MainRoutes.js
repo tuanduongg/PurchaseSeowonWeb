@@ -6,7 +6,7 @@ import Loadable from 'ui-component/Loadable';
 import { ConfigPath } from './DefinePath';
 
 // dashboard routing
-const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
+const Homepage = Loadable(lazy(() => import('views/homepage/Homepage.js')));
 
 // utilities routing
 
@@ -21,19 +21,10 @@ const MainRoutes = {
   children: [
     {
       path: ConfigPath.home,
-      element: <DashboardDefault />
+      element: <Homepage />
     },
     {
-      path: 'dashboard',
-      children: [
-        {
-          path: 'default',
-          element: <DashboardDefault />
-        }
-      ]
-    },
-    {
-      path: 'sample-page',
+      path: ConfigPath.samplePage,
       element: <SamplePage />
     }
   ]
