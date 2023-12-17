@@ -1,7 +1,19 @@
 import { useEffect, useState } from 'react';
 
 // material-ui
-import { Grid, Typography, Box, TablePagination, FormControl, InputLabel, Input, InputAdornment, IconButton, MenuItem, Select } from '@mui/material';
+import {
+  Grid,
+  Typography,
+  Box,
+  TablePagination,
+  FormControl,
+  InputLabel,
+  Input,
+  InputAdornment,
+  IconButton,
+  MenuItem,
+  Select
+} from '@mui/material';
 import { gridSpacing } from 'store/constant';
 import ProductCard from 'ui-component/cards/ProductCard';
 import SearchIcon from '@mui/icons-material/Search';
@@ -83,7 +95,7 @@ const PRODUCTS = [
     name: 'Băng dính trong',
     image: 'https://bizweb.dktcdn.net/thumb/1024x1024/100/387/548/products/bang-dinh-trong-5cm.png?v=1589959476467',
     price: 20000
-  },
+  }
 ];
 const Homepage = () => {
   const [isLoading, setLoading] = useState(true);
@@ -112,18 +124,12 @@ const Homepage = () => {
   return (
     <Grid container spacing={gridSpacing}>
       <Grid item>
-        <Typography variant='h4'>List product</Typography>
+        <Typography variant="h4">List product</Typography>
         {/* <SearchSection /> */}
-        {/* <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex' }}>
           <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
             <InputLabel id="demo-select-small-label">Category</InputLabel>
-            <Select
-              labelId="demo-select-small-label"
-              id="demo-select-small"
-              value={age}
-              label="Category"
-              onChange={handleChange}
-            >
+            <Select labelId="demo-select-small-label" id="demo-select-small" value={age} label="Category" onChange={handleChange}>
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
@@ -133,7 +139,7 @@ const Homepage = () => {
             </Select>
           </FormControl>
 
-          <FormControl sx={{ m: 1, width: '25ch' }} size='small' variant="standard">
+          <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
             <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
             <Input
               id="standard-adornment-search"
@@ -147,13 +153,13 @@ const Homepage = () => {
               }
             />
           </FormControl>
-        </Box> */}
+        </Box>
       </Grid>
       <Grid item>
         <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
           {PRODUCTS.map((item, index) => (
-            <ProductCard product={item} key={index} />)
-          )}
+            <ProductCard product={item} key={index} />
+          ))}
         </Box>
       </Grid>
       <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%' }}>

@@ -11,6 +11,7 @@ import NotificationSection from './NotificationSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
+import CartSection from './CartSection/CartSection';
 
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
@@ -59,6 +60,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
       <Box sx={{ flexGrow: 1 }} />
 
       {/* notification & profile */}
+      <CartSection />
       <NotificationSection />
       <ProfileSection />
     </>
