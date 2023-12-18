@@ -18,7 +18,9 @@ import {
   Stack,
   TextField,
   Typography,
-  useMediaQuery
+  useMediaQuery,
+  Badge,
+  Drawer
 } from '@mui/material';
 
 // third-party
@@ -60,6 +62,7 @@ const CartSection = () => {
   const matchesXs = useMediaQuery(theme.breakpoints.down('md'));
 
   const [open, setOpen] = useState(false);
+  const [openCartDrawer, setOpenCartDrawer] = useState(false);
   const [value, setValue] = useState('');
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
@@ -67,7 +70,8 @@ const CartSection = () => {
   const anchorRef = useRef(null);
 
   const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
+    // setOpen((prevOpen) => !prevOpen);
+    setOpenCartDrawer((prevOpen) => !prevOpen);
   };
 
   const handleClose = (event) => {
@@ -100,32 +104,48 @@ const CartSection = () => {
           }
         }}
       >
-        <ButtonBase sx={{ borderRadius: '12px' }}>
-          <Avatar
-            variant="rounded"
-            sx={{
-              ...theme.typography.commonAvatar,
-              ...theme.typography.mediumAvatar,
-              transition: 'all .2s ease-in-out',
-              background: theme.palette.secondary.light,
-              color: theme.palette.secondary.dark,
-              '&[aria-controls="menu-list-grow"],&:hover': {
-                background: theme.palette.secondary.dark,
-                color: theme.palette.secondary.light
-              }
-            }}
-            ref={anchorRef}
-            aria-controls={open ? 'menu-list-grow' : undefined}
-            aria-haspopup="true"
-            onClick={handleToggle}
-            color="inherit"
-          >
-            <IconShoppingCart stroke={1.5} size="1.3rem" />
-          </Avatar>
-        </ButtonBase>
+        <Badge badgeContent={4} sx={{
+          "& .MuiBadge-badge": {
+            color: "white",
+            backgroundColor: "red"
+          }
+        }} >
+          <ButtonBase sx={{ borderRadius: '12px' }}>
+            <Avatar
+              variant="rounded"
+              sx={{
+                ...theme.typography.commonAvatar,
+                ...theme.typography.mediumAvatar,
+                transition: 'all .2s ease-in-out',
+                background: theme.palette.secondary.light,
+                color: theme.palette.secondary.dark,
+                '&[aria-controls="menu-list-grow"],&:hover': {
+                  background: theme.palette.secondary.dark,
+                  color: theme.palette.secondary.light
+                }
+              }}
+              ref={anchorRef}
+              aria-controls={open ? 'menu-list-grow' : undefined}
+              aria-haspopup="true"
+              onClick={handleToggle}
+              color="inherit"
+            >
+              <IconShoppingCart stroke={1.5} size="1.3rem" />
+            </Avatar>
+          </ButtonBase>
+        </Badge>
       </Box>
-      <Popper
-        id="test"
+      <Drawer
+        anchor={"right"}
+        open={openCartDrawer}
+        onClose={()=>{
+          setOpenCartDrawer(false);
+        }}
+      >
+        <ProductList onCloseDrawer={()=>{setOpenCartDrawer(false);}}/>
+      </Drawer>
+      {/* <Popper
+
         placement={matchesXs ? 'bottom' : 'bottom-end'}
         open={open}
         anchorEl={anchorRef.current}
@@ -146,7 +166,7 @@ const CartSection = () => {
         {({ TransitionProps }) => (
           <Transitions position={matchesXs ? 'top' : 'top-right'} in={open} {...TransitionProps}>
             <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
+              <ClickAwayListener >
                 <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                   <Grid container direction="column" spacing={2}>
                     <Grid item xs={12}>
@@ -192,7 +212,7 @@ const CartSection = () => {
             </Paper>
           </Transitions>
         )}
-      </Popper>
+      </Popper> */}
     </>
   );
 };

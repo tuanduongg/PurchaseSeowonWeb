@@ -7,8 +7,8 @@ import SubCard from 'ui-component/cards/SubCard';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
-const SamplePage = () => (
-  <SubCard title="Sample Card">
+const OrderList = () => (
+  <SubCard title="Order list" sx={{}}>
     <Typography variant="body2">
       Lorem ipsum dolor sit amen, consenter nipissing eli, sed do elusion tempos incident ut laborers et doolie magna alissa. Ut enif ad
       minim venice, quin nostrum exercitation illampu laborings nisi ut liquid ex ea commons construal. Duos aube grue dolor in reprehended
@@ -18,4 +18,4 @@ const SamplePage = () => (
   </SubCard>
 );
 
-export default SamplePage;
+export default OrderList;

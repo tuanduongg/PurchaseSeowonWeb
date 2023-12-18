@@ -4,13 +4,13 @@ import { formattingVND, truncateText } from 'utils/helper';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, onShowDetail }) => {
   return (
     <>
       <Card
         sx={{
           borderRadius: '0',
-          width: 160,
+          width: { xs: '48%', md: '16%' },
           border: '1px solid #ddd',
           paddingBottom: '5px',
           margin: '0px 5px 5px 0px',
@@ -21,19 +21,34 @@ const ProductCard = ({ product }) => {
           }
         }}
       >
-        <CardMedia sx={{ height: 80 }} image={product?.image ?? ''} title="image" />
-        <CardContent sx={{ padding: '5px', minHeight: '50px' }}>
+        <CardMedia
+          onClick={() => {
+            onShowDetail(product);
+          }}
+          sx={{ height: 100 }}
+          image={product?.image ?? ''}
+          title={product?.name}
+        />
+        <CardContent
+          onClick={() => {
+            onShowDetail(product);
+          }}
+          sx={{ padding: '5px', minHeight: '50px' }}
+        >
           <Typography variant="h6" sx={{ fontWeight: 'bold' }} component="div">
             {product?.name ? truncateText(product?.name, 74) : ''}
           </Typography>
         </CardContent>
-        <Typography sx={{ margin: '0px 5px' }} variant="body2" color={'secondary'} component="div">
+        {/* <Typography sx={{ margin: '0px 5px' }} variant="body2" color={'secondary'} component="div">
           {product?.price ? formattingVND(product?.price) : ''}
-        </Typography>
+        </Typography> */}
         <Box sx={{ padding: '0px 3px', display: 'flex', justifyContent: 'space-between' }}>
-          <IconButton sx={{ padding: '2px' }} aria-label="Heart">
+          <Typography sx={{ margin: '0px 5px' }} variant="body2" color={'secondary'} component="div">
+            {product?.price ? formattingVND(product?.price) : ''}
+          </Typography>
+          {/* <IconButton sx={{ padding: '2px' }} aria-label="Heart">
             <FavoriteBorderIcon sx={{ fontSize: '18px' }} />
-          </IconButton>
+          </IconButton> */}
           <IconButton sx={{ padding: '2px' }} aria-label="Cart">
             <ShoppingCartIcon sx={{ fontSize: '18px' }} />
           </IconButton>

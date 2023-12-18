@@ -28,6 +28,8 @@
     "react-router-dom": "6.3.0",
     "react-scripts": "^5.0.1",
     "redux": "^4.2.0",
+    "sweetalert2": "^11.10.1",
+    "swiper": "^11.0.5",
     "yup": "^0.32.11"
   },
   "scripts": {

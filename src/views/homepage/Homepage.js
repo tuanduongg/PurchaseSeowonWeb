@@ -18,6 +18,11 @@ import { gridSpacing } from 'store/constant';
 import ProductCard from 'ui-component/cards/ProductCard';
 import SearchIcon from '@mui/icons-material/Search';
 import SearchSection from 'layout/MainLayout/Header/SearchSection';
+import SubCard from 'ui-component/cards/SubCard';
+import ModalDetailProduct from 'ui-component/modal/detail-product/ModalDetailProduct';
+import Loader from 'ui-component/Loader';
+import Loadable from 'ui-component/Loadable';
+import { isMobile } from 'utils/helper';
 
 // ==============================|| DEFAULT Homepage ||============================== //
 const PRODUCTS = [
@@ -98,13 +103,15 @@ const PRODUCTS = [
   }
 ];
 const Homepage = () => {
-  const [isLoading, setLoading] = useState(true);
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  // const [isLoading, setLoading] = useState(true);
+  // useEffect(() => {
+  //   setLoading(false);
+  // }, []);
 
   const [page, setPage] = useState(2);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [openModalDetailProd, setOpenModalDetailProd] = useState(false);
+  const [productSelected, setProductSelected] = useState({});
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -121,58 +128,78 @@ const Homepage = () => {
     setAge(event.target.value);
   };
 
-  return (
-    <Grid container spacing={gridSpacing}>
-      <Grid item>
-        <Typography variant="h4">List product</Typography>
-        {/* <SearchSection /> */}
-        <Box sx={{ display: 'flex' }}>
-          <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
-            <InputLabel id="demo-select-small-label">Category</InputLabel>
-            <Select labelId="demo-select-small-label" id="demo-select-small" value={age} label="Category" onChange={handleChange}>
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select>
-          </FormControl>
+  const onShowDetailProduct = (product) => {
+    setProductSelected(product);
+    setOpenModalDetailProd(true);
+  };
 
-          <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
-            <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
-            <Input
-              id="standard-adornment-search"
-              type="text"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton>
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
+  const handleCloseModelDetailPro = () => {
+    setOpenModalDetailProd(false);
+    setProductSelected({});
+  };
+
+  return (
+    <>
+      <Grid container spacing={gridSpacing}>
+        <Grid item>
+          <Typography variant="h4">List product</Typography>
+          {/* <SearchSection /> */}
+          <Box sx={{ display: 'flex' }}>
+            <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
+              <InputLabel id="demo-select-small-label">Category</InputLabel>
+              <Select labelId="demo-select-small-label" id="demo-select-small" value={age} label="Category" onChange={handleChange}>
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={10}>Ten</MenuItem>
+                <MenuItem value={20}>Twenty</MenuItem>
+                <MenuItem value={30}>Thirty</MenuItem>
+              </Select>
+            </FormControl>
+
+            <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
+              <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
+              <Input
+                id="standard-adornment-search"
+                type="text"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton>
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                }
+              />
+            </FormControl>
+          </Box>
+        </Grid>
+        <Grid item>
+          <Box sx={{ width: '95%', margin: 'auto' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+              {PRODUCTS.map((item, index) => (
+                <ProductCard onShowDetail={onShowDetailProduct} product={item} key={index} />
+              ))}
+            </Box>
+          </Box>
+        </Grid>
+        <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%' }}>
+          <TablePagination
+            component="div"
+            count={100}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </Box>
       </Grid>
-      <Grid item>
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-          {PRODUCTS.map((item, index) => (
-            <ProductCard product={item} key={index} />
-          ))}
-        </Box>
-      </Grid>
-      <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%' }}>
-        <TablePagination
-          component="div"
-          count={100}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Box>
-    </Grid>
+      <ModalDetailProduct
+        product={productSelected}
+        open={openModalDetailProd}
+        fullScreen={isMobile() ? true : false}
+        handleClose={handleCloseModelDetailPro}
+      />
+    </>
   );
 };
 
