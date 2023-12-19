@@ -104,12 +104,15 @@ const CartSection = () => {
           }
         }}
       >
-        <Badge badgeContent={4} sx={{
-          "& .MuiBadge-badge": {
-            color: "white",
-            backgroundColor: "red"
-          }
-        }} >
+        <Badge
+          badgeContent={4}
+          sx={{
+            '& .MuiBadge-badge': {
+              color: 'white',
+              backgroundColor: 'red'
+            }
+          }}
+        >
           <ButtonBase sx={{ borderRadius: '12px' }}>
             <Avatar
               variant="rounded"
@@ -136,13 +139,17 @@ const CartSection = () => {
         </Badge>
       </Box>
       <Drawer
-        anchor={"right"}
+        anchor={'right'}
         open={openCartDrawer}
-        onClose={()=>{
+        onClose={() => {
           setOpenCartDrawer(false);
         }}
       >
-        <ProductList onCloseDrawer={()=>{setOpenCartDrawer(false);}}/>
+        <ProductList
+          onCloseDrawer={() => {
+            setOpenCartDrawer(false);
+          }}
+        />
       </Drawer>
       {/* <Popper
 

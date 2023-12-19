@@ -14,8 +14,8 @@ import {
   Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import ImageSlide from './ImageSilde';
 import { formattingVND } from 'utils/helper';
+import ImageSlide from './ImageSilde';
 import { IconShoppingCart } from '@tabler/icons';
 
 const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {

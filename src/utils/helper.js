@@ -8,9 +8,10 @@ export const truncateText = (str, n) => {
 
 export const cssScrollBar = {
   '&::-webkit-scrollbar': {
-    width: '2px',
-  }, '&::-webkit-scrollbar-thumb': {
-    background: 'rgba(52, 49, 76, 1)',
+    width: '2px'
+  },
+  '&::-webkit-scrollbar-thumb': {
+    background: 'rgba(52, 49, 76, 1)'
   }
 };
 

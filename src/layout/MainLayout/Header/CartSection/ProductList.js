@@ -24,7 +24,7 @@ import {
 // assets
 import { IconBrandTelegram, IconBuildingStore, IconMailbox, IconMinus, IconPhoto, IconPlus, IconX } from '@tabler/icons';
 import User1 from 'assets/images/users/profile.png';
-import { formattingVND,cssScrollBar } from 'utils/helper';
+import { formattingVND, cssScrollBar } from 'utils/helper';
 import { useState } from 'react';
 import { ShowQuestion } from 'utils/confirm';
 
@@ -129,7 +129,7 @@ const PRODUCTS = [
 
 // ==============================|| NOTIFICATION LIST ITEM ||============================== //
 
-const ProductList = ({onCloseDrawer}) => {
+const ProductList = ({ onCloseDrawer }) => {
   const [listProduct, setListProduct] = useState(PRODUCTS);
   const theme = useTheme();
 
@@ -141,26 +141,28 @@ const ProductList = ({onCloseDrawer}) => {
   const onChangeValueQuantity = (e, index) => {
     const { value } = e.target;
     let temp = value;
-    if(value < 0) {
-      temp = value * -1
+    if (value < 0) {
+      temp = value * -1;
     }
-      const data = [...PRODUCTS];
-      data[index].quantity = temp;
-      setListProduct(data);
+    const data = [...PRODUCTS];
+    data[index].quantity = temp;
+    setListProduct(data);
   };
 
   const hanldeClickDelete = (index) => {
     ShowQuestion({
-      titleProp: "Thông báo", content: "Are you sure delete item?", onClickYes: () => {
+      titleProp: 'Thông báo',
+      content: 'Are you sure delete item?',
+      onClickYes: () => {
         console.log('index', index);
       }
     });
-  }
+  };
 
   return (
     <Box
       sx={{
-        width: '100%',
+        width: '100%'
         // minWidth: '',
         // py: 0,
         // px: 1,
@@ -179,8 +181,10 @@ const ProductList = ({onCloseDrawer}) => {
         // }
       }}
     >
-      <Box sx={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
-        <Typography variant="h2" sx={{ margin: '10px 5px' }}>Your Cart</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="h2" sx={{ margin: '10px 5px' }}>
+          Your Cart
+        </Typography>
         <IconButton onClick={onCloseDrawer}>
           <IconX color="#ddd" />
         </IconButton>
@@ -208,7 +212,7 @@ const ProductList = ({onCloseDrawer}) => {
         </Grid>
       </Grid>
       <Divider />
-      <Box sx={{ width: '100%', overflowX: 'hidden', padding: '0px 15px', height: '80vh',...cssScrollBar }}>
+      <Box sx={{ width: '100%', overflowX: 'hidden', padding: '0px 15px', height: '80vh', ...cssScrollBar }}>
         {listProduct.map((item, index) => (
           <>
             <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
@@ -238,7 +242,11 @@ const ProductList = ({onCloseDrawer}) => {
                 <Typography variant="h5">{formattingVND(item?.price)}</Typography>
               </Grid>
               <Grid item xs={0.5}>
-                <IconButton onClick={() => { hanldeClickDelete(index) }}>
+                <IconButton
+                  onClick={() => {
+                    hanldeClickDelete(index);
+                  }}
+                >
                   <IconX color="red" />
                 </IconButton>
               </Grid>
@@ -247,8 +255,8 @@ const ProductList = ({onCloseDrawer}) => {
           </>
         ))}
       </Box>
-      <Box sx={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'5px 0px',marginRight:'10px'}}>
-        <Box sx={{display:'flex',alignItems:'center',marginLeft:'5px'}}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0px', marginRight: '10px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: '5px' }}>
           <Typography variant="h4">Total:</Typography>
           <Typography sx={{ marginRight: '20px' }} color={'primary'} variant="h4">
             123,132,132 đ
