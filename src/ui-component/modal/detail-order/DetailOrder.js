@@ -25,6 +25,8 @@ import CardInfoPayment from './component/CardInfoPayment';
 import CardNote from './component/CardNote';
 import CancelIcon from '@mui/icons-material/Cancel';
 import PrintIcon from '@mui/icons-material/Print';
+import CardFormReceive from './component/CardFormReceive';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 const PRODUCTS = [
   {
@@ -132,7 +134,7 @@ const COLUMS = [
   { id: 'total', label: 'Total' }
 ];
 
-const DetailOrder = ({ open, handleClose, fullScreen }) => {
+const DetailOrder = ({ open, handleClose, fullScreen, isView }) => {
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
       handleClose();
@@ -145,9 +147,13 @@ const DetailOrder = ({ open, handleClose, fullScreen }) => {
           <DialogTitle fontSize={'20px'} sx={{ padding: '10px' }} id="responsive-dialog-title">
             <Stack flexDirection={'row'} alignItems={'center'}>
               Order detail
-              <Typography variant="body2" ml={1} color={'primary'}>
-                #181223112
-              </Typography>
+              {isView ? (
+                ''
+              ) : (
+                <Typography variant="body2" ml={1} color={'primary'}>
+                  #181223112
+                </Typography>
+              )}
             </Stack>
           </DialogTitle>
           <IconButton onClick={onClose}>
@@ -155,34 +161,49 @@ const DetailOrder = ({ open, handleClose, fullScreen }) => {
           </IconButton>
         </Box>
         <Divider />
-        <DialogContent sx={{ padding: '15px', minWidth: '50vh', backgroundColor: '#ddd', ...cssScrollBar }}>
+        <DialogContent sx={{ padding: '10px', minWidth: '50vh', backgroundColor: '#ddd', ...cssScrollBar }}>
           <Box>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <CardInfoReceive />
-              </Grid>
-              <Grid item xs={12} md={8}>
+            <Grid container spacing={1}>
+              {/* <Grid item xs={12} md={8}>
                 <CardInfoStepper />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} md={12}>
                 <CardListProduct />
               </Grid>
               <Grid item xs={12} md={6}>
-                <CardInfoPayment />
+                {/* <CardInfoReceive /> */}
+                <CardFormReceive />
               </Grid>
               <Grid item xs={12} md={6}>
-                <CardNote />
+                <CardInfoPayment />
               </Grid>
+              {/* <Grid item xs={12} md={6}>
+                <CardNote />
+              </Grid> */}
             </Grid>
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button size="small" variant="contained" endIcon={<PrintIcon />} autoFocus onClick={onClose}>
-            Print
-          </Button>
-          <Button size="small" variant="contained" color="warning" autoFocus endIcon={<CancelIcon />} onClick={onClose}>
+          <Button
+            size="small"
+            sx={{ marginRight: '10px' }}
+            variant="contained"
+            color="secondary"
+            autoFocus
+            endIcon={<CancelIcon />}
+            onClick={onClose}
+          >
             Cancel
           </Button>
+          {isView ? (
+            <Button size="small" variant="contained" endIcon={<ShoppingBasketIcon />} onClick={onClose}>
+              Order
+            </Button>
+          ) : (
+            <Button size="small" variant="contained" endIcon={<PrintIcon />} onClick={onClose}>
+              Print
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>

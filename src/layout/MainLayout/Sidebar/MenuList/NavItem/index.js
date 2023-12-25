@@ -12,6 +12,7 @@ import { MENU_OPEN, SET_MENU } from 'store/actions';
 
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { ConfigPath } from 'routes/DefinePath';
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
@@ -54,12 +55,19 @@ const NavItem = ({ item, level }) => {
 
   // active menu item on page load
   useEffect(() => {
-    const currentIndex = document.location.pathname
-      .toString()
-      .split('/')
-      .findIndex((id) => id === item.id);
-    if (currentIndex > -1) {
-      dispatch({ type: MENU_OPEN, id: item.id });
+    if (document.location.pathname === '/') {
+      // console.log('vaooooooo');
+      dispatch({ type: MENU_OPEN, id: ConfigPath.home });
+    } else {
+      const currentIndex = document.location.pathname
+        .toString()
+        .split('/')
+        .findIndex((id) => id === item.id);
+      console.log('currentIndex', currentIndex);
+      console.log('document.location.pathname', document.location.pathname);
+      if (currentIndex > -1) {
+        dispatch({ type: MENU_OPEN, id: item.id });
+      }
     }
     // eslint-disable-next-line
   }, [pathname]);

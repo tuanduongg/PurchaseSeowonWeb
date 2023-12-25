@@ -37,6 +37,7 @@ import User1 from 'assets/images/users/profile.png';
 
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
+import { ConfigPath } from 'routes/DefinePath';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -111,7 +112,7 @@ const ProfileSection = () => {
         }}
         icon={
           <Avatar
-            src={User1}
+            // src={User1}
             sx={{
               ...theme.typography.mediumAvatar,
               margin: '8px 0 8px 8px !important',
@@ -122,7 +123,9 @@ const ProfileSection = () => {
             aria-controls={open ? 'menu-list-grow' : undefined}
             aria-haspopup="true"
             color="white"
-          />
+          >
+            T
+          </Avatar>
         }
         label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}
         variant="outlined"
@@ -160,7 +163,7 @@ const ProfileSection = () => {
                       <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant="h4">ADMIN</Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography variant="subtitle2">Manager</Typography>
                     </Stack>
                     {/* <OutlinedInput
                       sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}
@@ -255,7 +258,7 @@ const ProfileSection = () => {
                         <ListItemButton
                           sx={{ borderRadius: `${customization.borderRadius}px` }}
                           selected={selectedIndex === 1}
-                          onClick={(event) => handleListItemClick(event, 1, '#')}
+                          onClick={(event) => handleListItemClick(event, 1, ConfigPath.profilePage)}
                         >
                           <ListItemIcon>
                             <IconUser stroke={1.5} size="1.3rem" />
@@ -264,7 +267,7 @@ const ProfileSection = () => {
                             primary={
                               <Grid container spacing={1} justifyContent="space-between">
                                 <Grid item>
-                                  <Typography variant="body2">Social Profile</Typography>
+                                  <Typography variant="body2">Profile</Typography>
                                 </Grid>
                                 {/* <Grid item>
                                   <Chip

@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import { ConfigPath } from './DefinePath';
+import ProfilePage from 'views/profile/ProfilePage';
 
 // dashboard routing
 const Homepage = Loadable(lazy(() => import('views/homepage/Homepage.js')));
@@ -31,6 +32,10 @@ const MainRoutes = {
     {
       path: ConfigPath.samplePage,
       element: <SamplePage />
+    },
+    {
+      path: ConfigPath.profilePage,
+      element: <ProfilePage />
     }
   ]
 };
