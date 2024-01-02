@@ -56,7 +56,6 @@ const NavItem = ({ item, level }) => {
   // active menu item on page load
   useEffect(() => {
     if (document.location.pathname === '/') {
-      // console.log('vaooooooo');
       dispatch({ type: MENU_OPEN, id: ConfigPath.home });
     } else {
       const currentIndex = document.location.pathname

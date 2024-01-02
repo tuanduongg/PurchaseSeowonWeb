@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -12,10 +12,17 @@ import Sidebar from './Sidebar';
 import Customization from '../Customization';
 import navigation from 'menu-items';
 import { drawerWidth } from 'store/constant';
-import { SET_MENU } from 'store/actions';
+import { CHECK_LOGIN, SET_MENU } from 'store/actions';
 
 // assets
 import { IconChevronRight } from '@tabler/icons';
+import { useEffect } from 'react';
+import { getCookie } from 'utils/helper';
+import config from '../../config';
+import { ConfigPath } from 'routes/DefinePath';
+import { useState } from 'react';
+import restApi from 'utils/restAPI';
+import { DefineRouteApi } from 'DefineRouteAPI';
 
 // styles
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
@@ -37,7 +44,7 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
   [theme.breakpoints.up('md')]: {
     marginLeft: open ? 0 : -(drawerWidth - 20),
     width: `calc(100% - ${drawerWidth}px)`,
-    padding:'10px'
+    padding: '10px'
   },
   [theme.breakpoints.down('md')]: {
     marginLeft: '20px',
@@ -63,7 +70,22 @@ const MainLayout = () => {
   const handleLeftDrawerToggle = () => {
     dispatch({ type: SET_MENU, opened: !leftDrawerOpened });
   };
+  const customization = useSelector((state) => state.customization);
+  const location = useLocation();
 
+  // const [isLogin, setIsLogin] = useState(false);
+  const checkToken = async () => {
+    const response = await restApi.get(DefineRouteApi.profile);
+    if (response?.status === 200) {
+      dispatch({ type: CHECK_LOGIN, isLogin: true });
+    }
+  };
+  useEffect(() => {
+    // checkToken();
+  }, []);
+  if (!customization?.isLogin) {
+    return <Navigate to={ConfigPath.login} state={{ from: location }} />;
+  }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />

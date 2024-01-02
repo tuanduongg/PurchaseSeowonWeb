@@ -5,7 +5,10 @@ const config = {
   homePage: '/',
   defaultPath: '/dashboard/default',
   fontFamily: `'Roboto', sans-serif`,
-  borderRadius: 12
+  borderRadius: 5,
+  apiUrl: 'http://localhost:8088/api',
+  DATA_USER: 'DATA_USER',
+  ASSET_TOKEN: 'asset_token',
 };
 
 export default config;

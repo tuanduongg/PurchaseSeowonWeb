@@ -4,7 +4,7 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import { ConfigPath } from './DefinePath';
-import ProfilePage from 'views/profile/ProfilePage';
+// import ProductPage from 'views/product/ProductPage';
 
 // dashboard routing
 const Homepage = Loadable(lazy(() => import('views/homepage/Homepage.js')));
@@ -14,6 +14,8 @@ const Homepage = Loadable(lazy(() => import('views/homepage/Homepage.js')));
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 const OrderList = Loadable(lazy(() => import('views/order-list/OrderList')));
+const ProductPage = Loadable(lazy(() => import('views/product/ProductPage')));
+const ProfilePage = Loadable(lazy(() => import('views/profile/ProfilePage')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -36,6 +38,10 @@ const MainRoutes = {
     {
       path: ConfigPath.profilePage,
       element: <ProfilePage />
+    },
+    {
+      path: ConfigPath.productPage,
+      element: <ProductPage />
     }
   ]
 };

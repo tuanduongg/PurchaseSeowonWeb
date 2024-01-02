@@ -1,37 +1,35 @@
 // import axios from 'axios';
-import { ConfigApp } from 'config';
-
-import { ASSET_TOKEN } from './constant';
+// import { ASSET_TOKEN } from './constant';
 import axios from 'axios';
-import { getMenuAlias } from './utils';
-
+import config from '../config';
+import { getCookie } from './helper';
 
 const restApi = axios.create({
-    baseURL: ConfigApp.API_URL, // Thay thế bằng URL API thực tế của bạn
+  baseURL: config.apiUrl // Thay thế bằng URL API thực tế của bạn
 });
 
 // Request interceptor for API calls
 restApi.interceptors.request.use(
-    async config => {
-        const assToken = window.localStorage.getItem(ASSET_TOKEN);
-        let menu = getMenuAlias();
-        config.headers = {
-            'Authorization': `Bearer ${assToken}`,
-            'Accept': 'application/json',
-            'VIEWPAGE': menu,
-            // 'Content-Type': 'application/x-www-form-urlencoded'
-        }
-        return config;
-    },
-    error => {
-        Promise.reject(error);
-    });
+  async (confi) => {
+    const assToken = getCookie(config.ASSET_TOKEN);
+    confi.headers = {
+      Authorization: `Bearer ${assToken}`,
+      Accept: 'application/json'
+    };
+    return confi;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
 // Response interceptor for API calls
-restApi.interceptors.response.use((response) => {
-
-    return response
-}, async function (error) {
+restApi.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  async function (error) {
     return error.response;
-});
+  }
+);
 
 export default restApi;

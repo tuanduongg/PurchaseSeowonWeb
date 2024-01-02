@@ -112,12 +112,12 @@ const OrderList = () => {
 
   const [openModalDetail, setOpenModalDetail] = React.useState(false);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
+  
   const hanleCloseModalDetail = () => {
     setOpenModalDetail(false);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {

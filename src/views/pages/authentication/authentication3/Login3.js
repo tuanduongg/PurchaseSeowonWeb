@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 
 // material-ui
 // import { useTheme } from '@mui/material/styles';
@@ -9,15 +9,33 @@ import AuthWrapper1 from '../AuthWrapper1';
 import AuthCardWrapper from '../AuthCardWrapper';
 import AuthLogin from '../auth-forms/AuthLogin';
 import Logo from 'ui-component/Logo';
+import { useState } from 'react';
+import restApi from 'utils/restAPI';
+import { DefineRouteApi } from 'DefineRouteAPI';
+import { ConfigPath } from 'routes/DefinePath';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 // assets
 
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login = () => {
-  // const theme = useTheme();
-  // const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-
+  // const [isLogin, setIsLogin] = useState(false);
+  // const checkToken = async () => {
+  //   const response = await restApi.get(DefineRouteApi.profile);
+  //   if (response?.status === 200) {
+  //     setIsLogin(true);
+  //   }
+  // };
+  // useEffect(() => {
+  //   // const token = getCookie(config.ASSET_TOKEN);
+  //   // console.log('get token', token);
+  //   checkToken();
+  // }, []);
+  // // const theme = useTheme();
+  // // const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
+  // if (isLogin) return <Navigate to={ConfigPath.home} />;
   return (
     <AuthWrapper1>
       <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>
@@ -37,7 +55,6 @@ const Login = () => {
                   <Grid item xs={12}>
                     <Divider />
                   </Grid>
-                  
                 </Grid>
               </AuthCardWrapper>
             </Grid>
