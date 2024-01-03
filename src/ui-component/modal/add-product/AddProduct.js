@@ -35,7 +35,14 @@ const ModalAddProduct = ({ open, handleClose, fullScreen }) => {
 
   return (
     <>
-      <Dialog maxWidth={'sm'} fullScreen={fullScreen} open={open} onClose={onClose} aria-labelledby="responsive-dialog-title">
+      <Dialog
+        maxWidth={'sm'}
+        sx={{ minHeight: '90vh' }}
+        fullScreen={fullScreen}
+        open={open}
+        onClose={onClose}
+        aria-labelledby="responsive-dialog-title"
+      >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <DialogTitle fontSize={'20px'} sx={{ padding: '10px' }}>
             Add new product
@@ -47,6 +54,9 @@ const ModalAddProduct = ({ open, handleClose, fullScreen }) => {
         <Divider />
         <DialogContent sx={{ overflowY: 'hidden' }}>
           <Box sx={{ width: '100%', height: '100%' }}>
+            <Typography variant="h5" sx={{ marginBottom: '10px' }}>
+              Info Product
+            </Typography>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <TextField fullWidth size="small" label="Product name" variant="outlined" />
@@ -71,6 +81,9 @@ const ModalAddProduct = ({ open, handleClose, fullScreen }) => {
                 <TextField fullWidth label="Description" multiline minRows={4} maxRows={4} />
               </Grid>
               <Grid item xs={12}>
+                <Typography variant="h5" sx={{ marginBottom: '5px' }}>
+                  Upload Image(optional)
+                </Typography>
                 <ListImageProduct />
               </Grid>
             </Grid>

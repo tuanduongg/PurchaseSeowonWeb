@@ -8,6 +8,9 @@ import {
   InputAdornment,
   InputLabel,
   Link,
+  ListItemIcon,
+  Menu,
+  MenuItem,
   Stack,
   Table,
   TableBody,
@@ -25,6 +28,8 @@ import { useState } from 'react';
 import { formattingVND, truncateText, cssScrollBar } from 'utils/helper';
 import AddIcon from '@mui/icons-material/Add';
 import ModalAddProduct from 'ui-component/modal/add-product/AddProduct';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const columns = [
   {
@@ -48,7 +53,7 @@ const columns = [
   },
   {
     id: 'action',
-    label: 'Action',
+    label: '',
     // minWidth: 170,
     align: 'right'
   }
@@ -96,6 +101,15 @@ const ProductPage = () => {
   const onCloseModalAddProduct = () => {
     setOpenModalAddProduct(false);
   };
+  const handleClickEdit = () => {};
+  const handleClickDelete = () => {};
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+  };
+  const handleOpenMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
   return (
     <>
       <Box>
@@ -172,18 +186,11 @@ const ProductPage = () => {
                           aria-expanded={openMenu ? 'true' : undefined}
                           aria-haspopup="true"
                           onClick={(e) => {
-                            handleOpenMenu(e, row);
+                            handleOpenMenu(e);
                           }}
                         >
                           <MoreVertIcon fontSize="20px" />
                         </IconButton>
-                        {/* <IconButton size="small">
-                            <IconEdit />
-                          </IconButton>
-                          <IconButton size="small">
-                            <IconTrash />
-                          </IconButton> */}
-                        {/* </Box> */}
                       </TableCell>
                     </TableRow>
                   );
@@ -203,6 +210,32 @@ const ProductPage = () => {
         </Box>
       </Box>
       <ModalAddProduct open={openModalAddProduct} fullScreen={false} handleClose={onCloseModalAddProduct} />
+      <Menu
+        anchorEl={anchorEl}
+        open={openMenu}
+        onClose={handleCloseMenu}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right'
+        }}
+      >
+        <MenuItem disableRipple onClick={handleClickEdit}>
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          Edit
+        </MenuItem>
+        <MenuItem disableRipple onClick={handleClickDelete}>
+          <ListItemIcon>
+            <DeleteIcon />
+          </ListItemIcon>
+          Delete
+        </MenuItem>
+      </Menu>
     </>
   );
 };
