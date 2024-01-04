@@ -9,6 +9,7 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { CardMedia } from '@mui/material';
 
 const ImageSlide = ({ images }) => {
+  console.log('images', images);
   return (
     <>
       <Swiper
@@ -22,12 +23,12 @@ const ImageSlide = ({ images }) => {
           clickable: true
         }}
         // navigation={true}
-        modules={[Autoplay,Pagination]}
+        modules={[Autoplay, Pagination]}
         className="mySwiper"
       >
         {images?.map((item, index) => (
           <SwiperSlide key={index}>
-            <CardMedia component="img" image={item} sx={{ height: '350px',objectFit:'contain' }} alt="Image" />
+            <CardMedia component="img" image={item?.url} sx={{ height: '350px', objectFit: 'contain' }} alt="Image" />
           </SwiperSlide>
         ))}
       </Swiper>

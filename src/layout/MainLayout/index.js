@@ -80,12 +80,9 @@ const MainLayout = () => {
       dispatch({ type: CHECK_LOGIN, isLogin: true });
     }
   };
-  useEffect(() => {
-    // checkToken();
-  }, []);
-  if (!customization?.isLogin) {
-    return <Navigate to={ConfigPath.login} state={{ from: location }} />;
-  }
+  // if (!customization?.isLogin) {
+  //   return <Navigate to={ConfigPath.login} state={{ from: location }} />;
+  // }
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />

@@ -74,7 +74,7 @@ const itemData = [
   //   author: '@southside_customs'
   // }
 ];
-const ListImageProduct = () => {
+const ListImageProduct = ({ images, type }) => {
   const inputRef = useRef(null);
   return (
     <>
@@ -90,41 +90,47 @@ const ListImageProduct = () => {
           cols={3}
           gap={1}
         >
-          <ImageListItem>
-            <Box sx={{ display: 'flex', textAlign: 'center', cursor: 'pointer', lineHeight: '200px', height: '200px' }}>
-              <AddIcon
-                onClick={() => {
-                  if (inputRef?.current) {
-                    inputRef.current.click();
-                  }
-                }}
-                sx={{ width: '40%', height: '40%', margin: 'auto', boder: '1px solid #b9b9b9' }}
-              />
-            </Box>
-          </ImageListItem>
-          {itemData.map((item, index) => (
-            <ImageListItem key={index}>
-              <CardMedia component="img" sx={{ width: '100%', height: '100%' }} image={item.img} title="image" alt={'image'} />
-              <ImageListItemBar
-                sx={{
-                  background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' + 'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
-                }}
-                position="top"
-                actionIcon={
-                  <IconButton
-                    onClick={() => {
-                      alert('click close');
-                    }}
-                    sx={{ color: 'white' }}
-                    aria-label={`close`}
-                  >
-                    <CloseIcon />
-                  </IconButton>
-                }
-                actionPosition="right"
-              />
+          {type !== 'VIEW' && (
+            <ImageListItem>
+              <Box sx={{ display: 'flex', textAlign: 'center', cursor: 'pointer', lineHeight: '200px', height: '200px' }}>
+                <AddIcon
+                  onClick={() => {
+                    if (inputRef?.current) {
+                      inputRef.current.click();
+                    }
+                  }}
+                  sx={{ width: '40%', height: '40%', margin: 'auto', boder: '1px solid #b9b9b9' }}
+                />
+              </Box>
             </ImageListItem>
-          ))}
+          )}
+          {images?.length > 0
+            ? images.map((item, index) => (
+                <ImageListItem key={index}>
+                  <CardMedia component="img" sx={{ width: '100%', height: '100%' }} image={item?.url} title="image" alt={'image'} />
+                  {type !== 'VIEW' && (
+                    <ImageListItemBar
+                      sx={{
+                        background: 'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' + 'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
+                      }}
+                      position="top"
+                      actionIcon={
+                        <IconButton
+                          onClick={() => {
+                            alert('click close');
+                          }}
+                          sx={{ color: 'white' }}
+                          aria-label={`close`}
+                        >
+                          <CloseIcon />
+                        </IconButton>
+                      }
+                      actionPosition="right"
+                    />
+                  )}
+                </ImageListItem>
+              ))
+            : null}
         </ImageList>
       </Box>
       <input type="file" ref={inputRef} hidden></input>

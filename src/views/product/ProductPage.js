@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   CardMedia,
+  Chip,
   FormControl,
   IconButton,
   Input,
@@ -19,6 +20,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
@@ -30,6 +32,13 @@ import AddIcon from '@mui/icons-material/Add';
 import ModalAddProduct from 'ui-component/modal/add-product/AddProduct';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import restApi from 'utils/restAPI';
+import { DefineRouteApi } from 'DefineRouteAPI';
+import { useEffect } from 'react';
+import { ShowAlert, ShowQuestion } from 'utils/confirm';
+import CustomLoading from 'ui-component/loading/CustomLoading';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const columns = [
   {
@@ -52,6 +61,12 @@ const columns = [
     align: 'left'
   },
   {
+    id: 'isShow',
+    label: '',
+    // minWidth: 170,
+    align: 'center'
+  },
+  {
     id: 'action',
     label: '',
     // minWidth: 170,
@@ -59,55 +74,112 @@ const columns = [
   }
 ];
 
-function createData(code, image, name, inventory, price, category) {
-  return { code, image, name, inventory, price, category };
-}
-//158 character -> cut
-const rows = [
-  createData(60483973, 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg', 'Giấy A4', 2000, 12500, 'Văn phòng phẩm'),
-  createData(327167434, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 20, 12500, 'Đồ vệ sinh'),
-  createData(37602103, 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg', 'Kẹp giấy đầu tròn c32', 150, 12500, 'Quần áo'),
-  createData(25475400, 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg', 'Giấy A4', 2000, 12500, 'Đồ điện'),
-  createData(83019200, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 200, 12500, 'Văn phòng phẩm'),
-  createData(4857000, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 400, 12500, 'Quần áo'),
-  createData(126577691, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 345, 12500, 'Sản xuất'),
-  createData(126317000, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 112, 12500, 'Văn phòng phẩm'),
-  createData(67022000, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 123, 12500, 'Đồ điện'),
-  createData(67545757, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 145, 12500, 'Quần áo'),
-  createData(146793744, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 204, 12500, 'Văn phòng phẩm'),
-  createData(200962417, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 500, 12500, 'Đồ vệ sinh'),
-  createData(210147125, 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 403, 12500, 'Văn phòng phẩmmarfF')
-];
-
-const handleChangePage = (event, newPage) => {
-  setPage(newPage);
-};
-
-const handleChangeRowsPerPage = (event) => {
-  setRowsPerPage(+event.target.value);
-  setPage(0);
-};
-
 const ProductPage = () => {
   const [page, setPage] = useState(0);
+  const [search, setSearch] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [listProduct, setListProduct] = useState([]);
+  const [titleModal, setTitleModal] = useState('');
+  const [typeModal, setTypeModal] = useState('ADD');
+  const [total, setTotal] = useState(0);
+  const [productSelect, setProductSelect] = useState(null);
   const [openModalAddProduct, setOpenModalAddProduct] = useState(false);
+  const [loading, setLoading] = useState(false);
   const openMenu = Boolean(anchorEl);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   const handleClickAddProduct = () => {
+    setTitleModal('Add new product');
+    setTypeModal('ADD');
     setOpenModalAddProduct(true);
   };
   const onCloseModalAddProduct = () => {
+    setProductSelect(null);
     setOpenModalAddProduct(false);
   };
-  const handleClickEdit = () => {};
-  const handleClickDelete = () => {};
+  const onClickAcceptDelete = () => {
+    alert('click');
+  };
+  const handleClickDelete = () => {
+    ShowQuestion({
+      icon: 'warning',
+      titleProp: 'Delete Product',
+      content: 'Do you want to delete this product?',
+      onClickYes: () => {
+        onClickAcceptDelete();
+      }
+    });
+  };
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+  const getAllProduct = async () => {
+    setLoading(true);
+    const obj = { page, rowsPerPage, search };
+    const url = DefineRouteApi.getAllProduct;
+    const res = await restApi.post(url, obj);
+    if (res?.status === 200) {
+      setLoading(false);
+      const data = res?.data;
+      setTotal(data?.count);
+      setListProduct(data?.data);
+    } else {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getAllProduct();
+  }, []);
+
+  const handleViewProduct = (row) => {
+    setProductSelect(row);
+    setTitleModal(`${row?.productName}`);
+    setTypeModal('VIEW');
+    setOpenModalAddProduct(true);
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      getAllProduct();
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [search, page, rowsPerPage, 500]);
+
+  const handleClickEditProduct = () => {
+    if (productSelect) {
+      setAnchorEl(null);
+      setTitleModal(`Edit product`);
+      setTypeModal('EDIT');
+      setOpenModalAddProduct(true);
+    }
+  };
+  const handleChangePublic = async (row) => {
+    const res = await restApi.post(DefineRouteApi.changePublicProduct, { productID: row?.productID });
+    if (res?.status === 200) {
+      getAllProduct();
+    }
+  };
+  const handleClickPublic = (row) => {
+    ShowQuestion({
+      icon: 'warning',
+      titleProp: `${row?.isShow ? 'Hidden' : 'Show'} Product`,
+      content: `Do you want to ${row?.isShow ? 'hidden' : 'show'} this product?`,
+      onClickYes: () => {
+        handleChangePublic(row);
+      }
+    });
   };
 
   return (
@@ -119,7 +191,10 @@ const ProductPage = () => {
             <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
               <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
               <Input
-                id="standard-adornment-search"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                value={search}
                 type="text"
                 endAdornment={
                   <InputAdornment position="end">
@@ -150,18 +225,21 @@ const ProductPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                {listProduct.map((row) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.productID}>
                       <TableCell sx={{ padding: '5px' }}>
                         <Stack flexDirection={'row'} alignItems={'center'}>
                           <CardMedia
                             component={'image'}
                             sx={{ height: '50px', width: '50px', marginRight: '10px' }}
-                            image={row?.image}
+                            image={row?.images?.[0]?.url ?? ''}
                             alt="image"
                           />
                           <Link
+                            onClick={() => {
+                              handleViewProduct(row);
+                            }}
                             underline="hover"
                             color={'warning'}
                             sx={{
@@ -170,27 +248,40 @@ const ProductPage = () => {
                               }
                             }}
                           >
-                            {row?.name ? truncateText(row?.name, 155) : ''}
+                            {row?.productName ? truncateText(row?.productName, 155) : ''}
                           </Link>
                         </Stack>
                       </TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.inventory}</TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'left' }}>{row?.price ? formattingVND(row?.price) : ''}</TableCell>
-                      <TableCell sx={{ padding: '5px' }}>{row?.category}</TableCell>
+                      <TableCell sx={{ padding: '5px' }}>{row?.category?.categoryName}</TableCell>
+                      <TableCell sx={{ padding: '5px' }}>
+                        <Tooltip title={row?.isShow ? 'This product hidden' : 'This product is showing'}>
+                          <IconButton
+                            onClick={() => {
+                              handleClickPublic(row);
+                            }}
+                          >
+                            {row?.isShow ? <VisibilityIcon sx={{ color: 'green' }} /> : <VisibilityOffIcon />}
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
-                        {/* <Box sx={{ display: 'flex', textAlign: 'right' }}> */}
-                        <IconButton
-                          aria-label="more"
-                          id="long-button"
-                          aria-controls={openMenu ? 'long-menu' : undefined}
-                          aria-expanded={openMenu ? 'true' : undefined}
-                          aria-haspopup="true"
-                          onClick={(e) => {
-                            handleOpenMenu(e);
-                          }}
-                        >
-                          <MoreVertIcon fontSize="20px" />
-                        </IconButton>
+                        <Tooltip title="Menu">
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={openMenu ? 'long-menu' : undefined}
+                            aria-expanded={openMenu ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={(e) => {
+                              setProductSelect(row);
+                              handleOpenMenu(e);
+                            }}
+                          >
+                            <MoreVertIcon fontSize="20px" />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   );
@@ -199,9 +290,9 @@ const ProductPage = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            rowsPerPageOptions={[10, 20, 50]}
             component="div"
-            count={rows.length}
+            count={total}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -209,7 +300,14 @@ const ProductPage = () => {
           />
         </Box>
       </Box>
-      <ModalAddProduct open={openModalAddProduct} fullScreen={false} handleClose={onCloseModalAddProduct} />
+      <ModalAddProduct
+        productProp={productSelect}
+        tittle={titleModal}
+        type={typeModal}
+        open={openModalAddProduct}
+        fullScreen={false}
+        handleClose={onCloseModalAddProduct}
+      />
       <Menu
         anchorEl={anchorEl}
         open={openMenu}
@@ -223,7 +321,7 @@ const ProductPage = () => {
           horizontal: 'right'
         }}
       >
-        <MenuItem disableRipple onClick={handleClickEdit}>
+        <MenuItem disableRipple onClick={handleClickEditProduct}>
           <ListItemIcon>
             <EditIcon />
           </ListItemIcon>
@@ -236,6 +334,7 @@ const ProductPage = () => {
           Delete
         </MenuItem>
       </Menu>
+      <CustomLoading open={loading} />
     </>
   );
 };

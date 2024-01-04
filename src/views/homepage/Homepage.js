@@ -23,6 +23,9 @@ import ModalDetailProduct from 'ui-component/modal/detail-product/ModalDetailPro
 import Loader from 'ui-component/Loader';
 import Loadable from 'ui-component/Loadable';
 import { isMobile } from 'utils/helper';
+import { DefineRouteApi } from 'DefineRouteAPI';
+import restApi from 'utils/restAPI';
+import CusomLoading from 'ui-component/loading/CustomLoading';
 
 // ==============================|| DEFAULT Homepage ||============================== //
 const PRODUCTS = [
@@ -108,10 +111,16 @@ const Homepage = () => {
   //   setLoading(false);
   // }, []);
 
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModalDetailProd, setOpenModalDetailProd] = useState(false);
   const [productSelected, setProductSelected] = useState({});
+  const [search, setSearch] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [category, setCategory] = useState('');
+  const [total, setTotal] = useState(0);
+  const [listProduct, setListProduct] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -122,10 +131,8 @@ const Homepage = () => {
     setPage(0);
   };
 
-  const [age, setAge] = useState('');
-
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setCategory(event.target.value);
   };
 
   const onShowDetailProduct = (product) => {
@@ -138,29 +145,71 @@ const Homepage = () => {
     setProductSelected({});
   };
 
+  const getAllProduct = async () => {
+    setLoading(true);
+    const obj = { page, rowsPerPage, search, categoryID: category };
+    const url = DefineRouteApi.getProductPubic;
+    const res = await restApi.post(url, obj);
+    if (res?.status === 200) {
+      const data = res?.data;
+      setTotal(data?.count);
+      setListProduct(data?.data);
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    getAllProduct();
+  }, []);
+
+  const getAllCategory = async () => {
+    const res = await restApi.get(DefineRouteApi.getAllCategory);
+    if (res?.status === 200) {
+      setCategories(res?.data);
+    }
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      getAllProduct();
+    }, 500);
+    return () => clearTimeout(timeoutId);
+  }, [page, rowsPerPage, category, search, 500]);
+
+  useEffect(() => {
+    getAllCategory();
+  }, []);
+
   return (
     <>
+      <CusomLoading open={loading} />
       <Grid container spacing={gridSpacing}>
-        <Grid item>
+        <Grid item xs={12}>
           <Typography variant="h4">List product</Typography>
           {/* <SearchSection /> */}
           <Box sx={{ display: 'flex' }}>
-            <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
-              <InputLabel id="demo-select-small-label">Category</InputLabel>
-              <Select labelId="demo-select-small-label" id="demo-select-small" value={age} label="Category" onChange={handleChange}>
+            <FormControl sx={{ m: 1, width: '20ch' }} variant="standard" size="small">
+              <InputLabel>Category</InputLabel>
+              <Select value={category} label="Category" onChange={handleChange}>
                 <MenuItem value="">
-                  <em>None</em>
+                  <em>All</em>
                 </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                {categories?.map((item, index) => (
+                  <MenuItem key={index} value={item?.categoryID}>
+                    {item?.categoryName}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
             <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
-              <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
+              <InputLabel>Search</InputLabel>
               <Input
-                id="standard-adornment-search"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+                value={search}
                 type="text"
                 endAdornment={
                   <InputAdornment position="end">
@@ -173,10 +222,10 @@ const Homepage = () => {
             </FormControl>
           </Box>
         </Grid>
-        <Grid item>
+        <Grid item xs={12}>
           <Box sx={{ width: '95%', margin: 'auto' }}>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-              {PRODUCTS.map((item, index) => (
+            <Box sx={{ display: 'flex' }}>
+              {listProduct?.map((item, index) => (
                 <ProductCard onShowDetail={onShowDetailProduct} product={item} key={index} />
               ))}
             </Box>
@@ -185,7 +234,7 @@ const Homepage = () => {
         <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%' }}>
           <TablePagination
             component="div"
-            count={100}
+            count={total}
             page={page}
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}

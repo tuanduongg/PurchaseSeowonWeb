@@ -10,7 +10,7 @@ const ProductCard = ({ product, onShowDetail }) => {
       <Card
         sx={{
           borderRadius: '0',
-          width: { xs: '48%', md: '16%' },
+          minWidth: { xs: '48%', md: '16%' },
           border: '1px solid #ddd',
           paddingBottom: '5px',
           margin: '0px 5px 5px 0px',
@@ -26,8 +26,8 @@ const ProductCard = ({ product, onShowDetail }) => {
             onShowDetail(product);
           }}
           sx={{ height: 100 }}
-          image={product?.image ?? ''}
-          title={product?.name}
+          image={product?.images ? product?.images[0]?.url : ''}
+          title={product?.productName}
         />
         <CardContent
           onClick={() => {
@@ -36,7 +36,7 @@ const ProductCard = ({ product, onShowDetail }) => {
           sx={{ padding: '5px', minHeight: '50px' }}
         >
           <Typography variant="h6" sx={{ fontWeight: 'bold' }} component="div">
-            {product?.name ? truncateText(product?.name, 74) : ''}
+            {product?.productName ? truncateText(product?.productName, 74) : ''}
           </Typography>
         </CardContent>
         {/* <Typography sx={{ margin: '0px 5px' }} variant="body2" color={'secondary'} component="div">
