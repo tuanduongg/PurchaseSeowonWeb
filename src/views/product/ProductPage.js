@@ -139,9 +139,9 @@ const ProductPage = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    getAllProduct();
-  }, []);
+  // useEffect(() => {
+  //   getAllProduct();
+  // }, []);
 
   const handleViewProduct = (row) => {
     setProductSelect(row);

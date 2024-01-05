@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { ShowQuestion } from 'utils/confirm';
 import DetailOrder from 'ui-component/modal/detail-order/DetailOrder';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import { useSelector } from 'react-redux';
 
 // styles
 const ListItemWrapper = styled('div')(({ theme }) => ({
@@ -109,12 +110,16 @@ const PRODUCTS = [
   }
 ];
 
+const getTotalPrice = (quantity, unitCost) => {
+  return quantity * unitCost;
+};
 // ==============================|| NOTIFICATION LIST ITEM ||============================== //
 
 const ProductList = ({ onCloseDrawer }) => {
-  const [listProduct, setListProduct] = useState(PRODUCTS);
   const [openDetailOrder, setOpenDetailOrder] = useState(false);
   const theme = useTheme();
+  const customization = useSelector((state) => state.customization);
+  const [listProduct, setListProduct] = useState(customization?.cart ?? []);
 
   const chipSX = {
     height: 24,
@@ -219,8 +224,8 @@ const ProductList = ({ onCloseDrawer }) => {
             <>
               <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
                 <Grid item xs={5.5} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
-                  <Avatar sx={{ width: '50px', height: '50px', marginRight: '3px' }} src={item?.image} variant="square" />
-                  <Typography variant="h5">{item?.name}</Typography>
+                  <Avatar sx={{ width: '50px', height: '50px', marginRight: '3px' }} src={item?.images?.[0]?.url} variant="square" />
+                  <Typography variant="h5">{item?.productName}</Typography>
                 </Grid>
                 <Grid item xs={2}>
                   <Box sx={{ display: 'flex', alignContent: 'center' }}>
@@ -244,7 +249,7 @@ const ProductList = ({ onCloseDrawer }) => {
                 </Grid>
                 <Grid item xs={2}>
                   <Typography textAlign={'right'} variant="h5">
-                    {formattingVND(item?.price)}
+                    {formattingVND(getTotalPrice(item?.quantity, item?.price))}
                   </Typography>
                 </Grid>
                 <Grid item xs={0.5}>

@@ -58,15 +58,16 @@ const NavItem = ({ item, level }) => {
     if (document.location.pathname === '/') {
       dispatch({ type: MENU_OPEN, id: ConfigPath.home });
     } else {
-      const currentIndex = document.location.pathname
-        .toString()
-        .split('/')
-        .findIndex((id) => id === item.id);
-      console.log('currentIndex', currentIndex);
-      console.log('document.location.pathname', document.location.pathname);
-      if (currentIndex > -1) {
-        dispatch({ type: MENU_OPEN, id: item.id });
-      }
+      // const currentIndex = pathname
+      //   .toString()
+      //   .split('/')
+      //   .findIndex((id) => id === item.id);
+      // console.log('currentIndex', currentIndex);
+      // console.log('document.location.pathname', document.location.pathname);
+      // console.log('pathname', pathname);
+      // if (currentIndex > -1) {
+      dispatch({ type: MENU_OPEN, id: pathname });
+      // }
     }
     // eslint-disable-next-line
   }, [pathname]);

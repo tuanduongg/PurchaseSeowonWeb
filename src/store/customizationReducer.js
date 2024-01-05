@@ -10,7 +10,8 @@ export const initialState = {
   fontFamily: config.fontFamily,
   borderRadius: config.borderRadius,
   opened: true,
-  isLogin: false
+  isLogin: false,
+  cart: []
 };
 
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
@@ -44,6 +45,32 @@ const customizationReducer = (state = initialState, action) => {
         ...state,
         isLogin: action.isLogin
       };
+    case actionTypes.CART:
+      return {
+        ...state,
+        cart: action.cart
+      };
+    case actionTypes.UPDATE_CART_ITEM: {
+      const product = action.product;
+      if (product) {
+        //nếu mà có product
+        const index = state.cart.findIndex((it) => it.productID === product.productID);
+        if (index !== -1) {
+          // neeus co product -> tăng số lượng lênnn
+          const cartArr = [...state.cart];
+          cartArr[index].quantity += product.quantity;
+          return { ...state, cart: cartArr };
+        } else {
+          const cartNew = [...state.cart, product];
+          return { ...state, cart: cartNew };
+        }
+      }
+      break;
+    }
+    // return {
+    //   ...state,
+    //   cart: action.cart
+    // };
     default:
       return state;
   }

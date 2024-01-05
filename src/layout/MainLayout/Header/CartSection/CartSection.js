@@ -34,6 +34,7 @@ import Transitions from 'ui-component/extended/Transitions';
 import { IconBell, IconShoppingCart } from '@tabler/icons';
 import NotificationList from '../NotificationSection/NotificationList';
 import ProductList from './ProductList';
+import { useSelector } from 'react-redux';
 
 // notification status options
 const status = [
@@ -60,6 +61,7 @@ const status = [
 const CartSection = () => {
   const theme = useTheme();
   const matchesXs = useMediaQuery(theme.breakpoints.down('md'));
+  const customization = useSelector((state) => state.customization);
 
   const [open, setOpen] = useState(false);
   const [openCartDrawer, setOpenCartDrawer] = useState(false);
@@ -70,7 +72,6 @@ const CartSection = () => {
   const anchorRef = useRef(null);
 
   const handleToggle = () => {
-    // setOpen((prevOpen) => !prevOpen);
     setOpenCartDrawer((prevOpen) => !prevOpen);
   };
 
@@ -105,7 +106,7 @@ const CartSection = () => {
         }}
       >
         <Badge
-          badgeContent={4}
+          badgeContent={customization?.cart?.length}
           sx={{
             '& .MuiBadge-badge': {
               color: 'white',

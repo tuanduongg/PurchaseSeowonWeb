@@ -2,7 +2,7 @@
 // import { ASSET_TOKEN } from './constant';
 import axios from 'axios';
 import config from '../config';
-import { getCookie } from './helper';
+import { getCookie, logout } from './helper';
 
 const restApi = axios.create({
   baseURL: config.apiUrl // Thay thế bằng URL API thực tế của bạn
@@ -28,6 +28,10 @@ restApi.interceptors.response.use(
     return response;
   },
   async function (error) {
+    // console.log('err', error);
+    // if (error?.response?.status === 401) {
+    //   logout();
+    // }
     return error.response;
   }
 );

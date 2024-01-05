@@ -36,10 +36,11 @@ import { DefineRouteApi } from 'DefineRouteAPI';
 import { ShowAlert } from 'utils/confirm';
 import config from '../../../../config';
 import { setCookie } from 'utils/helper';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { ConfigPath } from 'routes/DefinePath';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SET_BORDER_RADIUS, CHECK_LOGIN } from 'store/actions';
+import { useEffect } from 'react';
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
@@ -59,14 +60,13 @@ const FirebaseLogin = ({ ...others }) => {
   const theme = useTheme();
   const scriptedRef = useScriptRef();
   // const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  // const customization = useSelector((state) => state.customization);
   const [checked, setChecked] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const googleHandler = async () => {
-  //   console.error('Login');
-  // };
+  const customization = useSelector((state) => state.customization);
+  const location = useLocation();
+
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -105,16 +105,16 @@ const FirebaseLogin = ({ ...others }) => {
                 });
               } else if (status === 200) {
                 // login successful
+                dispatch({ type: CHECK_LOGIN, isLogin: true });
                 const data = res?.data;
                 const user = data?.user;
                 const token = data?.accessToken;
                 if (user) {
-                  localStorage.setItem(config.DATA_USER, user);
+                  localStorage.setItem(config.DATA_USER, JSON.stringify(user));
                 }
                 if (token) {
                   setCookie(config.ASSET_TOKEN, token);
                 }
-                dispatch({ type: CHECK_LOGIN, isLogin: true });
                 navigate(ConfigPath.home);
               }
               setStatus({ success: true });

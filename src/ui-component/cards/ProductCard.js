@@ -3,8 +3,18 @@ import { Box } from '@mui/system';
 import { formattingVND, truncateText } from 'utils/helper';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { useDispatch, useSelector } from 'react-redux';
+import { SET_BORDER_RADIUS, UPDATE_CART_ITEM } from 'store/actions';
 
 const ProductCard = ({ product, onShowDetail }) => {
+  const dispatch = useDispatch();
+  const customization = useSelector((state) => state.customization);
+
+  const handleClickAddToCart = () => {
+    const cart = customization?.cart;
+    const item = { ...product, quantity: 1 };
+    dispatch({ type: UPDATE_CART_ITEM, product: item });
+  };
   return (
     <>
       <Card
@@ -49,7 +59,7 @@ const ProductCard = ({ product, onShowDetail }) => {
           {/* <IconButton sx={{ padding: '2px' }} aria-label="Heart">
             <FavoriteBorderIcon sx={{ fontSize: '18px' }} />
           </IconButton> */}
-          <IconButton sx={{ padding: '2px' }} aria-label="Cart">
+          <IconButton onClick={handleClickAddToCart} sx={{ padding: '2px' }} aria-label="Cart">
             <ShoppingCartIcon sx={{ fontSize: '18px' }} />
           </IconButton>
         </Box>

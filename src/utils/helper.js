@@ -1,3 +1,6 @@
+import { ConfigPath } from 'routes/DefinePath';
+import config from '../config';
+
 export const formattingVND = (num) => {
   return num.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'đ');
 };
@@ -51,3 +54,13 @@ export function getCookie(name) {
 export function eraseCookie(name) {
   document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
+
+const delete_cookie = (name) => {
+  document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+};
+
+export const logout = () => {
+  let assToken = getCookie(config.ASSET_TOKEN);
+  localStorage.removeItem(config.DATA_USER);
+  delete_cookie(config.ASSET_TOKEN);
+};

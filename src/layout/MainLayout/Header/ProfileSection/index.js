@@ -38,6 +38,9 @@ import User1 from 'assets/images/users/profile.png';
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
 import { ConfigPath } from 'routes/DefinePath';
+import { logout } from 'utils/helper';
+import config from '../../../../config';
+import { ShowQuestion } from 'utils/confirm';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -51,12 +54,30 @@ const ProfileSection = () => {
   const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+  const [infoUser, setInfoUser] = useState({});
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef = useRef(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem(config.DATA_USER);
+    if (user) {
+      const userObj = JSON.parse(user);
+      setInfoUser(userObj);
+    }
+  }, []);
   const handleLogout = async () => {
-    console.log('Logout');
+    ShowQuestion({
+      content: 'Do you want to logout?',
+      titleProp: 'LOGOUT',
+      onClickYes: async () => {
+        await logout();
+        window.location = ConfigPath.home;
+        // navigate(ConfigPath.home);
+        // console.log('vao logout');
+      }
+    });
   };
 
   const handleClose = (event) => {
@@ -83,7 +104,6 @@ const ProfileSection = () => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current.focus();
     }
-
     prevOpen.current = open;
   }, [open]);
 
@@ -124,7 +144,7 @@ const ProfileSection = () => {
             aria-haspopup="true"
             color="white"
           >
-            T
+            {infoUser?.username ? infoUser?.username?.charAt(0)?.toUpperCase() : ''}
           </Avatar>
         }
         label={<IconSettings stroke={1.5} size="1.5rem" color={theme.palette.primary.main} />}

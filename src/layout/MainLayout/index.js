@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
@@ -72,17 +72,29 @@ const MainLayout = () => {
   };
   const customization = useSelector((state) => state.customization);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // const [isLogin, setIsLogin] = useState(false);
-  const checkToken = async () => {
-    const response = await restApi.get(DefineRouteApi.profile);
-    if (response?.status === 200) {
-      dispatch({ type: CHECK_LOGIN, isLogin: true });
-    }
-  };
+  // const checkToken = async () => {
+  //   const response = await restApi.get(DefineRouteApi.profile);
+  //   if (response?.status === 200) {
+  //     setIsLogin(true);
+  //     // dispatch({ type: CHECK_LOGIN, isLogin: true });
+  //   }
+  // };
   // if (!customization?.isLogin) {
   //   return <Navigate to={ConfigPath.login} state={{ from: location }} />;
   // }
+  const checkToken = async () => {
+    const response = await restApi.get(DefineRouteApi.profile);
+    if (response?.status !== 200) {
+      dispatch({ type: CHECK_LOGIN, isLogin: false });
+      navigate(ConfigPath.login);
+    }
+  };
+  useEffect(() => {
+    checkToken();
+  }, []);
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />

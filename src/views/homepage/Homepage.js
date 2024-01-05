@@ -28,83 +28,7 @@ import restApi from 'utils/restAPI';
 import CusomLoading from 'ui-component/loading/CustomLoading';
 
 // ==============================|| DEFAULT Homepage ||============================== //
-const PRODUCTS = [
-  {
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000
-  },
-  {
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000
-  },
-  {
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200
-  },
-  {
-    name: 'Kẹp giấy đầu tròn C82 LOẠI LỚN',
-    image: 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg',
-    price: 5600
-  },
-  {
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000
-  },
-  {
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000
-  },
-  {
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200
-  },
-  {
-    name: 'Kẹp giấy đầu tròn C82 LOẠI LỚN',
-    image: 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg',
-    price: 5600
-  },
-  {
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000
-  },
-  {
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000
-  },
-  {
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200
-  },
-  {
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200
-  },
-  {
-    name: 'Kẹp giấy đầu tròn C82 LOẠI LỚN Kẹp giấy đầu',
-    image: 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg',
-    price: 5600
-  },
-  {
-    name: 'Găng tay len kim 10 ngà 60g',
-    image: 'https://img.super-mro.com/super-mro/2023/09/w550/gang-tay-len-kim-10-nga-60g.jpg.webp',
-    price: 5600
-  },
-  {
-    name: 'Băng dính trong',
-    image: 'https://bizweb.dktcdn.net/thumb/1024x1024/100/387/548/products/bang-dinh-trong-5cm.png?v=1589959476467',
-    price: 20000
-  }
-];
+
 const Homepage = () => {
   // const [isLoading, setLoading] = useState(true);
   // useEffect(() => {
@@ -159,9 +83,6 @@ const Homepage = () => {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    getAllProduct();
-  }, []);
 
   const getAllCategory = async () => {
     const res = await restApi.get(DefineRouteApi.getAllCategory);
