@@ -42,6 +42,12 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 const columns = [
   {
+    id: 'STT',
+    label: 'STT',
+    // minWidth: 170,
+    align: 'center'
+  },
+  {
     id: 'name',
     label: 'Product',
     // minWidth: 170,
@@ -93,8 +99,8 @@ const ProductPage = () => {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
     setPage(0);
+    setRowsPerPage(+event.target.value);
   };
 
   const handleClickAddProduct = () => {
@@ -225,9 +231,10 @@ const ProductPage = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {listProduct.map((row) => {
+                {listProduct.map((row, index) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.productID}>
+                      <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
                       <TableCell sx={{ padding: '5px' }}>
                         <Stack flexDirection={'row'} alignItems={'center'}>
                           <CardMedia

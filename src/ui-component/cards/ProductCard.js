@@ -6,7 +6,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BORDER_RADIUS, UPDATE_CART_ITEM } from 'store/actions';
 
-const ProductCard = ({ product, onShowDetail }) => {
+const ProductCard = ({ product, onShowDetail,afterAddToCart }) => {
   const dispatch = useDispatch();
   const customization = useSelector((state) => state.customization);
 
@@ -14,13 +14,14 @@ const ProductCard = ({ product, onShowDetail }) => {
     const cart = customization?.cart;
     const item = { ...product, quantity: 1 };
     dispatch({ type: UPDATE_CART_ITEM, product: item });
+    afterAddToCart();
   };
   return (
     <>
       <Card
         sx={{
           borderRadius: '0',
-          minWidth: { xs: '48%', md: '16%' },
+          width: { xs: '48%', md: '16%' },
           border: '1px solid #ddd',
           paddingBottom: '5px',
           margin: '0px 5px 5px 0px',

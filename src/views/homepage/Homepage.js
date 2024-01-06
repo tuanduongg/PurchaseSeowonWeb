@@ -12,7 +12,9 @@ import {
   InputAdornment,
   IconButton,
   MenuItem,
-  Select
+  Select,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import { gridSpacing } from 'store/constant';
 import ProductCard from 'ui-component/cards/ProductCard';
@@ -26,6 +28,7 @@ import { isMobile } from 'utils/helper';
 import { DefineRouteApi } from 'DefineRouteAPI';
 import restApi from 'utils/restAPI';
 import CusomLoading from 'ui-component/loading/CustomLoading';
+import { useRef } from 'react';
 
 // ==============================|| DEFAULT Homepage ||============================== //
 
@@ -36,7 +39,7 @@ const Homepage = () => {
   // }, []);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(12);
   const [openModalDetailProd, setOpenModalDetailProd] = useState(false);
   const [productSelected, setProductSelected] = useState({});
   const [search, setSearch] = useState('');
@@ -45,6 +48,9 @@ const Homepage = () => {
   const [total, setTotal] = useState(0);
   const [listProduct, setListProduct] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [openSnack, setOpenSnack] = useState(false);
+
+  const debounceTimeout = useRef(null);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -79,8 +85,6 @@ const Homepage = () => {
       setTotal(data?.count);
       setListProduct(data?.data);
       setLoading(false);
-    } else {
-      setLoading(false);
     }
   };
 
@@ -99,11 +103,34 @@ const Homepage = () => {
   }, [page, rowsPerPage, category, search, 500]);
 
   useEffect(() => {
+    // getAllProduct();
     getAllCategory();
   }, []);
+  const handleCloseSnack = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
 
+    setOpenSnack(false);
+  };
+  const handleChangeSearch = (e) => {
+    const { value } = e.target;
+    setPage(0);
+    setSearch(value);
+    // if (debounceTimeout.current) {
+    //   clearTimeout(debounceTimeout.current);
+    // }
+    // debounceTimeout.current = setTimeout(() => {
+    //   getAllProduct();
+    // }, 500);
+  };
+  const afterAddToCart = () => {
+    setOpenSnack(true);
+  };
+  // if (loading) return <Loader />;
   return (
     <>
+      {loading && <Loader />}
       <CusomLoading open={loading} />
       <Grid container spacing={gridSpacing}>
         <Grid item xs={12}>
@@ -127,9 +154,7 @@ const Homepage = () => {
             <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
               <InputLabel>Search</InputLabel>
               <Input
-                onChange={(e) => {
-                  setSearch(e.target.value);
-                }}
+                onChange={handleChangeSearch}
                 value={search}
                 type="text"
                 endAdornment={
@@ -145,15 +170,16 @@ const Homepage = () => {
         </Grid>
         <Grid item xs={12}>
           <Box sx={{ width: '95%', margin: 'auto' }}>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
               {listProduct?.map((item, index) => (
-                <ProductCard onShowDetail={onShowDetailProduct} product={item} key={index} />
+                <ProductCard onShowDetail={onShowDetailProduct} afterAddToCart={afterAddToCart} product={item} key={index} />
               ))}
             </Box>
           </Box>
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%' }}>
           <TablePagination
+            rowsPerPageOptions={[12, 24, 48]}
             component="div"
             count={total}
             page={page}
@@ -169,6 +195,15 @@ const Homepage = () => {
         fullScreen={isMobile() ? true : false}
         handleClose={handleCloseModelDetailPro}
       />
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        onClose={handleCloseSnack}
+        autoHideDuration={3000}
+        open={openSnack}
+        TransitionComponent={'SlideTransition'}
+      >
+        <Alert severity="success">Add product to cart successful!</Alert>
+      </Snackbar>
     </>
   );
 };

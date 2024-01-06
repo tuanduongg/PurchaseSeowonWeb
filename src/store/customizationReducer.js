@@ -59,9 +59,11 @@ const customizationReducer = (state = initialState, action) => {
           // neeus co product -> tăng số lượng lênnn
           const cartArr = [...state.cart];
           cartArr[index].quantity += product.quantity;
+          localStorage.setItem('CART',JSON.stringify(cartArr));
           return { ...state, cart: cartArr };
         } else {
           const cartNew = [...state.cart, product];
+          localStorage.setItem('CART',JSON.stringify(cartNew));
           return { ...state, cart: cartNew };
         }
       }
