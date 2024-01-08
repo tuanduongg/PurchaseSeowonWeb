@@ -1,12 +1,13 @@
-import { Button, Card, CardActions, CardContent, CardMedia, IconButton, Typography } from '@mui/material';
+import { Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { formattingVND, truncateText } from 'utils/helper';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BORDER_RADIUS, UPDATE_CART_ITEM } from 'store/actions';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
-const ProductCard = ({ product, onShowDetail,afterAddToCart }) => {
+const ProductCard = ({ product, onShowDetail, afterAddToCart }) => {
   const dispatch = useDispatch();
   const customization = useSelector((state) => state.customization);
 
@@ -18,7 +19,7 @@ const ProductCard = ({ product, onShowDetail,afterAddToCart }) => {
   };
   return (
     <>
-      <Card
+      {/* <Card
         sx={{
           borderRadius: '0',
           width: { xs: '48%', md: '16%' },
@@ -31,38 +32,59 @@ const ProductCard = ({ product, onShowDetail,afterAddToCart }) => {
             boxShadow: 'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px'
           }
         }}
+      > */}
+      <Card
+        sx={{
+          borderRadius: '0',
+          width: { xs: '100%', md: '100%' },
+          border: '1px solid #ddd',
+          // paddingBottom: '5px',
+          // margin: '0px 5px 5px 0px',
+          '&:hover': {
+            border: '1px solid #0054a6',
+            cursor: 'pointer',
+            boxShadow: 'rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px'
+          }
+        }}
       >
-        <CardMedia
-          onClick={() => {
-            onShowDetail(product);
-          }}
-          sx={{ height: 100 }}
-          image={product?.images ? product?.images[0]?.url : ''}
-          title={product?.productName}
-        />
+        <CardMedia sx={{ height: 100 }} image={product?.images ? product?.images[0]?.url : ''} title={product?.productName} />
         <CardContent
           onClick={() => {
             onShowDetail(product);
           }}
-          sx={{ padding: '5px', minHeight: '50px' }}
+          sx={{ padding: '5px' }}
         >
-          <Typography variant="h6" sx={{ fontWeight: 'bold' }} component="div">
+          <Typography textAlign={'center'} variant="h6" sx={{ fontWeight: 'bold' }} component="div">
             {product?.productName ? truncateText(product?.productName, 74) : ''}
           </Typography>
         </CardContent>
         {/* <Typography sx={{ margin: '0px 5px' }} variant="body2" color={'secondary'} component="div">
           {product?.price ? formattingVND(product?.price) : ''}
         </Typography> */}
-        <Box sx={{ padding: '0px 3px', display: 'flex', justifyContent: 'space-between' }}>
-          <Typography sx={{ margin: '0px 5px' }} variant="body2" color={'secondary'} component="div">
-            {product?.price ? formattingVND(product?.price) : ''}
-          </Typography>
-          {/* <IconButton sx={{ padding: '2px' }} aria-label="Heart">
-            <FavoriteBorderIcon sx={{ fontSize: '18px' }} />
-          </IconButton> */}
-          <IconButton onClick={handleClickAddToCart} sx={{ padding: '2px' }} aria-label="Cart">
-            <ShoppingCartIcon sx={{ fontSize: '18px' }} />
-          </IconButton>
+        <Typography textAlign={'center'} variant="body2" sx={{ color: '#0054a6' }} component="div">
+          {product?.price ? formattingVND(product?.price) : ''}
+        </Typography>
+        <Box sx={{ borderTop: '1px solid #ddd', marginTop: '10px', display: 'flex', justifyContent: 'space-between', padding: '5px' }}>
+          <Box
+            onClick={() => {
+              onShowDetail(product);
+            }}
+            sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center', borderRight: '0.5px solid #ddd', width: '50%' }}
+          >
+            <VisibilityIcon sx={{ fontSize: '18px', color: '#0054a6' }} />
+            <Typography variant="body2" sx={{ fontSize: '13px', '&:hover': { color: '#0054a6' } }} component="div">
+              View detail
+            </Typography>
+          </Box>
+          <Box
+            onClick={handleClickAddToCart}
+            sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center', borderLeft: '0.5px solid #ddd', width: '50%' }}
+          >
+            <ShoppingCartIcon sx={{ fontSize: '18px', color: '#0054a6' }} />
+            <Typography variant="body2" sx={{ fontSize: '13px', '&:hover': { color: '#0054a6' } }} component="div">
+              Add to cart
+            </Typography>
+          </Box>
         </Box>
       </Card>
     </>

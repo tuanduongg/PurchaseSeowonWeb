@@ -39,7 +39,7 @@ const Homepage = () => {
   // }, []);
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(12);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [openModalDetailProd, setOpenModalDetailProd] = useState(false);
   const [productSelected, setProductSelected] = useState({});
   const [search, setSearch] = useState('');
@@ -168,7 +168,7 @@ const Homepage = () => {
             </FormControl>
           </Box>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Box sx={{ width: '95%', margin: 'auto' }}>
             <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
               {listProduct?.map((item, index) => (
@@ -176,10 +176,19 @@ const Homepage = () => {
               ))}
             </Box>
           </Box>
+        </Grid> */}
+        <Grid item xs={12}>
+          <Grid container spacing={1}>
+            {listProduct?.map((item, index) => (
+              <Grid item xs={2.4} key={index}>
+                <ProductCard onShowDetail={onShowDetailProduct} afterAddToCart={afterAddToCart} product={item} />
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
         <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%' }}>
           <TablePagination
-            rowsPerPageOptions={[12, 24, 48]}
+            rowsPerPageOptions={[10, 20, 50]}
             component="div"
             count={total}
             page={page}
@@ -202,7 +211,7 @@ const Homepage = () => {
         open={openSnack}
         TransitionComponent={'SlideTransition'}
       >
-        <Alert severity="success">Add product to cart successful!</Alert>
+        <Alert severity="success">Add product to cart successfully!</Alert>
       </Snackbar>
     </>
   );

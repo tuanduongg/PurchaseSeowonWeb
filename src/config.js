@@ -9,6 +9,7 @@ const config = {
   apiUrl: 'http://localhost:8088/api',
   DATA_USER: 'DATA_USER',
   ASSET_TOKEN: 'asset_token',
+  COLOR_MAIN: '#0054a6'
 };
 
 export default config;

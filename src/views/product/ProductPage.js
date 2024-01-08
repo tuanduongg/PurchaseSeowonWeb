@@ -39,6 +39,7 @@ import { ShowAlert, ShowQuestion } from 'utils/confirm';
 import CustomLoading from 'ui-component/loading/CustomLoading';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import config from '../../config';
 
 const columns = [
   {
@@ -51,7 +52,7 @@ const columns = [
     id: 'name',
     label: 'Product',
     // minWidth: 170,
-    align: 'left'
+    align: 'center'
   },
   { id: 'inventory', label: 'Inventory', minWidth: 140, align: 'center' },
   {
@@ -269,7 +270,7 @@ const ProductPage = () => {
                               handleClickPublic(row);
                             }}
                           >
-                            {row?.isShow ? <VisibilityIcon sx={{ color: 'green' }} /> : <VisibilityOffIcon />}
+                            {row?.isShow ? <VisibilityIcon sx={{ color: config.COLOR_MAIN }} /> : <VisibilityOffIcon />}
                           </IconButton>
                         </Tooltip>
                       </TableCell>

@@ -5,6 +5,11 @@ export const formattingVND = (num) => {
   return num.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'đ');
 };
 
+export const formattingVNDInput = (num) => {
+  const number = parseFloat(num);
+  return number.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', '');
+};
+
 export const truncateText = (str, n) => {
   return str.length > n ? str.slice(0, n - 1) + '...' : str;
 };
