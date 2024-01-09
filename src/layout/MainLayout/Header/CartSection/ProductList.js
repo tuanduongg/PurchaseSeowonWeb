@@ -10,6 +10,7 @@ import { ShowQuestion } from 'utils/confirm';
 import DetailOrder from 'ui-component/modal/detail-order/DetailOrder';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
 import { useSelector } from 'react-redux';
+import config from '../../../../config';
 
 // styles
 const ListItemWrapper = styled('div')(({ theme }) => ({
@@ -22,93 +23,6 @@ const ListItemWrapper = styled('div')(({ theme }) => ({
     padding: 0
   }
 }));
-
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000,
-    quantity: 1
-  },
-  {
-    id: '2',
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000,
-    quantity: 1
-  },
-  {
-    id: '11',
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200,
-    quantity: 1
-  },
-  {
-    id: '13',
-    name: 'Kẹp giấy đầu tròn C82 LOẠI LỚN Kẹp giấy đầu',
-    image: 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '14',
-    name: 'Găng tay len kim 10 ngà 60g',
-    image: 'https://img.super-mro.com/super-mro/2023/09/w550/gang-tay-len-kim-10-nga-60g.jpg.webp',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '15',
-    name: 'Băng dính trong',
-    image: 'https://bizweb.dktcdn.net/thumb/1024x1024/100/387/548/products/bang-dinh-trong-5cm.png?v=1589959476467',
-    price: 20000,
-    quantity: 1
-  },
-  {
-    id: '1',
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000,
-    quantity: 1
-  },
-  {
-    id: '2',
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000,
-    quantity: 1
-  },
-  {
-    id: '11',
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200,
-    quantity: 1
-  },
-  {
-    id: '13',
-    name: 'Kẹp giấy đầu tròn C82 LOẠI LỚN Kẹp giấy đầu',
-    image: 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '14',
-    name: 'Găng tay len kim 10 ngà 60g',
-    image: 'https://img.super-mro.com/super-mro/2023/09/w550/gang-tay-len-kim-10-nga-60g.jpg.webp',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '15',
-    name: 'Băng dính trong',
-    image: 'https://bizweb.dktcdn.net/thumb/1024x1024/100/387/548/products/bang-dinh-trong-5cm.png?v=1589959476467',
-    price: 20000,
-    quantity: 1
-  }
-];
 
 const getTotalPrice = (quantity, unitCost) => {
   return quantity * unitCost;
@@ -132,7 +46,7 @@ const ProductList = ({ onCloseDrawer }) => {
     if (value < 0) {
       temp = value * -1;
     }
-    const data = [...PRODUCTS];
+    const data = [...listProduct];
     data[index].quantity = temp;
     setListProduct(data);
   };
@@ -224,7 +138,11 @@ const ProductList = ({ onCloseDrawer }) => {
             <>
               <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
                 <Grid item xs={5.5} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
-                  <Avatar sx={{ width: '50px', height: '50px', marginRight: '3px' }} src={item?.images?.[0]?.url} variant="square" />
+                  <Avatar
+                    sx={{ width: '50px', height: '50px', marginRight: '3px' }}
+                    src={config.apiImage + item?.images?.[0]?.url}
+                    variant="square"
+                  />
                   <Typography variant="h5">{item?.productName}</Typography>
                 </Grid>
                 <Grid item xs={2}>

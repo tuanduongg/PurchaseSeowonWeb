@@ -21,21 +21,6 @@ import { useSelector } from 'react-redux';
 // ================================|| AUTH3 - LOGIN ||================================ //
 
 const Login = () => {
-  // const [isLogin, setIsLogin] = useState(false);
-  // const checkToken = async () => {
-  //   const response = await restApi.get(DefineRouteApi.profile);
-  //   if (response?.status === 200) {
-  //     setIsLogin(true);
-  //   }
-  // };
-  // useEffect(() => {
-  //   // const token = getCookie(config.ASSET_TOKEN);
-  //   // console.log('get token', token);
-  //   checkToken();
-  // }, []);
-  // // const theme = useTheme();
-  // // const matchDownSM = useMediaQuery(theme.breakpoints.down('md'));
-  // if (isLogin) return <Navigate to={ConfigPath.home} />;
   return (
     <AuthWrapper1>
       <Grid container direction="column" justifyContent="flex-end" sx={{ minHeight: '100vh' }}>

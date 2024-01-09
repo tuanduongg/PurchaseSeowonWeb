@@ -40,6 +40,7 @@ import CustomLoading from 'ui-component/loading/CustomLoading';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import config from '../../config';
+import CustomAlert from 'ui-component/alert/CustomAlert';
 
 const columns = [
   {
@@ -93,10 +94,18 @@ const ProductPage = () => {
   const [productSelect, setProductSelect] = useState(null);
   const [openModalAddProduct, setOpenModalAddProduct] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
+  const [contentAlert, setContentAlert] = useState('');
+  const [typeAlert, setTypeAlert] = useState('success');
+
   const openMenu = Boolean(anchorEl);
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    setOpenAlert(false);
+  };
+
+  const onCloseAlert = () => {
+    setOpenAlert(false);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -188,6 +197,18 @@ const ProductPage = () => {
       }
     });
   };
+  const onAfterSaved = (res) => {
+    console.log('res', res);
+    if (res?.status === 200) {
+      getAllProduct();
+      setTypeAlert('success');
+      setContentAlert('Add new product successfully!');
+    } else {
+      setTypeAlert('error');
+      setContentAlert(res?.data?.message || 'Add new product fail!');
+    }
+    setOpenAlert(true);
+  };
 
   return (
     <>
@@ -241,7 +262,7 @@ const ProductPage = () => {
                           <CardMedia
                             component={'image'}
                             sx={{ height: '50px', width: '50px', marginRight: '10px' }}
-                            image={row?.images?.[0]?.url ?? ''}
+                            image={config.apiImage + row?.images?.[0]?.url ?? ''}
                             alt="image"
                           />
                           <Link
@@ -315,6 +336,7 @@ const ProductPage = () => {
         open={openModalAddProduct}
         fullScreen={false}
         handleClose={onCloseModalAddProduct}
+        afterSaved={onAfterSaved}
       />
       <Menu
         anchorEl={anchorEl}
@@ -343,6 +365,7 @@ const ProductPage = () => {
         </MenuItem>
       </Menu>
       <CustomLoading open={loading} />
+      <CustomAlert open={openAlert} type={typeAlert} content={contentAlert} handleClose={onCloseAlert} />
     </>
   );
 };

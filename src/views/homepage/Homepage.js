@@ -29,6 +29,7 @@ import { DefineRouteApi } from 'DefineRouteAPI';
 import restApi from 'utils/restAPI';
 import CusomLoading from 'ui-component/loading/CustomLoading';
 import { useRef } from 'react';
+import CustomAlert from 'ui-component/alert/CustomAlert';
 
 // ==============================|| DEFAULT Homepage ||============================== //
 
@@ -106,11 +107,7 @@ const Homepage = () => {
     // getAllProduct();
     getAllCategory();
   }, []);
-  const handleCloseSnack = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
+  const handleCloseSnack = () => {
     setOpenSnack(false);
   };
   const handleChangeSearch = (e) => {
@@ -204,15 +201,7 @@ const Homepage = () => {
         fullScreen={isMobile() ? true : false}
         handleClose={handleCloseModelDetailPro}
       />
-      <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        onClose={handleCloseSnack}
-        autoHideDuration={3000}
-        open={openSnack}
-        TransitionComponent={'SlideTransition'}
-      >
-        <Alert severity="success">Add product to cart successfully!</Alert>
-      </Snackbar>
+      <CustomAlert type={'success'} open={openSnack} handleClose={handleCloseSnack} content={'Add product to cart successfully!'} />
     </>
   );
 };

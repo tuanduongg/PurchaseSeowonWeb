@@ -6,6 +6,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { useDispatch, useSelector } from 'react-redux';
 import { SET_BORDER_RADIUS, UPDATE_CART_ITEM } from 'store/actions';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import config from '../../config';
 
 const ProductCard = ({ product, onShowDetail, afterAddToCart }) => {
   const dispatch = useDispatch();
@@ -47,14 +48,18 @@ const ProductCard = ({ product, onShowDetail, afterAddToCart }) => {
           }
         }}
       >
-        <CardMedia sx={{ height: 100 }} image={product?.images ? product?.images[0]?.url : ''} title={product?.productName} />
+        <CardMedia
+          sx={{ height: 100, backgroundSize: 'contain' }}
+          image={product?.images ? config.apiImage + product?.images[0]?.url : ''}
+          title={product?.productName}
+        />
         <CardContent
           onClick={() => {
             onShowDetail(product);
           }}
           sx={{ padding: '5px' }}
         >
-          <Typography textAlign={'center'} variant="h6" sx={{ fontWeight: 'bold' }} component="div">
+          <Typography textAlign={'center'} variant="h6" sx={{ fontWeight: 'bold', minHeight: '40px' }} component="div">
             {product?.productName ? truncateText(product?.productName, 74) : ''}
           </Typography>
         </CardContent>

@@ -5,6 +5,8 @@ import AddIcon from '@mui/icons-material/Add';
 import { useRef } from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import config from '../../../../config';
+import { ShowQuestion } from 'utils/confirm';
 
 function srcset(image, width, height, rows = 1, cols = 1) {
   return {
@@ -76,7 +78,7 @@ const itemData = [
   //   author: '@southside_customs'
   // }
 ];
-const ListImageProduct = ({ imagesProp, type, afterChangeFiles,handleRemoveImage }) => {
+const ListImageProduct = ({ imagesProp, type, afterChangeFiles, handleRemoveImage }) => {
   const [images, setImages] = useState([]);
   const inputRef = useRef(null);
 
@@ -88,10 +90,11 @@ const ListImageProduct = ({ imagesProp, type, afterChangeFiles,handleRemoveImage
 
   useEffect(() => {
     if (imagesProp) {
+      console.log('imagesProp', imagesProp);
       setImages(imagesProp);
     }
   }, [imagesProp]);
-
+  console.log('type', type);
   return (
     <>
       {/* <Box>
@@ -190,7 +193,7 @@ const ListImageProduct = ({ imagesProp, type, afterChangeFiles,handleRemoveImage
                     <CardMedia
                       component="img"
                       sx={{ width: '100%', height: '100%' }}
-                      image={type !== 'VIEW' ? item?.createObjectURL : item?.url}
+                      image={item?.createObjectURL || config.apiImage + item?.url}
                       title={type !== 'VIEW' ? item?.name : 'image'}
                       alt={'image'}
                     />
@@ -203,7 +206,14 @@ const ListImageProduct = ({ imagesProp, type, afterChangeFiles,handleRemoveImage
                         actionIcon={
                           <IconButton
                             onClick={() => {
-                              handleRemoveImage(index);
+                              ShowQuestion({
+                                content: 'Do you want to delete this image?',
+                                onClickYes: () => {
+                                  handleRemoveImage(index);
+                                },
+                                titleProp: 'Delete',
+                                icon: 'warning'
+                              });
                             }}
                             sx={{ color: 'white' }}
                             aria-label={`close`}

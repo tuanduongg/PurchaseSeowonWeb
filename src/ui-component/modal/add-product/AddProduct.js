@@ -34,7 +34,7 @@ import { ConfigPath } from 'routes/DefinePath';
 
 const initValidate = { err: false, msg: '' };
 
-const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle }) => {
+const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle, afterSaved }) => {
   const [product, setProduct] = useState(null);
   const [name, setName] = useState('');
   const [validateName, setValidateName] = useState(initValidate);
@@ -42,30 +42,38 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
   const [validateCategory, setValidateCategory] = useState(initValidate);
   const [price, setPrice] = useState(0);
   const [validatePrice, setValidatePrice] = useState(initValidate);
-  const [inventory, setInventory] = useState('');
+  const [inventory, setInventory] = useState(0);
   const [validateInventory, setValidateInventory] = useState(initValidate);
   const [description, setDescription] = useState('');
   const [validateDescription, setValidateDescription] = useState(initValidate);
   const [images, setImages] = useState([]);
   const [categories, setCategories] = useState([]);
   const [typeShowImage, setTypeShowImage] = useState('');
+  const [units, setUnits] = useState([]);
+  const [unitID, setUnitID] = useState('');
+  const [validateUnit, setValidateUnit] = useState(initValidate);
 
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
-      setName('');
-      setPrice('');
-      setInventory('');
-      setDescription('');
-      setImages('');
-      setCategory('');
-      setProduct(null);
-      setValidateName(initValidate);
-      setValidateCategory(initValidate);
-      setValidatePrice(initValidate);
-      setValidateInventory(initValidate);
-      setValidateDescription(initValidate);
+      clearText();
       handleClose();
     }
+  };
+  const clearText = () => {
+    setName('');
+    setPrice('');
+    setInventory('');
+    setDescription('');
+    setImages('');
+    setCategory('');
+    setProduct(null);
+    setUnitID('');
+    setValidateName(initValidate);
+    setValidateCategory(initValidate);
+    setValidatePrice(initValidate);
+    setValidateInventory(initValidate);
+    setValidateDescription(initValidate);
+    setValidateUnit(initValidate);
   };
   useEffect(() => {
     if (productProp) {
@@ -74,7 +82,9 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
       setInventory(productProp?.inventory);
       setDescription(productProp?.description);
       setImages(productProp?.images);
+      console.log('productProp?.images', productProp?.images);
       setCategory(productProp?.category?.categoryID);
+      setUnitID(productProp?.unitID);
     }
   }, [productProp]);
 
@@ -84,7 +94,14 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
       setCategories(res?.data);
     }
   };
+  const getAllUnit = async () => {
+    const res = await restApi.get(DefineRouteApi.getAllUnit);
+    if (res?.status === 200) {
+      setUnits(res?.data);
+    }
+  };
   useEffect(() => {
+    getAllUnit();
     getAllCategory();
   }, []);
 
@@ -94,15 +111,23 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
       price,
       description,
       inventory,
-      category
+      category,
+      unitID
     });
     var formData = new FormData();
     formData.append('data', dataSend);
-    images.map((file) => {
-      formData.append('files', file);
-    });
+    if (images && images?.length > 0) {
+      images.map((file) => {
+        formData.append('files', file);
+      });
+    }
+    const url = type === 'EDIT' ? DefineRouteApi.editProduct : DefineRouteApi.addProduct;
     const res = await restApi.post(DefineRouteApi.addProduct, formData);
-    console.log('res', res);
+    if (res?.status === 200) {
+      clearText();
+      handleClose();
+    }
+    afterSaved(res);
   };
   const handleClickSave = () => {
     let isErr = false;
@@ -118,9 +143,17 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
       setValidateCategory({ err: true, msg: 'Category is required' });
       isErr = true;
     }
+    if (unitID?.trim() === '') {
+      setValidateUnit({ err: true, msg: 'Unit is required' });
+      isErr = true;
+    }
+    if (inventory === '') {
+      setValidateInventory({ err: true, msg: 'Inventory is required' });
+      isErr = true;
+    }
 
-    let priceNum = parseInt(price?.trim());
-    let invenNum = parseInt(inventory?.trim());
+    let priceNum = parseInt(price);
+    let invenNum = parseInt(inventory);
 
     if (priceNum < 1) {
       setValidatePrice({ err: true, msg: 'Price must be more than or equal 1' });
@@ -135,10 +168,21 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
     }
   };
 
+  const handleDeleteImage = async (id) => {
+    if (id) {
+      const res = await restApi.post(DefineRouteApi.deleteImageByProduct, { imageID: id });
+      console.log('res', res);
+    }
+  };
+
   const handleRemoveImage = (index) => {
     const arr = [...images];
+    const imageDelete = arr[index];
     arr.splice(index, 1);
     setImages(arr);
+    if (type === 'EDIT' && imageDelete?.imageID) {
+      handleDeleteImage(imageDelete?.imageID);
+    }
   };
 
   const handleChangeInputFiles = (files) => {
@@ -177,7 +221,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
               Info Product
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <TextField
                   error={validateName.err}
                   helperText={validateName.msg}
@@ -194,6 +238,30 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
                   label="Product name"
                   variant="outlined"
                 />
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl error={validateUnit.err} size="small" fullWidth>
+                  <InputLabel>Unit</InputLabel>
+                  <Select
+                    InputProps={{ readOnly: type === 'VIEW' }}
+                    value={unitID}
+                    onChange={(e) => {
+                      setUnitID(e.target.value);
+                      if (validateUnit?.err) {
+                        setValidateUnit(initValidate);
+                      }
+                    }}
+                    size="small"
+                    label="Unit"
+                  >
+                    {units?.map((item, index) => (
+                      <MenuItem key={index} disabled={type == 'VIEW' && item?.unitID !== unitID} value={item?.unitID}>
+                        {item?.unitName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {validateUnit.err && <FormHelperText>{validateUnit.msg}</FormHelperText>}
+                </FormControl>
               </Grid>
               <Grid item xs={6}>
                 <FormControl error={validateCategory.err} size="small" fullWidth>
@@ -293,11 +361,13 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
             </Grid>
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button size="small" variant="contained" color="primary" autoFocus endIcon={<SaveIcon />} onClick={handleClickSave}>
-            Save
-          </Button>
-        </DialogActions>
+        {type !== 'VIEW' && (
+          <DialogActions>
+            <Button size="small" variant="contained" color="primary" autoFocus endIcon={<SaveIcon />} onClick={handleClickSave}>
+              Save
+            </Button>
+          </DialogActions>
+        )}
       </Dialog>
     </>
   );

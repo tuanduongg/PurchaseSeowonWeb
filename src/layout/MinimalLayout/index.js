@@ -3,7 +3,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 // project imports
 import Customization from '../Customization';
 import { useEffect } from 'react';
-import { getCookie } from 'utils/helper';
+import { getCookie, logout } from 'utils/helper';
 import config from '../../config';
 import restApi from 'utils/restAPI';
 import { DefineRouteApi } from 'DefineRouteAPI';
@@ -23,10 +23,9 @@ const MinimalLayout = () => {
   const checkToken = async () => {
     const response = await restApi.get(DefineRouteApi.profile);
     if (response?.status === 200) {
-      // dispatch({ type: CHECK_LOGIN, isLogin: true });
-      // const url = location.state?.from?.pathname || ConfigPath.home;
-      // dispatch({ type: MENU_OPEN, id: url });
       navigate(ConfigPath.home);
+    } else {
+      logout();
     }
   };
   useEffect(() => {
