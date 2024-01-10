@@ -10,5 +10,7 @@ export const DefineRouteApi = {
   getAllCategory: '/category/all',
   changePublicProduct: '/product/changePublic',
   getAllUnit: '/unit/all',
-  deleteImageByProduct: '/image/delete'
+  deleteImageByProduct: '/image/delete',
+  createOrder: '/order/add',
+  getOrders: '/order/all',
 };

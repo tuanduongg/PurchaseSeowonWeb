@@ -1,30 +1,17 @@
 import { Avatar, Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
-import { formattingVND, cssScrollBar } from 'utils/helper';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { formattingVND, cssScrollBar, getTotalPrice } from 'utils/helper';
+import config from '../../../../config';
 
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000,
-    quantity: 1
-  },
-  {
-    id: '2',
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000,
-    quantity: 1
-  },
-  {
-    id: '11',
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200,
-    quantity: 1
-  }
-];
-const CardListProduct = () => {
+const CardListProduct = ({ products }) => {
+  // const [listProduct, setListProduct] = useState([]);
+  // useEffect(() => {
+  //   if (products && products?.length > 0) {
+  //     console.log('products', products);
+  //     setListProduct(products);
+  //   }
+  // }, [products]);
   return (
     <>
       <Card>
@@ -53,12 +40,16 @@ const CardListProduct = () => {
           </Grid>
           <Divider />
           <Box sx={{ width: '100%', overflowX: 'hidden', padding: '0px 15px', ...cssScrollBar }}>
-            {PRODUCTS.map((item, index) => (
+            {products?.map((item, index) => (
               <>
                 <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
                   <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
-                    <Avatar sx={{ width: '50px', height: '50px', marginRight: '3px' }} src={item?.image} variant="square" />
-                    <Typography variant="h5">{item?.name}</Typography>
+                    <Avatar
+                      sx={{ width: '50px', height: '50px', marginRight: '3px' }}
+                      src={item?.images[0]?.url ? config.apiImage + item?.images[0]?.url : ''}
+                      variant="square"
+                    />
+                    <Typography variant="h5">{item?.productName}</Typography>
                   </Grid>
                   <Grid item xs={2} sx={{ textAlign: 'center' }}>
                     {item?.quantity}
@@ -70,7 +61,7 @@ const CardListProduct = () => {
                   </Grid>
                   <Grid item xs={2}>
                     <Typography textAlign={'right'} variant="h5">
-                      {formattingVND(item?.price)}
+                      {formattingVND(getTotalPrice(item?.quantity, item?.price))}
                     </Typography>
                   </Grid>
                 </Grid>

@@ -17,12 +17,36 @@ import CloseIcon from '@mui/icons-material/Close';
 import { formattingVND } from 'utils/helper';
 import ImageSlide from './ImageSilde';
 import { IconShoppingCart } from '@tabler/icons';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import CustomAlert from 'ui-component/alert/CustomAlert';
+import { UPDATE_CART_ITEM } from 'store/actions';
 
 const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
+  const dispatch = useDispatch();
+  const [quantity, setQuantity] = useState(1);
+  const [openSnack, setOpenSnack] = useState(false);
+
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
+      setQuantity(1);
       handleClose();
     }
+  };
+
+  const handleCloseSnack = () => {
+    setOpenSnack(false);
+  };
+
+  const handleClickAddToCart = () => {
+    let intQuantity = parseInt(quantity);
+    if (isNaN(intQuantity) || quantity < 0) {
+      intQuantity = 1;
+      setQuantity(1);
+    }
+    const item = { ...product, quantity: intQuantity };
+    dispatch({ type: UPDATE_CART_ITEM, product: item });
+    setOpenSnack(true);
   };
 
   return (
@@ -48,13 +72,17 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                   {product?.productName}
                 </Typography>
                 <Typography variant="h3" color={'primary'} sx={{ marginTop: '15px' }}>
-                  {product?.price ? formattingVND(product?.price) : ''}
+                  {product?.price ? `${formattingVND(product?.price)}/${product?.unit?.unitName}` : ''}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
                   <Typography variant="h5" sx={{ margin: '0px 10px 0px 0px' }}>
                     Quantity :
                   </Typography>
                   <TextField
+                    value={quantity}
+                    onChange={(e) => {
+                      setQuantity(e.target.value);
+                    }}
                     type="number"
                     size="small"
                     defaultValue={1}
@@ -71,8 +99,8 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                   <Typography variant="h5" sx={{ margin: '20px 0px 0px 0px' }}>
                     Description :
                   </Typography>
-                  <Typography variant="p" sx={{ margin: '10px 0px 0px 0px' }}>
-                    {product?.description}
+                  <Typography dangerouslySetInnerHTML={{ __html: product?.description }} variant="p" sx={{ margin: '10px 0px 0px 0px' }}>
+                    {/* {product?.description} */}
                   </Typography>
                 </Box>
                 <Box
@@ -82,6 +110,7 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                   }}
                 >
                   <Box
+                    onClick={handleClickAddToCart}
                     sx={{
                       textAlign: 'center',
                       width: { xs: '100%', sm: '60%' },
@@ -113,6 +142,7 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
           </Button>
         </DialogActions> */}
       </Dialog>
+      <CustomAlert type={'success'} open={openSnack} handleClose={handleCloseSnack} content={'Add product to cart successfully!'} />
     </>
   );
 };

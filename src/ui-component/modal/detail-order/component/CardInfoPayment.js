@@ -1,6 +1,8 @@
 import { Card, CardContent, Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { formattingVND } from 'utils/helper';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { formattingVND, getSubTotal } from 'utils/helper';
 
 const RowInfo = (label, value) => {
   return (
@@ -16,11 +18,11 @@ const RowInfo = (label, value) => {
 const listLabel = [
   {
     label: 'Total :',
-    value: 1124000
+    value: 0
   },
   {
     label: 'Discount :',
-    value: 120000
+    value: 0
   },
   {
     label: 'Sale :',
@@ -28,10 +30,18 @@ const listLabel = [
   },
   {
     label: 'Shipping price :',
-    value: 30000
+    value: 0
   }
 ];
-const CardInfoPayment = () => {
+const CardInfoPayment = ({ products }) => {
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    if (products && products?.length > 0) {
+      const totalSub = getSubTotal(products);
+      listLabel[0].value = totalSub;
+      setTotal(totalSub);
+    }
+  }, [products]);
   return (
     <>
       <Card sx={{ height: '100%' }}>
@@ -48,7 +58,7 @@ const CardInfoPayment = () => {
               SubTotal :
             </Typography>
             <Typography color={'#0054a6'} fontWeight={'bold'} variant="h5">
-              {formattingVND(1124000)}
+              {total ? formattingVND(total) : 0}
             </Typography>
           </Box>
         </CardContent>

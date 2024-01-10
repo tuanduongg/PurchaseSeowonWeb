@@ -2,7 +2,8 @@ import { ConfigPath } from 'routes/DefinePath';
 import config from '../config';
 
 export const formattingVND = (num) => {
-  return num.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'đ');
+  const number = parseFloat(num);
+  return number.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'đ');
 };
 
 export const formattingVNDInput = (num) => {
@@ -69,3 +70,21 @@ export const logout = () => {
   localStorage.removeItem(config.DATA_USER);
   delete_cookie(config.ASSET_TOKEN);
 };
+
+export const getTotalPrice = (quantity, unitCost) => {
+  return quantity * unitCost;
+};
+export const getSubTotal = (products = []) => {
+  let sub = 0;
+  products.map((item) => {
+    sub += item?.price * item?.quantity;
+  });
+  return sub;
+};
+// export const getTotal = (products = []) => {
+//   let sub = 0;
+//   products.map((item) => {
+//     sub += item?.price * item?.quantity;
+//   });
+//   return sub;
+// };

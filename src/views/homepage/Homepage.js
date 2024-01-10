@@ -30,6 +30,8 @@ import restApi from 'utils/restAPI';
 import CusomLoading from 'ui-component/loading/CustomLoading';
 import { useRef } from 'react';
 import CustomAlert from 'ui-component/alert/CustomAlert';
+import { useDispatch } from 'react-redux';
+import { CART } from 'store/actions';
 
 // ==============================|| DEFAULT Homepage ||============================== //
 
@@ -50,6 +52,8 @@ const Homepage = () => {
   const [listProduct, setListProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
+
+  const dispatch = useDispatch();
 
   const debounceTimeout = useRef(null);
 
@@ -89,6 +93,16 @@ const Homepage = () => {
     }
   };
 
+  const getDataCart = () => {
+    const cartStr = localStorage.getItem('CART');
+    if (cartStr) {
+      const cartArr = JSON.parse(cartStr);
+      if (cartArr?.length > 0) {
+        dispatch({ type: CART, cart: cartArr });
+      }
+    }
+  };
+
   const getAllCategory = async () => {
     const res = await restApi.get(DefineRouteApi.getAllCategory);
     if (res?.status === 200) {
@@ -105,6 +119,7 @@ const Homepage = () => {
 
   useEffect(() => {
     // getAllProduct();
+    getDataCart();
     getAllCategory();
   }, []);
   const handleCloseSnack = () => {

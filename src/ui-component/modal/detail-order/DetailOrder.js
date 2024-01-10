@@ -15,7 +15,7 @@ import {
   Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { formattingVND, truncateText, cssScrollBar } from 'utils/helper';
+import { formattingVND, truncateText, cssScrollBar, getSubTotal } from 'utils/helper';
 import ProductList from 'layout/MainLayout/Header/CartSection/ProductList';
 import { IconX } from '@tabler/icons';
 import CardInfoReceive from './component/CardInfoReceive';
@@ -27,93 +27,13 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import PrintIcon from '@mui/icons-material/Print';
 import CardFormReceive from './component/CardFormReceive';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
-
-const PRODUCTS = [
-  {
-    id: '1',
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000,
-    quantity: 1
-  },
-  {
-    id: '2',
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000,
-    quantity: 1
-  },
-  {
-    id: '11',
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200,
-    quantity: 1
-  },
-  {
-    id: '13',
-    name: 'Kẹp giấy đầu tròn C82 LOẠI LỚN Kẹp giấy đầu',
-    image: 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '14',
-    name: 'Găng tay len kim 10 ngà 60g',
-    image: 'https://img.super-mro.com/super-mro/2023/09/w550/gang-tay-len-kim-10-nga-60g.jpg.webp',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '15',
-    name: 'Băng dính trong',
-    image: 'https://bizweb.dktcdn.net/thumb/1024x1024/100/387/548/products/bang-dinh-trong-5cm.png?v=1589959476467',
-    price: 20000,
-    quantity: 1
-  },
-  {
-    id: '1',
-    name: 'Giấy in A4 Double A',
-    image: 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg',
-    price: 120000,
-    quantity: 1
-  },
-  {
-    id: '2',
-    name: 'Kim bấm số 10 Plus',
-    image: 'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    price: 5000,
-    quantity: 1
-  },
-  {
-    id: '11',
-    name: 'Kẹp giấy đầu tròn C32',
-    image: 'https://cdn.fast.vn/tmp/20200705175157-7.jpg',
-    price: 3200,
-    quantity: 1
-  },
-  {
-    id: '13',
-    name: 'Kẹp giấy đầu tròn C82 LOẠI LỚN Kẹp giấy đầu',
-    image: 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '14',
-    name: 'Găng tay len kim 10 ngà 60g',
-    image: 'https://img.super-mro.com/super-mro/2023/09/w550/gang-tay-len-kim-10-nga-60g.jpg.webp',
-    price: 5600,
-    quantity: 1
-  },
-  {
-    id: '15',
-    name: 'Băng dính trong',
-    image: 'https://bizweb.dktcdn.net/thumb/1024x1024/100/387/548/products/bang-dinh-trong-5cm.png?v=1589959476467',
-    price: 20000,
-    quantity: 1
-  }
-];
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { ShowAlert, ShowQuestion } from 'utils/confirm';
+import restApi from 'utils/restAPI';
+import { DefineRouteApi } from 'DefineRouteAPI';
+import { useDispatch } from 'react-redux';
+import { CART } from 'store/actions';
 
 const COLUMS = [
   { id: 'info_item', label: 'Info item' },
@@ -133,13 +53,95 @@ const COLUMS = [
   },
   { id: 'total', label: 'Total' }
 ];
+const initValidate = { error: false, message: '' };
+const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView }) => {
+  const [products, setProducts] = useState([]);
+  const [subTotal, setSubtotal] = useState(0);
+  const [fullname, setFullname] = useState('');
+  const [address, setAddress] = useState('');
+  const [note, setNote] = useState('');
+  const [validateFullname, setValidateFullname] = useState(initValidate);
+  const [validateAddress, setValidateAddress] = useState(initValidate);
+  const [validateNote, setValidateNote] = useState(initValidate);
+  const dispatch = useDispatch();
 
-const DetailOrder = ({ open, handleClose, fullScreen, isView }) => {
+  useEffect(() => {
+    if (productProp) {
+      setProducts(productProp);
+    }
+  }, [productProp]);
+
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
+      setFullname('');
+      setAddress('');
+      setNote('');
+      setValidateFullname(initValidate);
+      setValidateAddress(initValidate);
+      setValidateNote(initValidate);
       handleClose();
     }
   };
+  const createOrder = async () => {
+    const data = {
+      reciever: fullname,
+      note: note,
+      address: address,
+      products: JSON.stringify(productProp)
+    };
+    const res = await restApi.post(DefineRouteApi.createOrder, data);
+    if (res?.status === 200) {
+      ShowAlert({
+        textProp: 'Order successful!',
+        titleProp: 'Order',
+        onClose: () => {
+          dispatch({ type: CART, cart: [] });
+          localStorage.removeItem('CART');
+          console.log('close');
+          onClose();
+        }
+      });
+    }
+  };
+  const handleClickOrder = () => {
+    let check = true;
+    if (fullname?.trim() === '') {
+      check = false;
+      setValidateFullname({ error: true, message: 'Full name is requerid!' });
+    }
+    if (address?.trim() === '') {
+      check = false;
+      setValidateAddress({ error: true, message: 'Address is requerid!' });
+    }
+    if (check) {
+      ShowQuestion({
+        titleProp: 'Order',
+        content: 'Do you want to create new order?',
+        onClickYes: () => {
+          createOrder();
+        }
+      });
+    }
+  };
+  const onchangeFullname = (e) => {
+    if (validateFullname.error) {
+      setValidateFullname(initValidate);
+    }
+    setFullname(e.target.value);
+  };
+  const onchangeAddress = (e) => {
+    if (validateAddress.error) {
+      setValidateAddress(initValidate);
+    }
+    setAddress(e.target.value);
+  };
+  const onchangeNote = (e) => {
+    if (validateNote.error) {
+      setValidateNote(initValidate);
+    }
+    setNote(e.target.value);
+  };
+
   return (
     <>
       <Dialog maxWidth={'md'} fullScreen={fullScreen} open={open} onClose={onClose} aria-labelledby="responsive-dialog-title">
@@ -168,14 +170,24 @@ const DetailOrder = ({ open, handleClose, fullScreen, isView }) => {
                 <CardInfoStepper />
               </Grid> */}
               <Grid item xs={12} md={12}>
-                <CardListProduct />
+                <CardListProduct products={products} />
               </Grid>
               <Grid item xs={12} md={6}>
                 {/* <CardInfoReceive /> */}
-                <CardFormReceive />
+                <CardFormReceive
+                  fullname={fullname}
+                  address={address}
+                  note={note}
+                  validateFullname={validateFullname}
+                  validateAddress={validateAddress}
+                  validateNote={validateNote}
+                  onchangeFullname={onchangeFullname}
+                  onchangeAddress={onchangeAddress}
+                  onchangeNote={onchangeNote}
+                />
               </Grid>
               <Grid item xs={12} md={6}>
-                <CardInfoPayment />
+                <CardInfoPayment products={products} />
               </Grid>
               {/* <Grid item xs={12} md={6}>
                 <CardNote />
@@ -184,7 +196,7 @@ const DetailOrder = ({ open, handleClose, fullScreen, isView }) => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button
+          {/* <Button
             size="small"
             sx={{ marginRight: '10px' }}
             variant="contained"
@@ -194,9 +206,9 @@ const DetailOrder = ({ open, handleClose, fullScreen, isView }) => {
             onClick={onClose}
           >
             Cancel
-          </Button>
+          </Button> */}
           {isView ? (
-            <Button size="small" variant="contained" endIcon={<ShoppingBasketIcon />} onClick={onClose}>
+            <Button size="small" variant="contained" endIcon={<ShoppingBasketIcon />} onClick={handleClickOrder}>
               Order
             </Button>
           ) : (

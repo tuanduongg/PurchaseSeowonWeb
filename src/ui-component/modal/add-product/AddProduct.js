@@ -34,7 +34,7 @@ import { ConfigPath } from 'routes/DefinePath';
 
 const initValidate = { err: false, msg: '' };
 
-const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle, afterSaved }) => {
+const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle, afterSaved, onDeleteErr }) => {
   const [product, setProduct] = useState(null);
   const [name, setName] = useState('');
   const [validateName, setValidateName] = useState(initValidate);
@@ -82,7 +82,6 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
       setInventory(productProp?.inventory);
       setDescription(productProp?.description);
       setImages(productProp?.images);
-      console.log('productProp?.images', productProp?.images);
       setCategory(productProp?.category?.categoryID);
       setUnitID(productProp?.unitID);
     }
@@ -104,9 +103,10 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
     getAllUnit();
     getAllCategory();
   }, []);
-
+  //0966D0D9-56AF-EE11-A1CA-04D9F5C9D2EB
   const handleOnSave = async () => {
     const dataSend = JSON.stringify({
+      productID:productProp?.productID,
       name,
       price,
       description,
@@ -122,7 +122,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
       });
     }
     const url = type === 'EDIT' ? DefineRouteApi.editProduct : DefineRouteApi.addProduct;
-    const res = await restApi.post(DefineRouteApi.addProduct, formData);
+    const res = await restApi.post(url, formData);
     if (res?.status === 200) {
       clearText();
       handleClose();
@@ -172,6 +172,9 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
     if (id) {
       const res = await restApi.post(DefineRouteApi.deleteImageByProduct, { imageID: id });
       console.log('res', res);
+      if (res?.status !== 200) {
+        onDeleteErr(res?.data?.message);
+      }
     }
   };
 

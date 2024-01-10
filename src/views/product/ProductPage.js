@@ -53,7 +53,7 @@ const columns = [
     id: 'name',
     label: 'Product',
     // minWidth: 170,
-    align: 'center'
+    align: 'left'
   },
   { id: 'inventory', label: 'Inventory', minWidth: 140, align: 'center' },
   {
@@ -101,7 +101,7 @@ const ProductPage = () => {
   const openMenu = Boolean(anchorEl);
 
   const handleChangePage = (event, newPage) => {
-    setOpenAlert(false);
+    setPage(newPage);
   };
 
   const onCloseAlert = () => {
@@ -198,15 +198,23 @@ const ProductPage = () => {
     });
   };
   const onAfterSaved = (res) => {
-    console.log('res', res);
+    const msg = {
+      success: typeModal !== 'EDIT' ? 'Add new product successful!' : 'Update product successful!',
+      fail: typeModal !== 'EDIT' ? 'Add new product fail!' : 'Update product fail!'
+    };
     if (res?.status === 200) {
       getAllProduct();
       setTypeAlert('success');
-      setContentAlert('Add new product successfully!');
+      setContentAlert(msg.success);
     } else {
       setTypeAlert('error');
-      setContentAlert(res?.data?.message || 'Add new product fail!');
+      setContentAlert(res?.data?.message || msg.fail);
     }
+    setOpenAlert(true);
+  };
+  const onDeleteImageErr = (message) => {
+    setTypeAlert('error');
+    setContentAlert(message || 'Delete image fail!');
     setOpenAlert(true);
   };
 
@@ -330,6 +338,7 @@ const ProductPage = () => {
         </Box>
       </Box>
       <ModalAddProduct
+        onDeleteErr={onDeleteImageErr}
         productProp={productSelect}
         tittle={titleModal}
         type={typeModal}

@@ -37,6 +37,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { ShowQuestion } from 'utils/confirm';
 import CommitIcon from '@mui/icons-material/Commit';
 import PrintIcon from '@mui/icons-material/Print';
+import restApi from 'utils/restAPI';
+import { DefineRouteApi } from 'DefineRouteAPI';
+import { useEffect } from 'react';
 // ==============================|| Oderlist page ||============================== //
 
 const columns = [
@@ -106,13 +109,21 @@ const OrderList = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
+  const [orders, setOrders] = React.useState([]);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openMenu = Boolean(anchorEl);
 
   const [openModalDetail, setOpenModalDetail] = React.useState(false);
 
-  
+  const getAllOrder = async () => {
+    const res = await restApi.get(DefineRouteApi.getOrders);
+    console.log('res', res);
+  };
+
+  useEffect(() => {
+    getAllOrder();
+  }, []);
   const hanleCloseModalDetail = () => {
     setOpenModalDetail(false);
   };
