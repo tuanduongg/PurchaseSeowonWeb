@@ -2,15 +2,15 @@ import { Box, Button, Card, CardActions, CardContent, Grid, Step, StepLabel, Ste
 
 const steps = [
   {
-    title: 'Ordered',
+    title: 'New',
     completed: true
   },
   {
-    title: 'Shipping',
-    completed: true
+    title: 'Waiting accept',
+    completed: false
   },
   {
-    title: 'Successfull',
+    title: 'Success',
     completed: false
   }
 ];
@@ -21,7 +21,7 @@ const CardInfoStepper = () => {
         <CardContent sx={{ padding: '10px' }}>
           <Box sx={{ display: 'flex', justifyContent: 'end', width: '100%', margin: '0px 0px 10px 0px' }}>
             <Typography variant="h5" color={'primary'}>
-              Shipping
+              Processing
             </Typography>
           </Box>
 

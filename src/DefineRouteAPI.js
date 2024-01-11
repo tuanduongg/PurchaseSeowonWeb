@@ -13,4 +13,5 @@ export const DefineRouteApi = {
   deleteImageByProduct: '/image/delete',
   createOrder: '/order/add',
   getOrders: '/order/all',
+  infoUser: '/user/info',
 };

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { forwardRef, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // material-ui
@@ -13,6 +13,8 @@ import { MENU_OPEN, SET_MENU } from 'store/actions';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { ConfigPath } from 'routes/DefinePath';
+import { ShowQuestion } from 'utils/confirm';
+import { logout } from 'utils/helper';
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
@@ -22,6 +24,7 @@ const NavItem = ({ item, level }) => {
   const { pathname } = useLocation();
   const customization = useSelector((state) => state.customization);
   const matchesSM = useMediaQuery(theme.breakpoints.down('lg'));
+  const navigate = useNavigate();
 
   const Icon = item.icon;
   const itemIcon = item?.icon ? (
@@ -48,9 +51,25 @@ const NavItem = ({ item, level }) => {
     listItemProps = { component: 'a', href: item.url, target: itemTarget };
   }
 
+  const handleLogout = async () => {
+    ShowQuestion({
+      content: 'Do you want to logout?',
+      titleProp: 'LOGOUT',
+      onClickYes: async () => {
+        await logout();
+        window.location = ConfigPath.home;
+        // navigate(ConfigPath.home);
+        // console.log('vao logout');
+      }
+    });
+  };
   const itemHandler = (id) => {
-    dispatch({ type: MENU_OPEN, id });
-    if (matchesSM) dispatch({ type: SET_MENU, opened: false });
+    if (id === 'logout') {
+      handleLogout();
+    } else {
+      dispatch({ type: MENU_OPEN, id });
+      if (matchesSM) dispatch({ type: SET_MENU, opened: false });
+    }
   };
 
   // active menu item on page load

@@ -255,7 +255,7 @@ const ProductList = ({ onCloseDrawer }) => {
           </Box>
         </Box>
       </Box>
-      <DetailOrder productProp={listProduct} open={openDetailOrder} isView={true} handleClose={onCloseModalDetailOrder} />
+      <DetailOrder productProp={listProduct} open={openDetailOrder} isView={false} handleClose={onCloseModalDetailOrder} />
     </>
   );
 };

@@ -21,10 +21,10 @@ const other = {
       breadcrumbs: false
     },
     {
-      id: ConfigPath.logout,
+      id: 'logout',
       title: 'Logout',
       type: 'item',
-      url: ConfigPath.logout,
+      url: '#',
       icon: icons.IconLogout,
       breadcrumbs: false
     }

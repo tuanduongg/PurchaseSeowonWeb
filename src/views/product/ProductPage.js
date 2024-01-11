@@ -41,6 +41,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import config from '../../config';
 import CustomAlert from 'ui-component/alert/CustomAlert';
+import Loader from 'ui-component/Loader';
 
 const columns = [
   {
@@ -220,6 +221,7 @@ const ProductPage = () => {
 
   return (
     <>
+      {loading && <Loader />}
       <Box>
         <Typography variant="h4">Product</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

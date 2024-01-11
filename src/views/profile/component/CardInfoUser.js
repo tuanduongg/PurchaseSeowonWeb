@@ -22,7 +22,14 @@ import { ShowAlert, ShowQuestion } from 'utils/confirm';
 
 const initValid = { err: false, msg: '' };
 
-const CardInfoUser = () => {
+const getFirstCharacterName = (name) => {
+  if (name) {
+    return name[0]?.toUpperCase();
+  }
+  return '';
+};
+
+const CardInfoUser = ({ user }) => {
   const [showPasswordNew, setShowPasswordNew] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [showPasswordCurrent, setShowPasswordCurrent] = useState(false);
@@ -106,6 +113,7 @@ const CardInfoUser = () => {
         break;
     }
   };
+
   return (
     <>
       <Card>
@@ -114,12 +122,12 @@ const CardInfoUser = () => {
             <Grid item xs={12} sm={5}>
               <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                 <Avatar sx={{ width: '100px', height: '100px' }} variant="square">
-                  A
+                  {getFirstCharacterName(user?.username)}
                 </Avatar>
                 <Box sx={{ marginTop: '10px', textAlign: 'center' }}>
-                  <Typography variant="h2">AdminIT</Typography>
-                  <Typography variant="h5">인사/회계/전산(Per/Acc/IT)</Typography>
-                  <Typography variant="subtitle">Manager</Typography>
+                  <Typography variant="h2">{user?.username}</Typography>
+                  <Typography variant="h5">{user?.department?.departName}</Typography>
+                  {user?.isManager && <Typography variant="subtitle">Manager</Typography>}
                 </Box>
               </Box>
             </Grid>
@@ -129,7 +137,7 @@ const CardInfoUser = () => {
               </Typography>
               {/* <Divider /> */}
               <Box sx={{}}>
-                <FormControl error={validatePWCurren?.err} fullWidth sx={{ m: 1 }} size="small" variant="outlined">
+                <FormControl error={validatePWCurren?.err} sx={{ m: 1, width: '80%' }} size="small" variant="outlined">
                   <InputLabel>Current password</InputLabel>
                   <OutlinedInput
                     name="old"
@@ -156,7 +164,7 @@ const CardInfoUser = () => {
                   {validatePWCurren?.err && <FormHelperText>{validatePWCurren?.msg}</FormHelperText>}
                 </FormControl>
 
-                <FormControl error={validatePwNew?.err} fullWidth sx={{ m: 1 }} size="small" variant="outlined">
+                <FormControl error={validatePwNew?.err} sx={{ m: 1, width: '80%' }} size="small" variant="outlined">
                   <InputLabel>New password</InputLabel>
                   <OutlinedInput
                     name="new"
@@ -183,7 +191,7 @@ const CardInfoUser = () => {
                   {validatePwNew?.err && <FormHelperText>{validatePwNew?.msg}</FormHelperText>}
                 </FormControl>
 
-                <FormControl error={validatePWConfirm?.err} fullWidth sx={{ m: 1 }} size="small" variant="outlined">
+                <FormControl error={validatePWConfirm?.err} sx={{ m: 1, width: '80%' }} size="small" variant="outlined">
                   <InputLabel>Confirm password</InputLabel>
                   <OutlinedInput
                     name="confirm"

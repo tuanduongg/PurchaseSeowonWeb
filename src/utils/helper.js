@@ -88,3 +88,26 @@ export const getSubTotal = (products = []) => {
 //   });
 //   return sub;
 // };
+export const OrderStatus = {
+  NEW: 'NEW',
+  STEP_ONE: 'STEP_ONE',
+  STEP_TWO: 'STEP_TWO',
+  STEP_THREE: 'STEP_THREE',
+  DONE: 'DONE'
+};
+
+export const formatDateFromDB = (dateStr) => {
+  if (dateStr) {
+    const date = new Date(dateStr);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const hour = date.getHours();
+    const minus = date.getMinutes();
+
+    return `${hour < 10 ? '0' + hour : hour}:${minus < 10 ? '0' + minus : minus} ${day < 10 ? '0' + day : day}/${
+      month < 10 ? '0' + month : month
+    }/${year}`;
+  }
+  return '';
+};

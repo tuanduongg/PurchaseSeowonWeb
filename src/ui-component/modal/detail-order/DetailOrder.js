@@ -54,7 +54,7 @@ const COLUMS = [
   { id: 'total', label: 'Total' }
 ];
 const initValidate = { error: false, message: '' };
-const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView }) => {
+const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect }) => {
   const [products, setProducts] = useState([]);
   const [subTotal, setSubtotal] = useState(0);
   const [fullname, setFullname] = useState('');
@@ -70,6 +70,19 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView }) => 
       setProducts(productProp);
     }
   }, [productProp]);
+
+  useEffect(() => {
+    if (orderSelect) {
+      const productList = [];
+      orderSelect?.orderDetail?.map((item, index) => {
+        productList.push({ ...item?.product, quantity: item?.quantity, unitName: item?.unit });
+      });
+      setProducts(productList);
+      setFullname(orderSelect?.reciever);
+      setAddress(orderSelect?.address);
+      setNote(orderSelect?.note);
+    }
+  }, [orderSelect]);
 
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
@@ -97,7 +110,6 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView }) => 
         onClose: () => {
           dispatch({ type: CART, cart: [] });
           localStorage.removeItem('CART');
-          console.log('close');
           onClose();
         }
       });
@@ -149,13 +161,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView }) => 
           <DialogTitle fontSize={'20px'} sx={{ padding: '10px' }} id="responsive-dialog-title">
             <Stack flexDirection={'row'} alignItems={'center'}>
               Order detail
-              {isView ? (
-                ''
-              ) : (
-                <Typography variant="body2" ml={1} color={'primary'}>
-                  #181223112
-                </Typography>
-              )}
+              <Typography fontSize={'16px'} sx={{ marginLeft: '10px' }} color={'primary'}>{`${orderSelect?.code}`}</Typography>
             </Stack>
           </DialogTitle>
           <IconButton onClick={onClose}>
@@ -166,27 +172,42 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView }) => 
         <DialogContent sx={{ padding: '10px', minWidth: '50vh', backgroundColor: '#ddd', ...cssScrollBar }}>
           <Box>
             <Grid container spacing={1}>
-              {/* <Grid item xs={12} md={8}>
-                <CardInfoStepper />
-              </Grid> */}
+              {isView && (
+                <>
+                  <Grid item xs={12} md={4}>
+                    <CardInfoReceive
+                      note={orderSelect?.note}
+                      createAt={orderSelect?.created_at}
+                      createBy={orderSelect?.created_by}
+                      reciever={orderSelect?.reciever}
+                      address={orderSelect?.address}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={8}>
+                    <CardInfoStepper />
+                  </Grid>
+                </>
+              )}
               <Grid item xs={12} md={12}>
-                <CardListProduct products={products} />
+                <CardListProduct isView={isView} products={products} />
               </Grid>
-              <Grid item xs={12} md={6}>
-                {/* <CardInfoReceive /> */}
-                <CardFormReceive
-                  fullname={fullname}
-                  address={address}
-                  note={note}
-                  validateFullname={validateFullname}
-                  validateAddress={validateAddress}
-                  validateNote={validateNote}
-                  onchangeFullname={onchangeFullname}
-                  onchangeAddress={onchangeAddress}
-                  onchangeNote={onchangeNote}
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
+              {!isView && (
+                <Grid item xs={12} md={6}>
+                  {/* <CardInfoReceive /> */}
+                  <CardFormReceive
+                    fullname={fullname}
+                    address={address}
+                    note={note}
+                    validateFullname={validateFullname}
+                    validateAddress={validateAddress}
+                    validateNote={validateNote}
+                    onchangeFullname={onchangeFullname}
+                    onchangeAddress={onchangeAddress}
+                    onchangeNote={onchangeNote}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={12} md={isView ? 12 : 6}>
                 <CardInfoPayment products={products} />
               </Grid>
               {/* <Grid item xs={12} md={6}>
@@ -207,7 +228,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView }) => 
           >
             Cancel
           </Button> */}
-          {isView ? (
+          {!isView ? (
             <Button size="small" variant="contained" endIcon={<ShoppingBasketIcon />} onClick={handleClickOrder}>
               Order
             </Button>

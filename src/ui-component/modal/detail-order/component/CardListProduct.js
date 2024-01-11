@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { formattingVND, cssScrollBar, getTotalPrice } from 'utils/helper';
 import config from '../../../../config';
 
-const CardListProduct = ({ products }) => {
+const CardListProduct = ({ products,isView }) => {
   // const [listProduct, setListProduct] = useState([]);
   // useEffect(() => {
   //   if (products && products?.length > 0) {
@@ -17,7 +17,7 @@ const CardListProduct = ({ products }) => {
       <Card>
         <CardContent sx={{ padding: '10px' }}>
           <Grid container sx={{ width: '100%', padding: '5px' }}>
-            <Grid item xs={6}>
+            <Grid item xs={4}>
               <Typography color={'black'} variant="h4">
                 Item info
               </Typography>
@@ -25,6 +25,11 @@ const CardListProduct = ({ products }) => {
             <Grid item xs={2}>
               <Typography color={'black'} textAlign={'center'} variant="h4">
                 Quantity
+              </Typography>
+            </Grid>
+            <Grid item xs={2}>
+              <Typography color={'black'} textAlign={'center'} variant="h4">
+                Unit
               </Typography>
             </Grid>
             <Grid item xs={2}>
@@ -43,7 +48,7 @@ const CardListProduct = ({ products }) => {
             {products?.map((item, index) => (
               <>
                 <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
+                  <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
                     <Avatar
                       sx={{ width: '50px', height: '50px', marginRight: '3px' }}
                       src={item?.images[0]?.url ? config.apiImage + item?.images[0]?.url : ''}
@@ -53,6 +58,9 @@ const CardListProduct = ({ products }) => {
                   </Grid>
                   <Grid item xs={2} sx={{ textAlign: 'center' }}>
                     {item?.quantity}
+                  </Grid>
+                  <Grid item xs={2} sx={{ textAlign: 'center' }}>
+                    {isView? item?.unitName : item?.unit?.unitName}
                   </Grid>
                   <Grid item xs={2}>
                     <Typography textAlign={'right'} variant="h5">

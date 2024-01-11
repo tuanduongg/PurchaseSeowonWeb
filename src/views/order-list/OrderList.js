@@ -26,7 +26,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { IconEdit, IconTrash } from '@tabler/icons';
-import { isMobile, truncateText } from 'utils/helper';
+import { OrderStatus, formatDateFromDB, isMobile, truncateText } from 'utils/helper';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DetailOrder from 'ui-component/modal/detail-order/DetailOrder';
@@ -40,90 +40,98 @@ import PrintIcon from '@mui/icons-material/Print';
 import restApi from 'utils/restAPI';
 import { DefineRouteApi } from 'DefineRouteAPI';
 import { useEffect } from 'react';
+import CustomLoading from 'ui-component/loading/CustomLoading';
+import Loader from 'ui-component/Loader';
+import { format } from 'date-fns';
 // ==============================|| Oderlist page ||============================== //
 
 const columns = [
-  { id: 'code', label: 'Code' },
+  { id: 'stt', label: 'STT', align: 'center' },
+  { id: 'code', label: 'Order code' },
   {
-    id: 'image',
+    id: 'name',
     label: 'Product',
     // minWidth: 170,
     align: 'left'
   },
-  {
-    id: 'name',
-    label: '',
-    // minWidth: 170,
-    align: 'center'
-  },
-  { id: 'create_at', label: 'Create at', minWidth: 140 },
+  { id: 'create_at', label: 'Create at', minWidth: 70 },
+  { id: 'order_by', label: 'Order by', align: 'center' },
   {
     id: 'status',
     label: 'Status',
-
-    align: 'left'
+    align: 'center'
   },
   {
     id: 'action',
     label: 'Action',
     // minWidth: 170,
-    align: 'left'
+    align: 'right'
   }
 ];
 
-function createData(code, create_at, image, name, status) {
-  return { code, create_at, image, name, status };
-}
-//158 character -> cut
-const rows = [
-  createData(
-    1324171354,
-    '08:05 12/12/2023',
-    'https://cdn.fast.vn/tmp/20210217090347-6.JPG',
-    'Kẹp giấy đầu tròn c32;Kẹp giấy đầu tròn C82 LOẠI LỚN;Kim bấm số 10 Plus;Kẹp giấy đầu tròn c32',
-    'Pending'
-  ),
-  createData(60483973, '09:58 10/12/2023', 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg', 'Giấy A4', 'success'),
-  createData(327167434, '07:58 06/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending'),
-  createData(37602103, '11:58 05/12/2023', 'https://cdn.fast.vn/tmp/20210610144411-c82-2.jpg', 'Kẹp giấy đầu tròn c32', 'warning'),
-  createData(25475400, '06:40 07/12/2023', 'https://vanphong-pham.com/wp-content/uploads/2021/10/giay-a4-double.jpg', 'Giấy A4', 'pending'),
-  createData(83019200, '10:20 08/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'success'),
-  createData(4857000, '10:10 09/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending'),
-  createData(126577691, '04:58 12/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'success'),
-  createData(126317000, '07:30 15/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending'),
-  createData(67022000, '02:45 18/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending'),
-  createData(67545757, '06:58 01/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending'),
-  createData(146793744, '11:58 02/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending'),
-  createData(200962417, '03:33 04/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending'),
-  createData(210147125, '10:20 03/12/2023', 'https://cdn.fast.vn/tmp/20210217090347-6.JPG', 'Kẹp giấy đầu tròn c32', 'pending')
-];
+const concatNameProduct = (orderDetails) => {
+  if (orderDetails) {
+    let temp = '';
+    orderDetails.map((item, index) => {
+      temp += item?.product?.productName + ';';
+    });
+    return temp.slice(0, -1);
+  }
+  return '';
+};
 const getStatusChip = (content, color) => {
   let temp = color;
   if (content?.toLowerCase() === 'pending') {
     temp = 'primary';
   }
-  return <Chip size="small" label={content} color={temp} />;
+  return <Chip size="small" label={content ?? ''} color={temp} />;
+};
+const getCurrentDate = () => {
+  return new Date();
+};
+const getMonthAgo = () => {
+  var today = new Date();
+  var priorDate = new Date(new Date().setDate(today.getDate() - 30));
+  return priorDate;
 };
 const OrderList = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [selectedRow, setSelectedRow] = React.useState(null);
+  const [orderSelect, setOrderSelect] = React.useState(null);
+  const [search, setSearch] = React.useState('');
+  const [total, setTotal] = React.useState(0);
   const [orders, setOrders] = React.useState([]);
-
+  const [loading, setLoading] = React.useState(false);
+  const [toDate, setToDate] = React.useState(new Date());
+  const [fromDate, setFromDate] = React.useState(getMonthAgo());
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [status, setStatus] = React.useState('');
   const openMenu = Boolean(anchorEl);
-
   const [openModalDetail, setOpenModalDetail] = React.useState(false);
 
   const getAllOrder = async () => {
-    const res = await restApi.get(DefineRouteApi.getOrders);
-    console.log('res', res);
+    setLoading(true);
+    const data = { rowsPerPage, page, search, fromDate, toDate, status };
+    const res = await restApi.post(DefineRouteApi.getOrders, data);
+    if (res?.status === 200) {
+      setTotal(res?.data?.count);
+      setOrders(res?.data?.data);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    getAllOrder();
-  }, []);
+    const timeoutId = setTimeout(() => {
+      getAllOrder();
+    }, 900);
+    return () => clearTimeout(timeoutId);
+  }, [page, rowsPerPage, search, fromDate, toDate, status, 500]);
+
+  // useEffect(() => {
+  //   getAllOrder();
+  // }, []);
   const hanleCloseModalDetail = () => {
     setOpenModalDetail(false);
   };
@@ -136,7 +144,8 @@ const OrderList = () => {
     setPage(0);
   };
 
-  const onShowDetailOrder = () => {
+  const onShowDetailOrder = (row) => {
+    setOrderSelect(row);
     setOpenModalDetail(true);
   };
 
@@ -156,35 +165,59 @@ const OrderList = () => {
   };
   const handleClickDelete = () => {
     ShowQuestion({
-      titleProp: 'Notification',
+      titleProp: 'Delete',
       content: 'Are you sure delete this order?',
       onClickYes: () => {
         onDelete();
       }
     });
   };
+  const onChangeStartDate = (newValue) => {
+    setFromDate(newValue);
+  };
+
+  const onChangeEndDate = (newValue) => {
+    setToDate(newValue);
+  };
 
   return (
     <>
+      {loading && <Loader />}
+      <CustomLoading open={loading} />
       <Box sx={{}}>
         <Typography variant="h4">Order list</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
               <InputLabel id="demo-select-small-label">Status</InputLabel>
-              <Select labelId="demo-select-small-label" id="demo-select-small" label="Status">
+              <Select
+                value={status}
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                }}
+                label="Status"
+              >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                {Object.values(OrderStatus).map((item, index) => (
+                  <MenuItem key={index} value={item}>
+                    {item}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
 
             <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
               <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
               <Input
+                placeholder="Search by order code..."
+                onChange={(e) => {
+                  const { value } = e.target;
+                  setSearch(value);
+                  setPage(0);
+                }}
+                value={search}
                 id="standard-adornment-search"
                 type="text"
                 endAdornment={
@@ -200,7 +233,7 @@ const OrderList = () => {
 
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Box>
-              <CustomDatePicker label={'From date'} />
+              <CustomDatePicker disableFuture={true} value={fromDate} onChange={onChangeStartDate} label={'From date'} />
             </Box>
             <Box>
               {' '}
@@ -209,7 +242,7 @@ const OrderList = () => {
               </Typography>
             </Box>
             <Box ml={2}>
-              <CustomDatePicker disableFuture={true} label={'To date'} />
+              <CustomDatePicker disableFuture={true} value={toDate} onChange={onChangeEndDate} label={'To date'} />
             </Box>
           </Box>
         </Box>
@@ -226,58 +259,49 @@ const OrderList = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
+                {orders?.map((row, index) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                      <TableCell sx={{ padding: '10px' }}>
-                        {/* <Typography variant="body2" color="primary">
-                      </Typography> */}
-                        #{row?.code}
-                        {/* </Link> */}
-                      </TableCell>
-                      <TableCell sx={{ padding: '5px' }}>
-                        <CardMedia component={'image'} sx={{ height: '50px', width: '50px' }} image={row?.image} alt="image" />
-                      </TableCell>
-                      <TableCell sx={{ padding: '5px' }}>
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      <TableCell sx={{ padding: '10px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
+                      <TableCell sx={{ padding: '10px', textAlign: 'left' }}>
                         <Link
-                          onClick={onShowDetailOrder}
+                          onClick={() => onShowDetailOrder(row)}
                           underline="hover"
-                          color={'warning'}
+                          color={'primary'}
                           sx={{
                             '&:hover': {
                               cursor: 'pointer'
                             }
                           }}
                         >
-                          {row?.name ? truncateText(row?.name, 155) : ''}
+                          {row?.code}
                         </Link>
                       </TableCell>
-                      <TableCell sx={{ padding: '5px' }}>{row?.create_at}</TableCell>
-                      <TableCell sx={{ padding: '5px' }}>{getStatusChip(row?.status, row?.status)}</TableCell>
+                      {/* <TableCell sx={{ padding: '5px' }}>
+                        <CardMedia component={'image'} sx={{ height: '50px', width: '50px' }} image={row?.image} alt="image" />
+                      </TableCell> */}
                       <TableCell sx={{ padding: '5px' }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                          <IconButton size="small">
-                            <PrintIcon fontSize="20px" />
-                          </IconButton>
-                          <IconButton
-                            aria-label="more"
-                            id="long-button"
-                            aria-controls={openMenu ? 'long-menu' : undefined}
-                            aria-expanded={openMenu ? 'true' : undefined}
-                            aria-haspopup="true"
-                            onClick={(e) => {
-                              handleOpenMenu(e, row);
-                            }}
-                          >
-                            <MoreVertIcon fontSize="20px" />
-                          </IconButton>
-                          {/* <IconButton size="small">
-                            <IconEdit />
-                          </IconButton>
-                          <IconButton size="small">
-                            <IconTrash />
-                          </IconButton> */}
-                        </Box>
+                        {row?.orderDetail ? truncateText(concatNameProduct(row.orderDetail), 155) : ''}
+                      </TableCell>
+                      <TableCell sx={{ padding: '5px' }}>{formatDateFromDB(row?.created_at)}</TableCell>
+                      <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.created_by}</TableCell>
+                      <TableCell sx={{ padding: '5px', textAlign: 'center' }}>
+                        <Chip label={row?.status} color="primary" size="small" />
+                      </TableCell>
+                      <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
+                        {/* <Box sx={{ display: 'flex', alignItems: 'right' }}> */}
+                        <IconButton
+                          aria-label="more"
+                          id="long-button"
+                          aria-controls={openMenu ? 'long-menu' : undefined}
+                          aria-expanded={openMenu ? 'true' : undefined}
+                          aria-haspopup="true"
+                          onClick={(e) => {
+                            handleOpenMenu(e, row);
+                          }}
+                        >
+                          <MoreVertIcon fontSize="20px" />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   );
@@ -286,9 +310,9 @@ const OrderList = () => {
             </Table>
           </TableContainer>
           <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
+            rowsPerPageOptions={[10, 20, 50]}
             component="div"
-            count={rows.length}
+            count={total}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
@@ -309,6 +333,12 @@ const OrderList = () => {
           horizontal: 'right'
         }}
       >
+        <MenuItem disableRipple onClick={() => {}}>
+          <ListItemIcon>
+            <PrintIcon />
+          </ListItemIcon>
+          Print
+        </MenuItem>
         <MenuItem disableRipple onClick={handleClickEdit}>
           <ListItemIcon>
             <EditIcon />
@@ -322,7 +352,13 @@ const OrderList = () => {
           Delete
         </MenuItem>
       </Menu>
-      <DetailOrder open={openModalDetail} fullScreen={isMobile() ? true : false} handleClose={hanleCloseModalDetail} />
+      <DetailOrder
+        isView={true}
+        orderSelect={orderSelect}
+        open={openModalDetail}
+        fullScreen={isMobile() ? true : false}
+        handleClose={hanleCloseModalDetail}
+      />
     </>
   );
 };
