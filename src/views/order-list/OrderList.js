@@ -286,7 +286,7 @@ const OrderList = () => {
                       <TableCell sx={{ padding: '5px' }}>{formatDateFromDB(row?.created_at)}</TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.created_by}</TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'center' }}>
-                        <Chip label={row?.status} color="primary" size="small" />
+                        <Chip label={row?.status?.statusName} color="primary" size="small" />
                       </TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
                         {/* <Box sx={{ display: 'flex', alignItems: 'right' }}> */}

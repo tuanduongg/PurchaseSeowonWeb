@@ -36,7 +36,7 @@ const CardFormReceive = ({
             size="small"
             fullWidth
             sx={{ marginTop: '10px' }}
-            label="Address"
+            label="Department"
             value={address}
             onChange={onchangeAddress}
             variant="outlined"

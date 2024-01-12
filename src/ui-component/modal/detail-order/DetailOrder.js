@@ -75,7 +75,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
     if (orderSelect) {
       const productList = [];
       orderSelect?.orderDetail?.map((item, index) => {
-        productList.push({ ...item?.product, quantity: item?.quantity, unitName: item?.unit });
+        productList.push({ ...item?.product, price: item?.price, quantity: item?.quantity, unitName: item?.unit });
       });
       setProducts(productList);
       setFullname(orderSelect?.reciever);
@@ -237,6 +237,9 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
               Print
             </Button>
           )}
+          <Button size="small" variant="contained" endIcon={<PrintIcon />} onClick={onClose}>
+            Accept
+          </Button>
         </DialogActions>
       </Dialog>
     </>
