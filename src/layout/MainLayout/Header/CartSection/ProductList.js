@@ -14,6 +14,7 @@ import config from '../../../../config';
 import { CART } from 'store/actions';
 import CartEmpty from './CartEmpty';
 import { useEffect } from 'react';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
 // styles
 const ListItemWrapper = styled('div')(({ theme }) => ({
@@ -243,13 +244,13 @@ const ProductList = ({ onCloseDrawer }) => {
               size="small"
               endIcon={<ClearAllIcon />}
               onClick={handleDeleteAll}
-              color="secondary"
+              color="warning"
               sx={{ marginRight: '10px' }}
               variant="contained"
             >
               Clear all
             </Button>
-            <Button size="small" onClick={handleClickOrder} variant="contained">
+            <Button size="small" endIcon={<ArrowForwardIosIcon />} onClick={handleClickOrder} variant="contained">
               Checkout
             </Button>
           </Box>

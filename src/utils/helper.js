@@ -3,7 +3,7 @@ import config from '../config';
 
 export const formattingVND = (num) => {
   const number = parseFloat(num);
-  return number.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'đ');
+  return number.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'vnđ');
 };
 
 export const formattingVNDInput = (num) => {

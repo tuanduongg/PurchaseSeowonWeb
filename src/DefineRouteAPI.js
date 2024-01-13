@@ -14,4 +14,5 @@ export const DefineRouteApi = {
   createOrder: '/order/add',
   getOrders: '/order/all',
   infoUser: '/user/info',
+  changeStatusOrder: '/order/change-status'
 };

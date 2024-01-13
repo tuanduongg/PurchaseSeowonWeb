@@ -32,8 +32,10 @@ import { useState } from 'react';
 import { ShowAlert, ShowQuestion } from 'utils/confirm';
 import restApi from 'utils/restAPI';
 import { DefineRouteApi } from 'DefineRouteAPI';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CART } from 'store/actions';
+import CheckIcon from '@mui/icons-material/Check';
+import config from '../../../config';
 
 const COLUMS = [
   { id: 'info_item', label: 'Info item' },
@@ -53,8 +55,38 @@ const COLUMS = [
   },
   { id: 'total', label: 'Total' }
 ];
+const DATA_USER = localStorage.getItem(config.DATA_USER);
+
+const checkShowButton = (order, userStatus) => {
+  if (order?.status?.level === 0) {
+    return false;
+  }
+  if (DATA_USER) {
+    console.log('data user', DATA_USER);
+    console.log('order', order);
+    console.log('userStatus', userStatus);
+    const userOBJ = JSON.parse(DATA_USER);
+    if (order?.userID === userOBJ?.id) {
+      console.log('case 1');
+      return false;
+    }
+    if (userOBJ?.isManager === true && order?.status?.level === 1) {
+      console.log('case 2');
+      return true;
+    }
+    if (userStatus?.userID === order?.status?.userID) {
+      console.log('case 3');
+      return true;
+    }
+    if (userStatus?.level > order?.status?.level) {
+      console.log('case 4');
+      return true;
+    }
+  }
+};
+
 const initValidate = { error: false, message: '' };
-const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect }) => {
+const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect, userStatus }) => {
   const [products, setProducts] = useState([]);
   const [subTotal, setSubtotal] = useState(0);
   const [fullname, setFullname] = useState('');
@@ -63,6 +95,9 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
   const [validateFullname, setValidateFullname] = useState(initValidate);
   const [validateAddress, setValidateAddress] = useState(initValidate);
   const [validateNote, setValidateNote] = useState(initValidate);
+  const [isShowButton, setIsShowButton] = useState(false);
+  const customization = useSelector((state) => state.customization);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -81,6 +116,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
       setFullname(orderSelect?.reciever);
       setAddress(orderSelect?.address);
       setNote(orderSelect?.note);
+      setIsShowButton(checkShowButton(orderSelect, userStatus));
     }
   }, [orderSelect]);
 
@@ -123,7 +159,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
     }
     if (address?.trim() === '') {
       check = false;
-      setValidateAddress({ error: true, message: 'Address is requerid!' });
+      setValidateAddress({ error: true, message: 'Department is requerid!' });
     }
     if (check) {
       ShowQuestion({
@@ -153,6 +189,49 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
     }
     setNote(e.target.value);
   };
+  const handleChangeStatus = async (type) => {
+    const url = DefineRouteApi.changeStatusOrder;
+    let objSend = {
+      orderID: orderSelect?.orderID
+    };
+    switch (type) {
+      case 'accept':
+        objSend.status = orderSelect?.status;
+        break;
+      case 'cancel':
+        objSend.status = null;
+        break;
+      default:
+        break;
+    }
+    const res = await restApi.post(url, objSend);
+    console.log('res', res);
+  };
+  const onChangeStatusOrder = (type) => {
+    switch (type) {
+      case 'accept':
+        ShowQuestion({
+          content: 'Do you want to accept order?',
+          titleProp: 'Accept Order',
+          onClickYes: () => {
+            handleChangeStatus(type);
+          }
+        });
+        break;
+      case 'cancel':
+        ShowQuestion({
+          content: 'Do you want to cancel order?',
+          titleProp: 'Cancel Order',
+          icon: 'warning',
+          onClickYes: () => {
+            handleChangeStatus(type);
+          }
+        });
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <>
@@ -161,7 +240,9 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
           <DialogTitle fontSize={'20px'} sx={{ padding: '10px' }} id="responsive-dialog-title">
             <Stack flexDirection={'row'} alignItems={'center'}>
               Order detail
-              <Typography fontSize={'16px'} sx={{ marginLeft: '10px' }} color={'primary'}>{`${orderSelect?.code}`}</Typography>
+              {orderSelect?.code && (
+                <Typography fontSize={'16px'} sx={{ marginLeft: '10px' }} color={'primary'}>{`${orderSelect?.code}`}</Typography>
+              )}
             </Stack>
           </DialogTitle>
           <IconButton onClick={onClose}>
@@ -217,29 +298,47 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
           </Box>
         </DialogContent>
         <DialogActions>
-          {/* <Button
-            size="small"
-            sx={{ marginRight: '10px' }}
-            variant="contained"
-            color="secondary"
-            autoFocus
-            endIcon={<CancelIcon />}
-            onClick={onClose}
-          >
-            Cancel
-          </Button> */}
-          {!isView ? (
-            <Button size="small" variant="contained" endIcon={<ShoppingBasketIcon />} onClick={handleClickOrder}>
-              Order
-            </Button>
-          ) : (
-            <Button size="small" variant="contained" endIcon={<PrintIcon />} onClick={onClose}>
-              Print
-            </Button>
-          )}
-          <Button size="small" variant="contained" endIcon={<PrintIcon />} onClick={onClose}>
-            Accept
-          </Button>
+          <Stack flexDirection={'row'} sx={{ width: '100%' }} justifyContent={isShowButton ? 'space-between' : 'flex-end'}>
+            <Box>
+              {!isView ? (
+                <Button size="small" variant="contained" endIcon={<ShoppingBasketIcon />} onClick={handleClickOrder}>
+                  Order
+                </Button>
+              ) : (
+                <Button sx={{ float: 'left' }} size="small" variant="contained" endIcon={<PrintIcon />} onClick={onClose}>
+                  Print
+                </Button>
+              )}
+            </Box>
+            {isShowButton && (
+              <Box>
+                <Button
+                  size="small"
+                  color="error"
+                  sx={{ color: 'white' }}
+                  variant="contained"
+                  endIcon={<CloseIcon />}
+                  onClick={() => {
+                    onChangeStatusOrder('cancel');
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="small"
+                  color="success"
+                  sx={{ color: 'white', marginLeft: '10px' }}
+                  variant="contained"
+                  endIcon={<CheckIcon />}
+                  onClick={() => {
+                    onChangeStatusOrder('accept');
+                  }}
+                >
+                  Accept
+                </Button>
+              </Box>
+            )}
+          </Stack>
         </DialogActions>
       </Dialog>
     </>

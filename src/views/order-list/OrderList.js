@@ -108,6 +108,7 @@ const OrderList = () => {
   const [fromDate, setFromDate] = React.useState(getMonthAgo());
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [status, setStatus] = React.useState('');
+  const [userStatus, setUserStatus] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const [openModalDetail, setOpenModalDetail] = React.useState(false);
 
@@ -118,6 +119,8 @@ const OrderList = () => {
     if (res?.status === 200) {
       setTotal(res?.data?.count);
       setOrders(res?.data?.data);
+      setUserStatus(res?.data?.userStatus);
+      console.log('userStatus', res?.data?.userStatus);
       setLoading(false);
     }
   };
@@ -286,7 +289,11 @@ const OrderList = () => {
                       <TableCell sx={{ padding: '5px' }}>{formatDateFromDB(row?.created_at)}</TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.created_by}</TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'center' }}>
-                        <Chip label={row?.status?.statusName} color="primary" size="small" />
+                        <Chip
+                          label={row?.status?.statusName}
+                          color={row?.status?.statusName.toLowerCase() === 'cancel' ? 'error' : 'primary'}
+                          size="small"
+                        />
                       </TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
                         {/* <Box sx={{ display: 'flex', alignItems: 'right' }}> */}
@@ -353,6 +360,7 @@ const OrderList = () => {
         </MenuItem>
       </Menu>
       <DetailOrder
+        userStatus={userStatus}
         isView={true}
         orderSelect={orderSelect}
         open={openModalDetail}
