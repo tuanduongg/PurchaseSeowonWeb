@@ -42,7 +42,8 @@ import { DefineRouteApi } from 'DefineRouteAPI';
 import { useEffect } from 'react';
 import CustomLoading from 'ui-component/loading/CustomLoading';
 import Loader from 'ui-component/Loader';
-import { format } from 'date-fns';
+import { format, max } from 'date-fns';
+import config from '../../config';
 // ==============================|| Oderlist page ||============================== //
 
 const columns = [
@@ -63,7 +64,7 @@ const columns = [
   },
   {
     id: 'action',
-    label: 'Action',
+    label: '',
     // minWidth: 170,
     align: 'right'
   }
@@ -79,13 +80,13 @@ const concatNameProduct = (orderDetails) => {
   }
   return '';
 };
-const getStatusChip = (content, color) => {
-  let temp = color;
-  if (content?.toLowerCase() === 'pending') {
-    temp = 'primary';
-  }
-  return <Chip size="small" label={content ?? ''} color={temp} />;
-};
+// const getStatusChip = (content, color) => {
+//   let temp = color;
+//   if (content?.toLowerCase() === 'pending') {
+//     temp = 'primary';
+//   }
+//   return <Chip size="small" label={content ?? ''} color={temp} />;
+// };
 const getCurrentDate = () => {
   return new Date();
 };
@@ -93,6 +94,68 @@ const getMonthAgo = () => {
   var today = new Date();
   var priorDate = new Date(new Date().setDate(today.getDate() - 30));
   return priorDate;
+};
+
+const getStatusChip = (order, userStatus, maxLevel) => {
+  const level = order?.status?.level;
+
+  const userStr = localStorage.getItem(config.DATA_USER);
+  let userObj = {};
+  if (userStr) {
+    userObj = JSON.parse(userStr);
+  }
+
+  if (order) {
+    let color = '';
+    let text = '';
+    switch (level) {
+      case 1: //new
+        color = 'secondary';
+        text = 'New';
+
+        break;
+      case 5: //new
+        color = 'secondary';
+        text = 'New';
+
+        break;
+      // case maxLevel: //done
+      //   color = 'success';
+      //   text = 'DONE';
+      // break;
+      case 0: //cancel
+        color = 'error';
+        text = 'Cancel';
+        break;
+
+      default:
+        {
+          color = 'info';
+          if (userStatus) {
+            console.log('userObj', userObj);
+            //nguwoif dc duyet
+            if (order?.status?.level >= userStatus?.level) {
+              text = 'Accepted';
+            } else {
+              text = 'New';
+            }
+          } else {
+            if (userObj?.isManager) {
+              text = order?.status?.level >= 1 ? 'Accepted' : 'Process';
+            } else {
+              // ng kh duoc duyet
+              text = 'Process';
+            }
+          }
+        }
+        break;
+    }
+    if (level === maxLevel) {
+      return <Chip label={'DONE'} color={'success'} size="small" />;
+    }
+    return <Chip label={text} color={color} size="small" />;
+  }
+  return null;
 };
 const OrderList = () => {
   const [page, setPage] = React.useState(0);
@@ -112,6 +175,7 @@ const OrderList = () => {
   const [userStatus, setUserStatus] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const [openModalDetail, setOpenModalDetail] = React.useState(false);
+  const [maxLevel, setMaxLevel] = React.useState(0);
 
   const getAllOrder = async () => {
     setLoading(true);
@@ -127,7 +191,10 @@ const OrderList = () => {
   const getAllStatus = async () => {
     const res = await restApi.get(DefineRouteApi.allStatus);
     if (res?.status === 200) {
-      setAllStatus(res?.data);
+      const data = res?.data;
+      setAllStatus(data);
+      const maxLevel = data.reduce((max, status) => (status.level > max ? status.level : max), data[0].level);
+      setMaxLevel(maxLevel);
     }
   };
 
@@ -302,13 +369,7 @@ const OrderList = () => {
                       </TableCell>
                       <TableCell sx={{ padding: '5px' }}>{formatDateFromDB(row?.created_at)}</TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.created_by}</TableCell>
-                      <TableCell sx={{ padding: '5px', textAlign: 'center' }}>
-                        <Chip
-                          label={row?.status?.statusName}
-                          color={row?.status?.statusName.toLowerCase() === 'cancel' ? 'error' : 'primary'}
-                          size="small"
-                        />
-                      </TableCell>
+                      <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{getStatusChip(row, userStatus, maxLevel)}</TableCell>
                       <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
                         {/* <Box sx={{ display: 'flex', alignItems: 'right' }}> */}
                         <IconButton
@@ -374,6 +435,7 @@ const OrderList = () => {
         </MenuItem>
       </Menu>
       <DetailOrder
+        maxLevel={maxLevel}
         allStatus={allStatus}
         userStatus={userStatus}
         isView={true}

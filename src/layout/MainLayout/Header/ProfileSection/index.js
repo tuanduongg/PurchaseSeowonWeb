@@ -69,6 +69,7 @@ const ProfileSection = () => {
   }, []);
   const handleLogout = async () => {
     ShowQuestion({
+      icon: 'warning',
       content: 'Do you want to logout?',
       titleProp: 'LOGOUT',
       onClickYes: async () => {
@@ -181,9 +182,9 @@ const ProfileSection = () => {
                   <Box sx={{ p: 2 }}>
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">ADMIN</Typography>
+                        <Typography variant="h4">{infoUser?.username}</Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Manager</Typography>
+                      {infoUser?.isManager && <Typography variant="subtitle2">Manager</Typography>}
                     </Stack>
                     {/* <OutlinedInput
                       sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}

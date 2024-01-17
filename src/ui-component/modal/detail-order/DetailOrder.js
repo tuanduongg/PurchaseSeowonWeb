@@ -55,16 +55,13 @@ const COLUMS = [
   },
   { id: 'total', label: 'Total' }
 ];
-const DATA_USER = localStorage.getItem(config.DATA_USER);
 
 const checkShowButton = (order, userStatus) => {
+  const DATA_USER = localStorage.getItem(config.DATA_USER);
   if (order?.status?.level === 0) {
     return false;
   }
   if (DATA_USER) {
-    console.log('data user', DATA_USER);
-    console.log('order', order);
-    console.log('userStatus', userStatus);
     const userOBJ = JSON.parse(DATA_USER);
     if (order?.userID === userOBJ?.id) {
       console.log('case 1');
@@ -74,10 +71,10 @@ const checkShowButton = (order, userStatus) => {
       console.log('case 2');
       return true;
     }
-    if (userStatus?.userID === order?.status?.userID) {
-      console.log('case 3');
-      return true;
-    }
+    // if (userStatus?.userID === order?.status?.userID) {
+    //   console.log('case 3');
+    //   return true;
+    // }
     if (userStatus?.level > order?.status?.level) {
       console.log('case 4');
       return true;
@@ -86,7 +83,7 @@ const checkShowButton = (order, userStatus) => {
 };
 
 const initValidate = { error: false, message: '' };
-const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect, userStatus, allStatus, afterChangeStatus }) => {
+const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect, userStatus, allStatus, afterChangeStatus ,maxLevel}) => {
   const [products, setProducts] = useState([]);
   const [subTotal, setSubtotal] = useState(0);
   const [fullname, setFullname] = useState('');
@@ -107,7 +104,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
   }, [productProp]);
 
   useEffect(() => {
-    if (orderSelect) {
+    if (orderSelect && open) {
       const productList = [];
       orderSelect?.orderDetail?.map((item, index) => {
         productList.push({ ...item?.product, price: item?.price, quantity: item?.quantity, unitName: item?.unit });
@@ -276,7 +273,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
                     />
                   </Grid>
                   <Grid item xs={12} md={8}>
-                    <CardInfoStepper orderSelect={orderSelect} allStatus={allStatus} />
+                    <CardInfoStepper orderSelect={orderSelect} allStatus={allStatus} maxLevel={maxLevel} />
                   </Grid>
                 </>
               )}

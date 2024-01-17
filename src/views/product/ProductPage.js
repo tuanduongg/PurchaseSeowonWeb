@@ -123,8 +123,12 @@ const ProductPage = () => {
     setProductSelect(null);
     setOpenModalAddProduct(false);
   };
-  const onClickAcceptDelete = () => {
-    alert('click');
+  const onClickAcceptDelete = async () => {
+    if (productSelect) {
+      const data = { productID: productSelect?.productID };
+      const res = await restApi.post(DefineRouteApi.deleteProduct, data);
+      console.log('res', res);
+    }
   };
   const handleClickDelete = () => {
     ShowQuestion({
@@ -367,12 +371,6 @@ const ProductPage = () => {
             <EditIcon />
           </ListItemIcon>
           Edit
-        </MenuItem>
-        <MenuItem disableRipple onClick={handleClickDelete}>
-          <ListItemIcon>
-            <DeleteIcon />
-          </ListItemIcon>
-          Delete
         </MenuItem>
       </Menu>
       <CustomLoading open={loading} />

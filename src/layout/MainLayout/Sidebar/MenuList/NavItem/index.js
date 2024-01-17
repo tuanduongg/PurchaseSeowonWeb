@@ -53,6 +53,7 @@ const NavItem = ({ item, level }) => {
 
   const handleLogout = async () => {
     ShowQuestion({
+      icon: 'warning',
       content: 'Do you want to logout?',
       titleProp: 'LOGOUT',
       onClickYes: async () => {
