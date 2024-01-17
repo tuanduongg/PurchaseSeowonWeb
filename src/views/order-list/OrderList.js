@@ -108,6 +108,7 @@ const OrderList = () => {
   const [fromDate, setFromDate] = React.useState(getMonthAgo());
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [status, setStatus] = React.useState('');
+  const [allStatus, setAllStatus] = React.useState([]);
   const [userStatus, setUserStatus] = React.useState(null);
   const openMenu = Boolean(anchorEl);
   const [openModalDetail, setOpenModalDetail] = React.useState(false);
@@ -120,11 +121,24 @@ const OrderList = () => {
       setTotal(res?.data?.count);
       setOrders(res?.data?.data);
       setUserStatus(res?.data?.userStatus);
-      console.log('userStatus', res?.data?.userStatus);
       setLoading(false);
     }
   };
+  const getAllStatus = async () => {
+    const res = await restApi.get(DefineRouteApi.allStatus);
+    if (res?.status === 200) {
+      setAllStatus(res?.data);
+    }
+  };
 
+  const afterChangeStatus = () => {
+    setOpenModalDetail(false);
+    getAllOrder();
+  };
+
+  useEffect(() => {
+    getAllStatus();
+  }, []);
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       getAllOrder();
@@ -360,12 +374,14 @@ const OrderList = () => {
         </MenuItem>
       </Menu>
       <DetailOrder
+        allStatus={allStatus}
         userStatus={userStatus}
         isView={true}
         orderSelect={orderSelect}
         open={openModalDetail}
         fullScreen={isMobile() ? true : false}
         handleClose={hanleCloseModalDetail}
+        afterChangeStatus={afterChangeStatus}
       />
     </>
   );

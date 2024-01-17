@@ -6,8 +6,8 @@ const config = {
   defaultPath: '/dashboard/default',
   fontFamily: `'Roboto', sans-serif`,
   borderRadius: 5,
-  apiUrl: 'http://10.0.4.20:8088/api',
-  apiImage: 'http://10.0.4.20:8088/',
+  apiUrl: 'http://localhost:8088/api',
+  apiImage: 'http://localhost:8088/',
   DATA_USER: 'DATA_USER',
   ASSET_TOKEN: 'asset_token',
   COLOR_MAIN: '#0054a6'

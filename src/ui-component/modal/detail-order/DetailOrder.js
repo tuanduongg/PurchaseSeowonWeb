@@ -86,7 +86,7 @@ const checkShowButton = (order, userStatus) => {
 };
 
 const initValidate = { error: false, message: '' };
-const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect, userStatus }) => {
+const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect, userStatus, allStatus, afterChangeStatus }) => {
   const [products, setProducts] = useState([]);
   const [subTotal, setSubtotal] = useState(0);
   const [fullname, setFullname] = useState('');
@@ -194,18 +194,29 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
     let objSend = {
       orderID: orderSelect?.orderID
     };
+    let text = '';
     switch (type) {
       case 'accept':
+        text = 'Accept order successful !';
         objSend.status = orderSelect?.status;
         break;
       case 'cancel':
+        text = 'Cancel order successful !';
         objSend.status = null;
         break;
       default:
         break;
     }
     const res = await restApi.post(url, objSend);
-    console.log('res', res);
+    if (res?.status === 200) {
+      ShowAlert({
+        titleProp: 'Order',
+        textProp: text,
+        onClose: () => {
+          afterChangeStatus();
+        }
+      });
+    }
   };
   const onChangeStatusOrder = (type) => {
     switch (type) {
@@ -265,7 +276,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
                     />
                   </Grid>
                   <Grid item xs={12} md={8}>
-                    <CardInfoStepper />
+                    <CardInfoStepper orderSelect={orderSelect} allStatus={allStatus} />
                   </Grid>
                 </>
               )}

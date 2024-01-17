@@ -74,7 +74,7 @@ const ProductCard = ({ product, onShowDetail, afterAddToCart }) => {
             onClick={() => {
               onShowDetail(product);
             }}
-            sx={{ display: 'flex', justifyContent: 'left', alignItems: 'center', borderRight: '0.5px solid #ddd', width: '50%' }}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderRight: '0.5px solid #ddd', width: '50%' }}
           >
             <VisibilityIcon sx={{ fontSize: '18px', color: '#0054a6' }} />
             <Typography variant="body2" sx={{ fontSize: '13px', '&:hover': { color: '#0054a6' } }} component="div">
@@ -83,7 +83,7 @@ const ProductCard = ({ product, onShowDetail, afterAddToCart }) => {
           </Box>
           <Box
             onClick={handleClickAddToCart}
-            sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center', borderLeft: '0.5px solid #ddd', width: '50%' }}
+            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', borderLeft: '0.5px solid #ddd', width: '50%' }}
           >
             <ShoppingCartIcon sx={{ fontSize: '18px', color: '#0054a6' }} />
             <Typography variant="body2" sx={{ fontSize: '13px', '&:hover': { color: '#0054a6' } }} component="div">

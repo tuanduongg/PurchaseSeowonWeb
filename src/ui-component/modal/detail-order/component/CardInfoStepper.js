@@ -14,7 +14,13 @@ const steps = [
     completed: false
   }
 ];
-const CardInfoStepper = () => {
+const isStepFailed = (step) => {
+  console.log('step', step);
+  return step?.level === 0;
+};
+
+const CardInfoStepper = ({ allStatus, orderSelect }) => {
+  console.log('order select', orderSelect);
   return (
     <>
       <Card sx={{ height: '100%' }}>
@@ -26,11 +32,22 @@ const CardInfoStepper = () => {
           </Box>
 
           <Stepper nonLinear alternativeLabel>
-            {steps.map((step, index) => (
-              <Step completed={step?.completed} key={index}>
-                <StepLabel>{step.title}</StepLabel>
-              </Step>
-            ))}
+            {allStatus?.map((step, index) => {
+              const labelProps = {};
+              if (isStepFailed(step)) {
+                labelProps.optional = (
+                  <Typography variant="caption" color="error">
+                    {orderSelect?.cancel_by}
+                  </Typography>
+                );
+                labelProps.error = true;
+              }
+              return (
+                <Step completed={step?.level <= orderSelect?.status.level ? true : false} key={index}>
+                  <StepLabel {...labelProps}>{step.statusName}</StepLabel>
+                </Step>
+              );
+            })}
           </Stepper>
         </CardContent>
       </Card>
