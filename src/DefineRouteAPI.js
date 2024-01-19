@@ -13,7 +13,13 @@ export const DefineRouteApi = {
   deleteImageByProduct: '/image/delete',
   createOrder: '/order/add',
   getOrders: '/order/all',
+
   infoUser: '/user/info',
+  getAllUser: '/user/all',
+  addUser: '/user/add',
+  editUser: '/user/edit',
+
   changeStatusOrder: '/order/change-status',
-  allStatus: '/status/all'
+  allStatus: '/status/all',
+  allDepartment: '/department/all'
 };

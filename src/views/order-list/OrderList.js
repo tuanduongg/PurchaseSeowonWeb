@@ -44,6 +44,7 @@ import CustomLoading from 'ui-component/loading/CustomLoading';
 import Loader from 'ui-component/Loader';
 import { format, max } from 'date-fns';
 import config from '../../config';
+import ProductEmpty from 'ui-component/ProductEmpty';
 // ==============================|| Oderlist page ||============================== //
 
 const columns = [
@@ -272,7 +273,7 @@ const OrderList = () => {
         <Typography variant="h4">Order list</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
+            {/* <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
               <InputLabel id="demo-select-small-label">Status</InputLabel>
               <Select
                 value={status}
@@ -290,7 +291,7 @@ const OrderList = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
+            </FormControl> */}
 
             <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
               <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
@@ -343,51 +344,59 @@ const OrderList = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orders?.map((row, index) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                      <TableCell sx={{ padding: '10px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
-                      <TableCell sx={{ padding: '10px', textAlign: 'left' }}>
-                        <Link
-                          onClick={() => onShowDetailOrder(row)}
-                          underline="hover"
-                          color={'primary'}
-                          sx={{
-                            '&:hover': {
-                              cursor: 'pointer'
-                            }
-                          }}
-                        >
-                          {row?.code}
-                        </Link>
-                      </TableCell>
-                      {/* <TableCell sx={{ padding: '5px' }}>
+                {orders?.length > 0 ? (
+                  orders?.map((row, index) => {
+                    return (
+                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                        <TableCell sx={{ padding: '10px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
+                        <TableCell sx={{ padding: '10px', textAlign: 'left' }}>
+                          <Link
+                            onClick={() => onShowDetailOrder(row)}
+                            underline="hover"
+                            color={'primary'}
+                            sx={{
+                              '&:hover': {
+                                cursor: 'pointer'
+                              }
+                            }}
+                          >
+                            {row?.code}
+                          </Link>
+                        </TableCell>
+                        {/* <TableCell sx={{ padding: '5px' }}>
                         <CardMedia component={'image'} sx={{ height: '50px', width: '50px' }} image={row?.image} alt="image" />
                       </TableCell> */}
-                      <TableCell sx={{ padding: '5px' }}>
-                        {row?.orderDetail ? truncateText(concatNameProduct(row.orderDetail), 155) : ''}
-                      </TableCell>
-                      <TableCell sx={{ padding: '5px' }}>{formatDateFromDB(row?.created_at)}</TableCell>
-                      <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.created_by}</TableCell>
-                      <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{getStatusChip(row, userStatus, maxLevel)}</TableCell>
-                      <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
-                        {/* <Box sx={{ display: 'flex', alignItems: 'right' }}> */}
-                        <IconButton
-                          aria-label="more"
-                          id="long-button"
-                          aria-controls={openMenu ? 'long-menu' : undefined}
-                          aria-expanded={openMenu ? 'true' : undefined}
-                          aria-haspopup="true"
-                          onClick={(e) => {
-                            handleOpenMenu(e, row);
-                          }}
-                        >
-                          <MoreVertIcon fontSize="20px" />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                        <TableCell sx={{ padding: '5px' }}>
+                          {row?.orderDetail ? truncateText(concatNameProduct(row.orderDetail), 155) : ''}
+                        </TableCell>
+                        <TableCell sx={{ padding: '5px' }}>{formatDateFromDB(row?.created_at)}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.created_by}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{getStatusChip(row, userStatus, maxLevel)}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
+                          {/* <Box sx={{ display: 'flex', alignItems: 'right' }}> */}
+                          <IconButton
+                            aria-label="more"
+                            id="long-button"
+                            aria-controls={openMenu ? 'long-menu' : undefined}
+                            aria-expanded={openMenu ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={(e) => {
+                              handleOpenMenu(e, row);
+                            }}
+                          >
+                            <MoreVertIcon fontSize="20px" />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={columns?.length + 1}>
+                      <ProductEmpty />
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>

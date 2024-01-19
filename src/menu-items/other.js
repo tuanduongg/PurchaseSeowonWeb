@@ -1,9 +1,9 @@
 // assets
-import { IconBrandChrome, IconHelp, IconUserCircle, IconAlignBoxBottomLeft, IconLogout } from '@tabler/icons';
+import { IconBrandChrome, IconHelp, IconUserCircle, IconAlignBoxBottomLeft, IconLogout, IconUsers } from '@tabler/icons';
 import { ConfigPath } from 'routes/DefinePath';
 
 // constant
-const icons = { IconBrandChrome, IconHelp, IconUserCircle, IconAlignBoxBottomLeft, IconLogout };
+const icons = { IconBrandChrome, IconHelp, IconUserCircle, IconAlignBoxBottomLeft, IconLogout, IconUsers };
 
 // ==============================|| SAMPLE PAGE & DOCUMENTATION MENU ITEMS ||============================== //
 
@@ -12,6 +12,14 @@ const other = {
   type: 'group',
   children: [
     // { title: 'Order list', type: 'item', url: ConfigPath.orderList, icon: icons.IconAlignBoxBottomLeft, breadcrumbs: false },
+    {
+      id: ConfigPath.userPage,
+      title: 'User',
+      type: 'item',
+      url: ConfigPath.userPage,
+      icon: icons.IconUsers,
+      breadcrumbs: false
+    },
     {
       id: ConfigPath.profilePage,
       title: 'Profile',

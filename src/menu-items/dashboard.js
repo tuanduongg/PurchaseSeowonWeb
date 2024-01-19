@@ -1,9 +1,9 @@
 // assets
-import { IconHome, IconAlignBoxBottomLeft, IconUserCircle, IconBrandAirtable } from '@tabler/icons';
+import { IconHome, IconAlignBoxBottomLeft, IconUserCircle, IconBrandAirtable,IconUserCheck } from '@tabler/icons';
 import { ConfigPath } from 'routes/DefinePath';
 
 // constant
-const icons = { IconHome, IconAlignBoxBottomLeft, IconUserCircle, IconBrandAirtable };
+const icons = { IconHome, IconAlignBoxBottomLeft, IconUserCircle, IconBrandAirtable,IconUserCheck };
 
 // ==============================|| DASHBOARD MENU ITEMS ||============================== //
 
@@ -35,7 +35,15 @@ const dashboard = {
       url: ConfigPath.productPage,
       icon: icons.IconBrandAirtable,
       breadcrumbs: false
-    }
+    },
+    // {
+    //   id: ConfigPath.productPage,
+    //   title: 'Approver',
+    //   type: 'item',
+    //   url: ConfigPath.productPage,
+    //   icon: icons.IconUserCheck,
+    //   breadcrumbs: false
+    // }
     // {
     //   id: 'profile',
     //   title: 'Profile',

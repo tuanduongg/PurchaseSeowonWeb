@@ -5,5 +5,6 @@ export const ConfigPath = {
   orderList: '/order-list',
   profilePage: '/profile',
   productPage: '/product',
-  logout: 'logout'
+  logout: 'logout',
+  userPage: '/user',
 };

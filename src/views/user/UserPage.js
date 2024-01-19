@@ -43,6 +43,8 @@ import config from '../../config';
 import CustomAlert from 'ui-component/alert/CustomAlert';
 import Loader from 'ui-component/Loader';
 import ProductEmpty from 'ui-component/ProductEmpty';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import ModalAddUser from 'ui-component/modal/add-user/ModalAddUser';
 
 const columns = [
   {
@@ -53,27 +55,15 @@ const columns = [
   },
   {
     id: 'name',
-    label: 'Product',
+    label: 'Username',
     // minWidth: 170,
     align: 'left'
   },
-  { id: 'inventory', label: 'Inventory', minWidth: 140, align: 'center' },
+  { id: 'Department', label: 'Department', minWidth: 140, align: 'left' },
   {
-    id: 'Price',
-    label: 'Price',
+    id: 'Manager',
+    label: "Manager Dep't",
 
-    align: 'left'
-  },
-  {
-    id: 'Category',
-    label: 'Category',
-
-    align: 'left'
-  },
-  {
-    id: 'isShow',
-    label: '',
-    // minWidth: 170,
     align: 'center'
   },
   {
@@ -84,7 +74,7 @@ const columns = [
   }
 ];
 
-const ProductPage = () => {
+const UserPage = () => {
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -93,8 +83,8 @@ const ProductPage = () => {
   const [titleModal, setTitleModal] = useState('');
   const [typeModal, setTypeModal] = useState('ADD');
   const [total, setTotal] = useState(0);
-  const [productSelect, setProductSelect] = useState(null);
-  const [openModalAddProduct, setOpenModalAddProduct] = useState(false);
+  const [userSelect, setUserSelect] = useState(null);
+  const [openModall, setOpenModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
   const [contentAlert, setContentAlert] = useState('');
@@ -116,19 +106,18 @@ const ProductPage = () => {
   };
 
   const handleClickAddProduct = () => {
-    setTitleModal('Add new product');
+    setTitleModal('Add new user');
     setTypeModal('ADD');
-    setOpenModalAddProduct(true);
+    setOpenModal(true);
   };
   const onCloseModalAddProduct = () => {
-    setProductSelect(null);
-    setOpenModalAddProduct(false);
+    setUserSelect(null);
+    setOpenModal(false);
   };
   const onClickAcceptDelete = async () => {
     if (productSelect) {
       const data = { productID: productSelect?.productID };
       const res = await restApi.post(DefineRouteApi.deleteProduct, data);
-      console.log('res', res);
     }
   };
   const handleClickDelete = () => {
@@ -147,69 +136,53 @@ const ProductPage = () => {
   const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const getAllProduct = async () => {
+  const getAllUser = async () => {
     setLoading(true);
     const obj = { page, rowsPerPage, search };
-    const url = DefineRouteApi.getAllProduct;
+    const url = DefineRouteApi.getAllUser;
     const res = await restApi.post(url, obj);
     if (res?.status === 200) {
       setLoading(false);
       const data = res?.data;
-      setTotal(data?.count);
+      // setTotal(data?.count);
       setListProduct(data?.data);
     } else {
       setLoading(false);
     }
   };
   // useEffect(() => {
-  //   getAllProduct();
+  //   getAllUser();
   // }, []);
-
-  const handleViewProduct = (row) => {
-    setProductSelect(row);
-    setTitleModal(`${row?.productName}`);
-    setTypeModal('VIEW');
-    setOpenModalAddProduct(true);
-  };
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      getAllProduct();
-    }, 500);
+      getAllUser();
+    }, 700);
     return () => clearTimeout(timeoutId);
   }, [search, page, rowsPerPage, 500]);
 
   const handleClickEditProduct = () => {
-    if (productSelect) {
+    if (userSelect) {
       setAnchorEl(null);
-      setTitleModal(`Edit product`);
+      setTitleModal(`Edit user`);
       setTypeModal('EDIT');
-      setOpenModalAddProduct(true);
+      setOpenModal(true);
     }
   };
   const handleChangePublic = async (row) => {
     const res = await restApi.post(DefineRouteApi.changePublicProduct, { productID: row?.productID });
     if (res?.status === 200) {
-      getAllProduct();
+      getAllUser();
     }
   };
-  const handleClickPublic = (row) => {
-    ShowQuestion({
-      icon: 'warning',
-      titleProp: `${row?.isShow ? 'Hidden' : 'Show'} Product`,
-      content: `Do you want to ${row?.isShow ? 'hidden' : 'show'} this product?`,
-      onClickYes: () => {
-        handleChangePublic(row);
-      }
-    });
-  };
+
   const onAfterSaved = (res) => {
     const msg = {
-      success: typeModal !== 'EDIT' ? 'Add new product successful!' : 'Update product successful!',
-      fail: typeModal !== 'EDIT' ? 'Add new product fail!' : 'Update product fail!'
+      success: typeModal !== 'EDIT' ? 'Add new user successful!' : 'Update user successful!',
+      fail: typeModal !== 'EDIT' ? 'Add new user fail!' : 'Update user fail!'
     };
     if (res?.status === 200) {
-      getAllProduct();
+      getAllUser();
       setTypeAlert('success');
       setContentAlert(msg.success);
     } else {
@@ -228,7 +201,7 @@ const ProductPage = () => {
     <>
       {loading && <Loader />}
       <Box>
-        <Typography variant="h4">Product</Typography>
+        <Typography variant="h4">User</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
@@ -251,7 +224,7 @@ const ProductPage = () => {
           </Box>
           <Box>
             <Button onClick={handleClickAddProduct} variant="contained" size={'small'} startIcon={<AddIcon stroke={1.5} size="1.3rem" />}>
-              Add product
+              Add user
             </Button>
           </Box>
         </Box>
@@ -273,43 +246,14 @@ const ProductPage = () => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={row.productID}>
                         <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
-                        <TableCell sx={{ padding: '5px' }}>
-                          <Stack flexDirection={'row'} alignItems={'center'}>
-                            <CardMedia
-                              component={'image'}
-                              sx={{ height: '50px', width: '50px', marginRight: '10px' }}
-                              image={config.apiImage + row?.images?.[0]?.url ?? ''}
-                              alt="image"
-                            />
-                            <Link
-                              onClick={() => {
-                                handleViewProduct(row);
-                              }}
-                              underline="hover"
-                              color={'warning'}
-                              sx={{
-                                '&:hover': {
-                                  cursor: 'pointer'
-                                }
-                              }}
-                            >
-                              {row?.productName ? truncateText(row?.productName, 155) : ''}
-                            </Link>
-                          </Stack>
-                        </TableCell>
-                        <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.inventory}</TableCell>
-                        <TableCell sx={{ padding: '5px', textAlign: 'left' }}>{row?.price ? formattingVND(row?.price) : ''}</TableCell>
-                        <TableCell sx={{ padding: '5px' }}>{row?.category?.categoryName}</TableCell>
-                        <TableCell sx={{ padding: '5px' }}>
-                          <Tooltip title={!row?.isShow ? 'This product hidden' : 'This product is showing'}>
-                            <IconButton
-                              onClick={() => {
-                                handleClickPublic(row);
-                              }}
-                            >
-                              {row?.isShow ? <VisibilityIcon sx={{ color: config.COLOR_MAIN }} /> : <VisibilityOffIcon />}
-                            </IconButton>
-                          </Tooltip>
+                        <TableCell sx={{ padding: '5px', textAlign: 'left' }}>{row?.username}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'left' }}>{row?.department?.departName}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'center' }}>
+                          {row?.isManager ? (
+                            <Tooltip title="This user is manager of department.">
+                              <CheckCircleOutlineIcon color="success" />
+                            </Tooltip>
+                          ) : null}
                         </TableCell>
                         <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
                           <Tooltip title="Menu">
@@ -320,7 +264,7 @@ const ProductPage = () => {
                               aria-expanded={openMenu ? 'true' : undefined}
                               aria-haspopup="true"
                               onClick={(e) => {
-                                setProductSelect(row);
+                                setUserSelect(row);
                                 handleOpenMenu(e);
                               }}
                             >
@@ -352,12 +296,12 @@ const ProductPage = () => {
           />
         </Box>
       </Box>
-      <ModalAddProduct
+      <ModalAddUser
+        userSelect={userSelect}
         onDeleteErr={onDeleteImageErr}
-        productProp={productSelect}
         tittle={titleModal}
         type={typeModal}
-        open={openModalAddProduct}
+        open={openModall}
         fullScreen={false}
         handleClose={onCloseModalAddProduct}
         afterSaved={onAfterSaved}
@@ -387,4 +331,4 @@ const ProductPage = () => {
     </>
   );
 };
-export default ProductPage;
+export default UserPage;

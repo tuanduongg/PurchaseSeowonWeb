@@ -87,7 +87,7 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                     size="small"
                     defaultValue={1}
                     sx={{
-                      width: '70px',
+                      width: '50px',
                       '& fieldset': { borderRadius: '0px' },
                       '& input': { padding: '2px !important' }
                     }}

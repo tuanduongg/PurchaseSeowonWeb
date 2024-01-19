@@ -1,8 +1,18 @@
 import { ConfigPath } from 'routes/DefinePath';
 import config from '../config';
-
+function isString(x) {
+  return Object.prototype.toString.call(x) === '[object String]';
+}
 export const formattingVND = (num) => {
+  if (isString(num) && num?.includes('.')) {
+    const rs = num + ' vnđ';
+    return rs.replace(',', '.');
+  }
   const number = parseFloat(num);
+  console.log('number', number);
+  if (isNaN(number)) {
+    return 0 + ' vnđ';
+  }
   return number.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'vnđ');
 };
 
@@ -72,7 +82,15 @@ export const logout = () => {
 };
 
 export const getTotalPrice = (quantity, unitCost) => {
-  return quantity * unitCost;
+  if (isString(quantity) && quantity?.includes('.')) {
+    quantity = quantity.replace('.', '');
+  }
+  if (isString(unitCost) && unitCost?.includes('.')) {
+    unitCost = unitCost.replace('.', '');
+  }
+  const inQuan = parseFloat(quantity);
+  const numCost = parseFloat(unitCost);
+  return inQuan * numCost;
 };
 export const getSubTotal = (products = []) => {
   let sub = 0;

@@ -34,6 +34,25 @@ import { ConfigPath } from 'routes/DefinePath';
 
 const initValidate = { err: false, msg: '' };
 
+const formatPrice = (value) => {
+  // Xóa các ký tự không phải số từ giá trị nhập vào
+  const sanitizedValue = value.replace(/[^0-9]/g, '');
+
+  // Kiểm tra xem giá trị sau khi xóa ký tự có bằng không hay không
+  if (sanitizedValue !== '') {
+    if (value) {
+      const sanitizedValue = value.replace(/[^0-9]/g, '');
+
+      // Chuyển định dạng số thành chuỗi có dấu phẩy ngăn cách hàng nghìn
+      const formattedValue = new Intl.NumberFormat('en-US').format(parseInt(sanitizedValue, 10));
+
+      return formattedValue.replace(',', '.');
+    }
+    return value;
+  }
+  return '';
+};
+
 const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle, afterSaved, onDeleteErr }) => {
   const [product, setProduct] = useState(null);
   const [name, setName] = useState('');
@@ -106,7 +125,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
   //0966D0D9-56AF-EE11-A1CA-04D9F5C9D2EB
   const handleOnSave = async () => {
     const dataSend = JSON.stringify({
-      productID:productProp?.productID,
+      productID: productProp?.productID,
       name,
       price,
       description,
@@ -301,7 +320,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
                   type="text"
                   onChange={(e) => {
                     // const number = parseFloat(e.target.value).toFixed(3);
-                    setPrice(e.target.value);
+                    setPrice(formatPrice(e.target.value));
                     if (validatePrice?.err) {
                       setValidatePrice(initValidate);
                     }
