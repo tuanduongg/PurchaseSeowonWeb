@@ -11,6 +11,7 @@ import { DefineRouteApi } from 'DefineRouteAPI';
 import { useState } from 'react';
 import CustomLoading from 'ui-component/loading/CustomLoading';
 import Loader from 'ui-component/Loader';
+import PreviewImage from 'ui-component/cards/PreviewImage';
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -36,6 +37,7 @@ const ProfilePage = () => {
       </Box>
       {loading && <Loader />}
       <CustomLoading open={loading} />
+      <PreviewImage />
     </>
   );
 };

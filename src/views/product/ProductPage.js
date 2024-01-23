@@ -27,7 +27,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PrintIcon from '@mui/icons-material/Print';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
-import { formattingVND, truncateText, cssScrollBar } from 'utils/helper';
+import { formattingVND, truncateText, cssScrollBar, checkIsApprover } from 'utils/helper';
 import AddIcon from '@mui/icons-material/Add';
 import ModalAddProduct from 'ui-component/modal/add-product/AddProduct';
 import EditIcon from '@mui/icons-material/Edit';
@@ -43,6 +43,8 @@ import config from '../../config';
 import CustomAlert from 'ui-component/alert/CustomAlert';
 import Loader from 'ui-component/Loader';
 import ProductEmpty from 'ui-component/ProductEmpty';
+import { useNavigate } from 'react-router';
+import { ConfigPath } from 'routes/DefinePath';
 
 const columns = [
   {
@@ -99,13 +101,19 @@ const ProductPage = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [contentAlert, setContentAlert] = useState('');
   const [typeAlert, setTypeAlert] = useState('success');
-
+  const navigate = useNavigate();
   const openMenu = Boolean(anchorEl);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
+  useEffect(() => {
+    let check = checkIsApprover();
+    if (!check) {
+      navigate(ConfigPath.home);
+    }
+  }, []);
   const onCloseAlert = () => {
     setOpenAlert(false);
   };
@@ -128,7 +136,6 @@ const ProductPage = () => {
     if (productSelect) {
       const data = { productID: productSelect?.productID };
       const res = await restApi.post(DefineRouteApi.deleteProduct, data);
-      console.log('res', res);
     }
   };
   const handleClickDelete = () => {

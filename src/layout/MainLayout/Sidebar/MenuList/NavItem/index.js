@@ -14,7 +14,7 @@ import { MENU_OPEN, SET_MENU } from 'store/actions';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { ConfigPath } from 'routes/DefinePath';
 import { ShowQuestion } from 'utils/confirm';
-import { logout } from 'utils/helper';
+import { handleLogout, logout } from 'utils/helper';
 
 // ==============================|| SIDEBAR MENU LIST ITEMS ||============================== //
 
@@ -51,19 +51,7 @@ const NavItem = ({ item, level }) => {
     listItemProps = { component: 'a', href: item.url, target: itemTarget };
   }
 
-  const handleLogout = async () => {
-    ShowQuestion({
-      icon: 'warning',
-      content: 'Do you want to logout?',
-      titleProp: 'LOGOUT',
-      onClickYes: async () => {
-        await logout();
-        window.location = ConfigPath.home;
-        // navigate(ConfigPath.home);
-        // console.log('vao logout');
-      }
-    });
-  };
+  
   const itemHandler = (id) => {
     if (id === 'logout') {
       handleLogout();

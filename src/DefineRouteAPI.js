@@ -21,5 +21,8 @@ export const DefineRouteApi = {
 
   changeStatusOrder: '/order/change-status',
   allStatus: '/status/all',
-  allDepartment: '/department/all'
+  
+  allDepartment: '/department/all',
+  addDepartment: 'department/add',
+  updateDepartment: 'department/update',
 };

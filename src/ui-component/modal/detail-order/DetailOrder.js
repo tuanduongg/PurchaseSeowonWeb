@@ -56,7 +56,7 @@ const COLUMS = [
   { id: 'total', label: 'Total' }
 ];
 
-const checkShowButton = (order, userStatus) => {
+const checkShowButton = (order, userStatus, maxLevel) => {
   const DATA_USER = localStorage.getItem(config.DATA_USER);
   if (order?.status?.level === 0) {
     return false;
@@ -64,26 +64,47 @@ const checkShowButton = (order, userStatus) => {
   if (DATA_USER) {
     const userOBJ = JSON.parse(DATA_USER);
     if (order?.userID === userOBJ?.id) {
-      console.log('case 1');
+      if (order?.status?.level === 1) {
+        return false;
+      }
+      if (userStatus?.level === maxLevel) {
+        return true;
+      }
       return false;
     }
     if (userOBJ?.isManager === true && order?.status?.level === 1) {
-      console.log('case 2');
       return true;
     }
     // if (userStatus?.userID === order?.status?.userID) {
     //   console.log('case 3');
     //   return true;
     // }
+    //trường hợp acceptor là manager -> duyệt -> đơn đó
+    //1 đơn bt -> quản lý -> mrjung->mrsong->mrtinh
+    //manager -> mrjung -> mrsong -> mrtinh
+    //mrjung -> mrsong -> mrtinh
+    //mrsong->mrtinh
+    //mrtinh->như bt
     if (userStatus?.level > order?.status?.level) {
-      console.log('case 4');
       return true;
     }
   }
+  return false;
 };
 
 const initValidate = { error: false, message: '' };
-const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, orderSelect, userStatus, allStatus, afterChangeStatus ,maxLevel}) => {
+const DetailOrder = ({
+  productProp,
+  open,
+  handleClose,
+  fullScreen,
+  isView,
+  orderSelect,
+  userStatus,
+  allStatus,
+  afterChangeStatus,
+  maxLevel
+}) => {
   const [products, setProducts] = useState([]);
   const [subTotal, setSubtotal] = useState(0);
   const [fullname, setFullname] = useState('');
@@ -113,7 +134,7 @@ const DetailOrder = ({ productProp, open, handleClose, fullScreen, isView, order
       setFullname(orderSelect?.reciever);
       setAddress(orderSelect?.address);
       setNote(orderSelect?.note);
-      setIsShowButton(checkShowButton(orderSelect, userStatus));
+      setIsShowButton(checkShowButton(orderSelect, userStatus, maxLevel));
     }
   }, [orderSelect]);
 

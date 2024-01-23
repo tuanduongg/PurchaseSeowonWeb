@@ -7,27 +7,43 @@ import { Divider, List, Typography } from '@mui/material';
 // project imports
 import NavItem from '../NavItem';
 import NavCollapse from '../NavCollapse';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { checkIsApprover, hiddenRouteUser } from 'utils/helper';
 
 // ==============================|| SIDEBAR MENU LIST GROUP ||============================== //
 
 const NavGroup = ({ item }) => {
   const theme = useTheme();
+  const [checkShow, setCheckShow] = useState(false);
+  const [listItem, setListItem] = useState([]);
 
-  // menu list collapse & items
+  useEffect(() => {
+    let check = checkIsApprover();
+    setCheckShow(check);
+    // setListItem(items);
+    // console.log('items', items);
+  }, []);
   const items = item.children?.map((menu) => {
-    switch (menu.type) {
-      case 'collapse':
-        return <NavCollapse key={menu.id} menu={menu} level={1} />;
-      case 'item':
-        return <NavItem key={menu.id} item={menu} level={1} />;
-      default:
-        return (
-          <Typography key={menu.id} variant="h6" color="error" align="center">
-            Menu Items Error
-          </Typography>
-        );
+    if (hiddenRouteUser.includes(menu.id) && !checkShow) {
+      return null;
+    } else {
+      switch (menu.type) {
+        case 'collapse':
+          return <NavCollapse key={menu.id} menu={menu} level={1} />;
+        case 'item':
+          return <NavItem key={menu.id} item={menu} level={1} />;
+        default:
+          return (
+            <Typography key={menu.id} variant="h6" color="error" align="center">
+              Menu Items Error
+            </Typography>
+          );
+      }
     }
   });
+
+  // menu list collapse & items
 
   return (
     <>

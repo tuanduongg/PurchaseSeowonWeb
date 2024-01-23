@@ -8,7 +8,7 @@ const icons = { IconBrandChrome, IconHelp, IconUserCircle, IconAlignBoxBottomLef
 // ==============================|| SAMPLE PAGE & DOCUMENTATION MENU ITEMS ||============================== //
 
 const other = {
-  id: 'sample-docs-roadmap',
+  id: 'orther',
   type: 'group',
   children: [
     // { title: 'Order list', type: 'item', url: ConfigPath.orderList, icon: icons.IconAlignBoxBottomLeft, breadcrumbs: false },

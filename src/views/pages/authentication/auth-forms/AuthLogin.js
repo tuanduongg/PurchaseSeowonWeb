@@ -83,7 +83,7 @@ const FirebaseLogin = ({ ...others }) => {
       <Formik
         initialValues={{
           username: 'admin',
-          password: '123456',
+          password: '1234',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -95,7 +95,6 @@ const FirebaseLogin = ({ ...others }) => {
             if (scriptedRef.current) {
               const url = DefineRouteApi.login;
               const res = await restApi.post(url, values);
-              console.log(res);
               const status = res?.status;
               if (status == 401) {
                 ShowAlert({

@@ -19,7 +19,7 @@ const utilities = {
   children: [
     {
       id: 'util-typography',
-      title: 'Order list',
+      title: 'Order',
       type: 'item',
       url: ConfigPath.orderList,
       icon: icons.IconAlignBoxBottomLeft,

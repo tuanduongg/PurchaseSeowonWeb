@@ -99,8 +99,10 @@ const ModalAddUser = ({ open, handleClose, fullScreen, type, productProp, tittle
     }
   };
   useEffect(() => {
-    getAllDepart();
-  }, []);
+    if (open) {
+      getAllDepart();
+    }
+  }, [open]);
 
   const handleOnSave = async () => {
     const dataSend = {
@@ -133,9 +135,15 @@ const ModalAddUser = ({ open, handleClose, fullScreen, type, productProp, tittle
       setValidateDepartment({ err: true, msg: 'Department is required' });
       isErr = true;
     }
-    if (password?.trim() === '' && type === 'ADD') {
-      setValidatePassword({ err: true, msg: 'Password is required' });
-      isErr = true;
+    if (type === 'ADD') {
+      if (password.includes(' ')) {
+        setValidatePassword({ err: true, msg: 'Password cannot contain space character' });
+      } else {
+        if (password?.trim().length < 4) {
+          setValidatePassword({ err: true, msg: 'Password must be more than or equal 4 character' });
+          isErr = true;
+        }
+      }
     }
 
     if (!isErr) {

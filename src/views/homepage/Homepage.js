@@ -32,6 +32,7 @@ import { useRef } from 'react';
 import CustomAlert from 'ui-component/alert/CustomAlert';
 import { useDispatch } from 'react-redux';
 import { CART } from 'store/actions';
+import PreviewImage from 'ui-component/cards/PreviewImage';
 
 // ==============================|| DEFAULT Homepage ||============================== //
 
@@ -217,6 +218,7 @@ const Homepage = () => {
         handleClose={handleCloseModelDetailPro}
       />
       <CustomAlert type={'success'} open={openSnack} handleClose={handleCloseSnack} content={'Add product to cart successfully!'} />
+      
     </>
   );
 };

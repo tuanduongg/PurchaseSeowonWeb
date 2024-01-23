@@ -38,7 +38,7 @@ import User1 from 'assets/images/users/profile.png';
 // assets
 import { IconLogout, IconSearch, IconSettings, IconUser } from '@tabler/icons';
 import { ConfigPath } from 'routes/DefinePath';
-import { logout } from 'utils/helper';
+import { handleLogout, logout } from 'utils/helper';
 import config from '../../../../config';
 import { ShowQuestion } from 'utils/confirm';
 
@@ -67,19 +67,6 @@ const ProfileSection = () => {
       setInfoUser(userObj);
     }
   }, []);
-  const handleLogout = async () => {
-    ShowQuestion({
-      icon: 'warning',
-      content: 'Do you want to logout?',
-      titleProp: 'LOGOUT',
-      onClickYes: async () => {
-        await logout();
-        window.location = ConfigPath.home;
-        // navigate(ConfigPath.home);
-        // console.log('vao logout');
-      }
-    });
-  };
 
   const handleClose = (event) => {
     if (anchorRef.current && anchorRef.current.contains(event.target)) {

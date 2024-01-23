@@ -31,6 +31,7 @@ import { useEffect } from 'react';
 import restApi from 'utils/restAPI';
 import { DefineRouteApi } from 'DefineRouteAPI';
 import { ConfigPath } from 'routes/DefinePath';
+import PreviewImage from 'ui-component/cards/PreviewImage';
 
 const initValidate = { err: false, msg: '' };
 
@@ -51,6 +52,22 @@ const formatPrice = (value) => {
     return value;
   }
   return '';
+};
+
+const getImagesShoww = (images) => {
+  const arr = [];
+  if (images) {
+    for (let i = 0; i < images?.length; i++) {
+      if (images[i]?.createObjectURL) {
+        arr.push(images[i]?.createObjectURL);
+      } else {
+        arr.push(images[i]?.url);
+      }
+    }
+    console.log('arr', arr);
+    return arr;
+  }
+  return [];
 };
 
 const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle, afterSaved, onDeleteErr }) => {
@@ -190,7 +207,6 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
   const handleDeleteImage = async (id) => {
     if (id) {
       const res = await restApi.post(DefineRouteApi.deleteImageByProduct, { imageID: id });
-      console.log('res', res);
       if (res?.status !== 200) {
         onDeleteErr(res?.data?.message);
       }
@@ -217,6 +233,8 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
       setImages((pre) => [...pre, ...arrFiles]);
     }
   };
+
+  console.log('images', images);
 
   return (
     <>
@@ -391,6 +409,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
           </DialogActions>
         )}
       </Dialog>
+      <PreviewImage toggler={toggerImage} imagesProp={getImagesShow(images)} />
     </>
   );
 };

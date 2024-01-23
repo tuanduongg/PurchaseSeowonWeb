@@ -90,11 +90,9 @@ const ListImageProduct = ({ imagesProp, type, afterChangeFiles, handleRemoveImag
 
   useEffect(() => {
     if (imagesProp) {
-      console.log('imagesProp', imagesProp);
       setImages(imagesProp);
     }
   }, [imagesProp]);
-  console.log('type', type);
   return (
     <>
       {/* <Box>

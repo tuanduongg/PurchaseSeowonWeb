@@ -96,7 +96,52 @@ const getMonthAgo = () => {
   var priorDate = new Date(new Date().setDate(today.getDate() - 30));
   return priorDate;
 };
+// nếu là người bt -> manager bộ phận -> acctor 1,2,3...
+//nếu manager -> acceptor 1, acceptor 2
+//acceptor1 -> acceptor 2....
+//nếu acceptor cuối -> k là manager
+// neeus acceptor là manager thì sao?
 
+const getStatusChip2 = (order, userStatus, maxLevel) => {
+  const level = order?.status?.level;
+  let text = '';
+  let color = '';
+  if (level === 0) {
+    text = 'Cancel';
+    color = 'error';
+  } else if (level === 1) {
+    text = 'New';
+    color = 'secondary';
+  } else if (level === maxLevel) {
+    text = 'Done';
+    color = 'success';
+  } else {
+    const userStr = localStorage.getItem(config.DATA_USER);
+    let userObj = {};
+    if (userStr) {
+      userObj = JSON.parse(userStr);
+      if (userObj?.isManager || userStatus) {
+        if (order?.created_by === userObj?.username) {
+          text = 'My Order';
+          color = 'secondary';
+        } else {
+          if (level >= userStatus?.level) {
+            text = 'Accepted';
+            color = 'info';
+          } else {
+            text = 'New';
+            color = 'secondary';
+          }
+        }
+      } else {
+        text = 'Process';
+        color = 'info';
+      }
+    }
+  }
+
+  return <Chip label={text} color={color} size="small" />;
+};
 const getStatusChip = (order, userStatus, maxLevel) => {
   const level = order?.status?.level;
 
@@ -106,20 +151,26 @@ const getStatusChip = (order, userStatus, maxLevel) => {
     userObj = JSON.parse(userStr);
   }
 
+  // neesu la nguoi duyet nhu quan li bo phan, acceptor...
+  //dax duyet,new, canel
+  //neu la nguoi bt(new,process,cancel)
+  //neu la
   if (order) {
     let color = '';
     let text = '';
+    //nguoi duyet: new,acceptor,cancel
+    //nguoi bt: new,processing,cancel
     switch (level) {
       case 1: //new
         color = 'secondary';
         text = 'New';
 
         break;
-      case 5: //new
-        color = 'secondary';
-        text = 'New';
+      // case 5: //new
+      //   color = 'secondary';
+      //   text = 'New';
 
-        break;
+      //   break;
       // case maxLevel: //done
       //   color = 'success';
       //   text = 'DONE';
@@ -133,16 +184,24 @@ const getStatusChip = (order, userStatus, maxLevel) => {
         {
           color = 'info';
           if (userStatus) {
-            console.log('userObj', userObj);
+            // neeus la ng duyet
             //nguwoif dc duyet
             if (order?.status?.level >= userStatus?.level) {
               text = 'Accepted';
             } else {
+              color = 'secondary';
               text = 'New';
             }
           } else {
+            // neu khong la ng duyet
             if (userObj?.isManager) {
-              text = order?.status?.level >= 1 ? 'Accepted' : 'Process';
+              // if (order?.created_by === userObj?.username) {
+              //   text = 'New';
+              // } else {
+              //   text = 'Process';
+              // }
+              text = 'Process';
+              // text = order?.status?.level >= 1 ? 'Accepted 2' : 'Process';
             } else {
               // ng kh duoc duyet
               text = 'Process';
@@ -152,7 +211,7 @@ const getStatusChip = (order, userStatus, maxLevel) => {
         break;
     }
     if (level === maxLevel) {
-      return <Chip label={'DONE'} color={'success'} size="small" />;
+      return <Chip label={'Done'} color={'success'} size="small" />;
     }
     return <Chip label={text} color={color} size="small" />;
   }
@@ -264,13 +323,12 @@ const OrderList = () => {
   const onChangeEndDate = (newValue) => {
     setToDate(newValue);
   };
-
   return (
     <>
       {loading && <Loader />}
       <CustomLoading open={loading} />
       <Box sx={{}}>
-        <Typography variant="h4">Order list</Typography>
+        <Typography variant="h4">Order</Typography>
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* <FormControl sx={{ m: 1, width: '15ch' }} variant="standard" size="small">
@@ -371,7 +429,7 @@ const OrderList = () => {
                         </TableCell>
                         <TableCell sx={{ padding: '5px' }}>{formatDateFromDB(row?.created_at)}</TableCell>
                         <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.created_by}</TableCell>
-                        <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{getStatusChip(row, userStatus, maxLevel)}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{getStatusChip2(row, userStatus, maxLevel)}</TableCell>
                         <TableCell sx={{ padding: '5px', textAlign: 'right' }}>
                           {/* <Box sx={{ display: 'flex', alignItems: 'right' }}> */}
                           <IconButton
@@ -430,7 +488,7 @@ const OrderList = () => {
           </ListItemIcon>
           Print
         </MenuItem>
-        <MenuItem disableRipple onClick={handleClickEdit}>
+        {/* <MenuItem disableRipple onClick={handleClickEdit}>
           <ListItemIcon>
             <EditIcon />
           </ListItemIcon>
@@ -441,7 +499,7 @@ const OrderList = () => {
             <DeleteIcon />
           </ListItemIcon>
           Delete
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
       <DetailOrder
         maxLevel={maxLevel}

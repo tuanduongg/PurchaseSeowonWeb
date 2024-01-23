@@ -21,11 +21,18 @@ import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import CustomAlert from 'ui-component/alert/CustomAlert';
 import { UPDATE_CART_ITEM } from 'store/actions';
+import config from '../../../config';
+import PreviewImage from 'ui-component/cards/PreviewImage';
+import { useEffect } from 'react';
 
 const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
   const [openSnack, setOpenSnack] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const [toggerImage, setToggerImage] = useState(false);
+  const [imagesURL, setImageURL] = useState([]);
 
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
@@ -33,6 +40,13 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
       handleClose();
     }
   };
+
+  useEffect(() => {
+    if (product && open) {
+      const data = product?.images?.map((item) => config.apiImage + item?.url);
+      setImageURL(data);
+    }
+  }, [product]);
 
   const handleCloseSnack = () => {
     setOpenSnack(false);
@@ -49,6 +63,15 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
     setOpenSnack(true);
   };
 
+  const closeImageViewer = () => {
+    setCurrentImage(0);
+    setIsViewerOpen(false);
+  };
+  const onClickImage = (index) => {
+    setToggerImage(!toggerImage);
+    // setCurrentImage(index);
+    // setIsViewerOpen(true);
+  };
   return (
     <>
       <Dialog sx={{ '& .MuiPaper-root': { minWidth: '50%' } }} maxWidth={'md'} fullScreen={fullScreen} open={open} onClose={onClose}>
@@ -64,7 +87,7 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
         <DialogContent>
           <Grid container>
             <Grid item xs={12} sm={4}>
-              <ImageSlide images={product?.images} />
+              <ImageSlide onClickImage={onClickImage} images={product?.images} />
             </Grid>
             <Grid item xs={12} sm={8}>
               <Box sx={{ marginLeft: '15px' }}>
@@ -143,6 +166,7 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
         </DialogActions> */}
       </Dialog>
       <CustomAlert type={'success'} open={openSnack} handleClose={handleCloseSnack} content={'Add product to cart successfully!'} />
+      <PreviewImage toggler={toggerImage} imagesProp={imagesURL} />
     </>
   );
 };

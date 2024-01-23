@@ -27,7 +27,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PrintIcon from '@mui/icons-material/Print';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
-import { formattingVND, truncateText, cssScrollBar } from 'utils/helper';
+import { formattingVND, truncateText, cssScrollBar, checkIsApprover } from 'utils/helper';
 import AddIcon from '@mui/icons-material/Add';
 import ModalAddProduct from 'ui-component/modal/add-product/AddProduct';
 import EditIcon from '@mui/icons-material/Edit';
@@ -45,6 +45,10 @@ import Loader from 'ui-component/Loader';
 import ProductEmpty from 'ui-component/ProductEmpty';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ModalAddUser from 'ui-component/modal/add-user/ModalAddUser';
+import CoPresentIcon from '@mui/icons-material/CoPresent';
+import ModalDepartment from 'ui-component/modal/department/ModalDepartment';
+import { useNavigate } from 'react-router';
+import { ConfigPath } from 'routes/DefinePath';
 
 const columns = [
   {
@@ -89,15 +93,16 @@ const UserPage = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [contentAlert, setContentAlert] = useState('');
   const [typeAlert, setTypeAlert] = useState('success');
+  const [openModalDeparment, setOpenModalDepartment] = useState(false);
+  const navigate = useNavigate();
 
   const openMenu = Boolean(anchorEl);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
   const onCloseAlert = () => {
     setOpenAlert(false);
+  };
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -150,9 +155,12 @@ const UserPage = () => {
       setLoading(false);
     }
   };
-  // useEffect(() => {
-  //   getAllUser();
-  // }, []);
+  useEffect(() => {
+    let check = checkIsApprover();
+    if (!check) {
+      navigate(ConfigPath.home);
+    }
+  }, []);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -197,6 +205,24 @@ const UserPage = () => {
     setOpenAlert(true);
   };
 
+  const onCloseModalDepartment = () => {
+    setOpenModalDepartment(false);
+  };
+  const handleClickDepartment = () => {
+    setOpenModalDepartment(true);
+  };
+  const afterSave = (res, textSucces) => {
+    if (res?.status === 200) {
+      setTypeAlert('success');
+      setContentAlert(textSucces);
+      setOpenAlert(true);
+    } else {
+      setTypeAlert('error');
+      setContentAlert(res?.data?.message || 'Update fail!');
+      setOpenAlert(true);
+    }
+  };
+
   return (
     <>
       {loading && <Loader />}
@@ -223,8 +249,22 @@ const UserPage = () => {
             </FormControl>
           </Box>
           <Box>
-            <Button onClick={handleClickAddProduct} variant="contained" size={'small'} startIcon={<AddIcon stroke={1.5} size="1.3rem" />}>
+            <Button
+              onClick={handleClickAddProduct}
+              variant="contained"
+              size={'small'}
+              sx={{ mr: 1 }}
+              startIcon={<AddIcon stroke={1.5} size="1.3rem" />}
+            >
               Add user
+            </Button>
+            <Button
+              onClick={handleClickDepartment}
+              variant="contained"
+              size={'small'}
+              startIcon={<CoPresentIcon stroke={1.5} size="1.3rem" />}
+            >
+              Department
             </Button>
           </Box>
         </Box>
@@ -328,6 +368,7 @@ const UserPage = () => {
       </Menu>
       <CustomLoading open={loading} />
       <CustomAlert open={openAlert} type={typeAlert} content={contentAlert} handleClose={onCloseAlert} />
+      <ModalDepartment open={openModalDeparment} afterSave={afterSave} handleClose={onCloseModalDepartment} />
     </>
   );
 };

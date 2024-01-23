@@ -1,5 +1,6 @@
 import { ConfigPath } from 'routes/DefinePath';
 import config from '../config';
+import { ShowQuestion } from './confirm';
 function isString(x) {
   return Object.prototype.toString.call(x) === '[object String]';
 }
@@ -9,7 +10,6 @@ export const formattingVND = (num) => {
     return rs.replace(',', '.');
   }
   const number = parseFloat(num);
-  console.log('number', number);
   if (isNaN(number)) {
     return 0 + ' vnđ';
   }
@@ -78,6 +78,7 @@ const delete_cookie = (name) => {
 export const logout = () => {
   let assToken = getCookie(config.ASSET_TOKEN);
   localStorage.removeItem(config.DATA_USER);
+  localStorage.removeItem('CART');
   delete_cookie(config.ASSET_TOKEN);
 };
 
@@ -129,3 +130,28 @@ export const formatDateFromDB = (dateStr) => {
   }
   return '';
 };
+
+export const handleLogout = async () => {
+  ShowQuestion({
+    icon: 'warning',
+    content: 'Do you want to logout?',
+    titleProp: 'LOGOUT',
+    onClickYes: async () => {
+      await logout();
+      window.location = ConfigPath.home;
+    }
+  });
+};
+
+export const checkIsApprover = () => {
+  const dataStr = localStorage.getItem(config.DATA_USER);
+  if (dataStr) {
+    const dataObj = JSON.parse(dataStr);
+    if (dataObj?.isApprover) {
+      return true;
+    }
+  }
+  return false;
+};
+
+export const hiddenRouteUser = [ConfigPath.userPage, ConfigPath.productPage];

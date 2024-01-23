@@ -9,7 +9,7 @@ import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { CardMedia } from '@mui/material';
 import config from '../../../config';
 
-const ImageSlide = ({ images }) => {
+const ImageSlide = ({ images ,onClickImage}) => {
   return (
     <>
       <Swiper
@@ -28,7 +28,15 @@ const ImageSlide = ({ images }) => {
       >
         {images?.map((item, index) => (
           <SwiperSlide key={index}>
-            <CardMedia component="img" image={config.apiImage + item?.url} sx={{ height: '350px', objectFit: 'contain' }} alt="Image" />
+            <CardMedia
+              onClick={() => {
+                onClickImage(index);
+              }}
+              component="img"
+              image={config.apiImage + item?.url}
+              sx={{ height: '350px', objectFit: 'contain' }}
+              alt="Image"
+            />
           </SwiperSlide>
         ))}
       </Swiper>

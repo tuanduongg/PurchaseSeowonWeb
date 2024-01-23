@@ -17,6 +17,7 @@ const OrderList = Loadable(lazy(() => import('views/order-list/OrderList')));
 const ProductPage = Loadable(lazy(() => import('views/product/ProductPage')));
 const ProfilePage = Loadable(lazy(() => import('views/profile/ProfilePage')));
 const UserPage = Loadable(lazy(() => import('views/user/UserPage')));
+const AcceptorPage = Loadable(lazy(() => import('views/acceptor/AcceptorPage')));
 
 // ==============================|| MAIN ROUTING ||============================== //
 
@@ -47,6 +48,10 @@ const MainRoutes = {
     {
       path: ConfigPath.userPage,
       element: <UserPage />
+    },
+    {
+      path: ConfigPath.acceptorPage,
+      element: <AcceptorPage />
     }
   ]
 };

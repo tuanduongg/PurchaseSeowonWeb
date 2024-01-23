@@ -13,6 +13,8 @@ import NavItem from '../NavItem';
 // assets
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons';
+import { ConfigPath } from 'routes/DefinePath';
+import { checkIsApprover, hiddenRouteUser } from 'utils/helper';
 
 // ==============================|| SIDEBAR MENU LIST COLLAPSE ITEMS ||============================== //
 
@@ -23,6 +25,7 @@ const NavCollapse = ({ menu, level }) => {
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [checkShow, setCheckShow] = useState(false);
 
   const handleClick = () => {
     setOpen(!open);
@@ -41,6 +44,7 @@ const NavCollapse = ({ menu, level }) => {
       }
     });
   };
+
 
   // menu collapse for sub-levels
   useEffect(() => {
@@ -63,17 +67,19 @@ const NavCollapse = ({ menu, level }) => {
 
   // menu collapse & item
   const menus = menu.children?.map((item) => {
-    switch (item.type) {
-      case 'collapse':
-        return <NavCollapse key={item.id} menu={item} level={level + 1} />;
-      case 'item':
-        return <NavItem key={item.id} item={item} level={level + 1} />;
-      default:
-        return (
-          <Typography key={item.id} variant="h6" color="error" align="center">
-            Menu Items Error
-          </Typography>
-        );
+    if (!check && !hiddenRouteUser.includes(item.id)) {
+      switch (item.type) {
+        case 'collapse':
+          return <NavCollapse key={item.id} menu={item} level={level + 1} />;
+        case 'item':
+          return <NavItem key={item.id} item={item} level={level + 1} />;
+        default:
+          return (
+            <Typography key={item.id} variant="h6" color="error" align="center">
+              Menu Items Error
+            </Typography>
+          );
+      }
     }
   });
 
