@@ -41,6 +41,7 @@ import { ConfigPath } from 'routes/DefinePath';
 import { handleLogout, logout } from 'utils/helper';
 import config from '../../../../config';
 import { ShowQuestion } from 'utils/confirm';
+import Customization from 'layout/Customization';
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -54,6 +55,7 @@ const ProfileSection = () => {
   const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+  const [openSetting, setOpenSetting] = useState(false);
   const [infoUser, setInfoUser] = useState({});
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
@@ -78,7 +80,9 @@ const ProfileSection = () => {
   const handleListItemClick = (event, index, route = '') => {
     setSelectedIndex(index);
     handleClose(event);
-
+    if (index === 0) {
+      setOpenSetting(true);
+    }
     if (route && route !== '') {
       navigate(route);
     }
@@ -310,6 +314,12 @@ const ProfileSection = () => {
           </Transitions>
         )}
       </Popper>
+      <Customization
+        open={openSetting}
+        handleToggle={() => {
+          setOpenSetting(false);
+        }}
+      />
     </>
   );
 };

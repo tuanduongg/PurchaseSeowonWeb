@@ -32,6 +32,7 @@ import restApi from 'utils/restAPI';
 import { DefineRouteApi } from 'DefineRouteAPI';
 import { ConfigPath } from 'routes/DefinePath';
 import PreviewImage from 'ui-component/cards/PreviewImage';
+import config from '../../../config';
 
 const initValidate = { err: false, msg: '' };
 
@@ -54,14 +55,14 @@ const formatPrice = (value) => {
   return '';
 };
 
-const getImagesShoww = (images) => {
+const getImagesShow = (images) => {
   const arr = [];
   if (images) {
     for (let i = 0; i < images?.length; i++) {
       if (images[i]?.createObjectURL) {
         arr.push(images[i]?.createObjectURL);
       } else {
-        arr.push(images[i]?.url);
+        arr.push(config.apiImage + images[i]?.url);
       }
     }
     console.log('arr', arr);
@@ -70,7 +71,7 @@ const getImagesShoww = (images) => {
   return [];
 };
 
-const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle, afterSaved, onDeleteErr }) => {
+const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tittle, afterSaved, onDeleteErr,categories }) => {
   const [product, setProduct] = useState(null);
   const [name, setName] = useState('');
   const [validateName, setValidateName] = useState(initValidate);
@@ -83,11 +84,13 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
   const [description, setDescription] = useState('');
   const [validateDescription, setValidateDescription] = useState(initValidate);
   const [images, setImages] = useState([]);
-  const [categories, setCategories] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [typeShowImage, setTypeShowImage] = useState('');
   const [units, setUnits] = useState([]);
   const [unitID, setUnitID] = useState('');
   const [validateUnit, setValidateUnit] = useState(initValidate);
+  const [toggerImage, setToggerImage] = useState(false);
+  const [sildeImage, setSildeImage] = useState(0);
 
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
@@ -123,12 +126,12 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
     }
   }, [productProp]);
 
-  const getAllCategory = async () => {
-    const res = await restApi.get(DefineRouteApi.getAllCategory);
-    if (res?.status === 200) {
-      setCategories(res?.data);
-    }
-  };
+  // const getAllCategory = async () => {
+  //   const res = await restApi.get(DefineRouteApi.getAllCategory);
+  //   if (res?.status === 200) {
+  //     setCategories(res?.data);
+  //   }
+  // };
   const getAllUnit = async () => {
     const res = await restApi.get(DefineRouteApi.getAllUnit);
     if (res?.status === 200) {
@@ -137,7 +140,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
   };
   useEffect(() => {
     getAllUnit();
-    getAllCategory();
+    // getAllCategory();
   }, []);
   //0966D0D9-56AF-EE11-A1CA-04D9F5C9D2EB
   const handleOnSave = async () => {
@@ -234,11 +237,15 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
     }
   };
 
-  console.log('images', images);
+  const handleClickImage = (index) => {
+    setSildeImage(index);
+    setToggerImage(!toggerImage);
+  };
 
   return (
     <>
       <Dialog
+        disableEscapeKeyDown={true}
         maxWidth={'sm'}
         sx={{ minHeight: '90vh' }}
         fullScreen={fullScreen}
@@ -392,6 +399,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
                   </Typography>
                 )}
                 <ListImageProduct
+                  onClickImage={handleClickImage}
                   handleRemoveImage={handleRemoveImage}
                   afterChangeFiles={handleChangeInputFiles}
                   type={type}
@@ -409,7 +417,7 @@ const ModalAddProduct = ({ open, handleClose, fullScreen, type, productProp, tit
           </DialogActions>
         )}
       </Dialog>
-      <PreviewImage toggler={toggerImage} imagesProp={getImagesShow(images)} />
+      <PreviewImage slide={sildeImage} toggler={toggerImage} imagesProp={getImagesShow(images)} />
     </>
   );
 };

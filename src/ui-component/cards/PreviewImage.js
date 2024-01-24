@@ -2,11 +2,10 @@ import React, { useState, useCallback } from 'react';
 import { CardMedia } from '@mui/material';
 import FsLightbox from 'fslightbox-react';
 
-const PreviewImage = ({ imagesProp, toggler }) => {
-
+const PreviewImage = ({ imagesProp, toggler, slide }) => {
   return (
     <>
-      <FsLightbox type={'image'} toggler={toggler} sources={imagesProp} />
+      <FsLightbox sourceIndex={slide} type={'image'} toggler={toggler} key={imagesProp?.length} sources={imagesProp} />
     </>
   );
 };

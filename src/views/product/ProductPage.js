@@ -45,6 +45,9 @@ import Loader from 'ui-component/Loader';
 import ProductEmpty from 'ui-component/ProductEmpty';
 import { useNavigate } from 'react-router';
 import { ConfigPath } from 'routes/DefinePath';
+import CategoryIcon from '@mui/icons-material/Category';
+import ModalCategory from 'ui-component/modal/category/ModalCategory';
+import { useRef } from 'react';
 
 const columns = [
   {
@@ -101,8 +104,11 @@ const ProductPage = () => {
   const [openAlert, setOpenAlert] = useState(false);
   const [contentAlert, setContentAlert] = useState('');
   const [typeAlert, setTypeAlert] = useState('success');
+  const [categories, setCategories] = useState([]);
+  const [openModalCategory, setOpenModalCategory] = useState(false);
   const navigate = useNavigate();
   const openMenu = Boolean(anchorEl);
+  const inputRef = useRef();
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -148,6 +154,15 @@ const ProductPage = () => {
       }
     });
   };
+  const getAllCategory = async () => {
+    const res = await restApi.get(DefineRouteApi.getAllCategory);
+    if (res?.status === 200) {
+      setCategories(res?.data);
+    }
+  };
+  useEffect(() => {
+    getAllCategory();
+  }, []);
   const handleCloseMenu = () => {
     setAnchorEl(null);
   };
@@ -210,6 +225,18 @@ const ProductPage = () => {
       }
     });
   };
+
+  const onAfterSaveCategory = (res, text) => {
+    if (res?.status === 200) {
+      getAllCategory();
+      setTypeAlert('success');
+      setContentAlert(text);
+    } else {
+      setTypeAlert('error');
+      setContentAlert(res?.data?.message || 'Fail to update category!');
+    }
+    setOpenAlert(true);
+  };
   const onAfterSaved = (res) => {
     const msg = {
       success: typeModal !== 'EDIT' ? 'Add new product successful!' : 'Update product successful!',
@@ -230,7 +257,18 @@ const ProductPage = () => {
     setContentAlert(message || 'Delete image fail!');
     setOpenAlert(true);
   };
-
+  const onClickCategory = () => {
+    setOpenModalCategory(true);
+  };
+  const onCloseModalCategory = () => {
+    setOpenModalCategory(false);
+  };
+  const handleChangeFiles = async (e) => {
+    console.log('e', e.target.files[0]);
+    const formData = new FormData();
+    formData.append('file', e.target.files[0]);
+    const result = await restApi.post(DefineRouteApi.upLoadExcel, formData);
+  };
   return (
     <>
       {loading && <Loader />}
@@ -257,8 +295,28 @@ const ProductPage = () => {
             </FormControl>
           </Box>
           <Box>
-            <Button onClick={handleClickAddProduct} variant="contained" size={'small'} startIcon={<AddIcon stroke={1.5} size="1.3rem" />}>
+            <Button
+              onClick={() => {
+                inputRef?.current?.click();
+              }}
+              sx={{ mr: 1 }}
+              variant="contained"
+              size={'small'}
+              startIcon={<AddIcon stroke={1.5} size="1.3rem" />}
+            >
+              Upload excel
+            </Button>
+            <Button
+              onClick={handleClickAddProduct}
+              sx={{ mr: 1 }}
+              variant="contained"
+              size={'small'}
+              startIcon={<AddIcon stroke={1.5} size="1.3rem" />}
+            >
               Add product
+            </Button>
+            <Button onClick={onClickCategory} variant="contained" size={'small'} startIcon={<CategoryIcon stroke={1.5} size="1.3rem" />}>
+              Category
             </Button>
           </Box>
         </Box>
@@ -296,7 +354,8 @@ const ProductPage = () => {
                               color={'warning'}
                               sx={{
                                 '&:hover': {
-                                  cursor: 'pointer'
+                                  cursor: 'pointer',
+                                  color: '#1e88e5'
                                 }
                               }}
                             >
@@ -304,7 +363,9 @@ const ProductPage = () => {
                             </Link>
                           </Stack>
                         </TableCell>
-                        <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{row?.inventory}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'center', color: row?.inventory < 1 ? 'red' : '' }}>
+                          {row?.inventory}
+                        </TableCell>
                         <TableCell sx={{ padding: '5px', textAlign: 'left' }}>{row?.price ? formattingVND(row?.price) : ''}</TableCell>
                         <TableCell sx={{ padding: '5px' }}>{row?.category?.categoryName}</TableCell>
                         <TableCell sx={{ padding: '5px' }}>
@@ -360,6 +421,7 @@ const ProductPage = () => {
         </Box>
       </Box>
       <ModalAddProduct
+        categories={categories}
         onDeleteErr={onDeleteImageErr}
         productProp={productSelect}
         tittle={titleModal}
@@ -391,6 +453,14 @@ const ProductPage = () => {
       </Menu>
       <CustomLoading open={loading} />
       <CustomAlert open={openAlert} type={typeAlert} content={contentAlert} handleClose={onCloseAlert} />
+      <input type="file" onChange={handleChangeFiles} accept=".xls, .xlsx" ref={inputRef} hidden />
+      <ModalCategory
+        getAll={getAllCategory}
+        afterSave={onAfterSaveCategory}
+        categories={categories}
+        open={openModalCategory}
+        handleClose={onCloseModalCategory}
+      />
     </>
   );
 };

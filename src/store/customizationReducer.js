@@ -11,7 +11,8 @@ export const initialState = {
   borderRadius: config.borderRadius,
   opened: true,
   isLogin: false,
-  cart: []
+  cart: [],
+  afterSave: false
 };
 
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
@@ -49,6 +50,11 @@ const customizationReducer = (state = initialState, action) => {
       return {
         ...state,
         cart: action.cart
+      };
+    case actionTypes.AFTER_SAVE:
+      return {
+        ...state,
+        afterSave: action.afterSave
       };
     case actionTypes.UPDATE_CART_ITEM: {
       const product = action.product;

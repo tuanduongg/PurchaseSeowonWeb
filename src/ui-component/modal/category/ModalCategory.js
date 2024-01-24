@@ -27,86 +27,76 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import restApi from 'utils/restAPI';
 import { DefineRouteApi } from 'DefineRouteAPI';
-import TableDepartment from './component/TableDeparment';
 import { ShowQuestion } from 'utils/confirm';
+import TableCategory from './component/TableCategory';
 
 const initValidate = { err: false, msg: '' };
 
-const formatPrice = (value) => {
-  // Xóa các ký tự không phải số từ giá trị nhập vào
-  const sanitizedValue = value.replace(/[^0-9]/g, '');
+// const formatPrice = (value) => {
+//   // Xóa các ký tự không phải số từ giá trị nhập vào
+//   const sanitizedValue = value.replace(/[^0-9]/g, '');
 
-  // Kiểm tra xem giá trị sau khi xóa ký tự có bằng không hay không
-  if (sanitizedValue !== '') {
-    if (value) {
-      const sanitizedValue = value.replace(/[^0-9]/g, '');
+//   // Kiểm tra xem giá trị sau khi xóa ký tự có bằng không hay không
+//   if (sanitizedValue !== '') {
+//     if (value) {
+//       const sanitizedValue = value.replace(/[^0-9]/g, '');
 
-      // Chuyển định dạng số thành chuỗi có dấu phẩy ngăn cách hàng nghìn
-      const formattedValue = new Intl.NumberFormat('en-US').format(parseInt(sanitizedValue, 10));
+//       // Chuyển định dạng số thành chuỗi có dấu phẩy ngăn cách hàng nghìn
+//       const formattedValue = new Intl.NumberFormat('en-US').format(parseInt(sanitizedValue, 10));
 
-      return formattedValue.replace(',', '.');
-    }
-    return value;
-  }
-  return '';
-};
+//       return formattedValue.replace(',', '.');
+//     }
+//     return value;
+//   }
+//   return '';
+// };
 
-const ModalDepartment = ({ open, handleClose, afterSave }) => {
-  const [departments, setDepartments] = useState([]);
+const ModalCategory = ({ open, handleClose, afterSave, categories, getAll }) => {
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
-  const [nameDepart, setNameDepart] = useState('');
-  const [validateNameDepartment, setValidateNameDepartment] = useState(initValidate);
+  const [name, setName] = useState('');
+  const [validateName, setValidateName] = useState(initValidate);
 
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
       setSelectedRow(null);
-      setNameDepart('');
+      setName('');
       handleClose();
     }
   };
 
-  const getAllDepart = async () => {
-    const res = await restApi.get(DefineRouteApi.allDepartment);
-    if (res?.status === 200) {
-      setDepartments(res?.data);
-    }
-  };
-  useEffect(() => {
-    getAllDepart();
-  }, []);
   const onChangeSelectedRow = (row) => {
     setSelectedRow(row);
-    setNameDepart(row?.departName ?? '');
+    setName(row?.categoryName ?? '');
   };
   const handleSave = async () => {
     let data = {};
-    let url = DefineRouteApi.addDepartment;
+    let url = DefineRouteApi.addCategory;
     let textSucces = '';
     if (selectedRow) {
-      textSucces = 'Update department success!';
-      data = { departID: selectedRow?.departID, departName: nameDepart };
-      url = DefineRouteApi.updateDepartment;
+      textSucces = 'Update category success!';
+      data = { categoryID: selectedRow?.categoryID, categoryName: name };
+      url = DefineRouteApi.updateCategory;
     } else {
-      textSucces = 'Add new department success!';
-      data = { departName: nameDepart };
+      textSucces = 'Add new category success!';
+      data = { categoryName: name };
     }
     const res = await restApi.post(url, data);
     if (res?.status === 200) {
       if (!selectedRow) {
-        setNameDepart('');
+        setName('');
       }
-      getAllDepart();
+      // getAll();
     }
     afterSave(res, textSucces);
   };
   const handleClickAdd = () => {
-    if (nameDepart?.trim() === '') {
-      setValidateNameDepartment({ err: true, msg: 'Department is required.' });
+    if (name?.trim() === '') {
+      setValidateName({ err: true, msg: 'Category is required.' });
     } else {
       ShowQuestion({
-        content: `Do you want to ${selectedRow ? 'update' : 'add new'} department?`,
-        titleProp: 'Department',
+        content: `Do you want to ${selectedRow ? 'update' : 'add new'} category?`,
+        titleProp: 'Category',
         icon: 'warning',
         onClickYes: () => {
           handleSave();
@@ -115,13 +105,13 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
     }
   };
   const handleClickDeleteRow = (row) => {
-    alert(row?.departName ?? '');
+    alert(row?.categoryName ?? '');
   };
 
   return (
     <>
       <Dialog
-      disableEscapeKeyDown={true}
+        disableEscapeKeyDown={true}
         maxWidth={'sm'}
         sx={{ minHeight: '90vh' }}
         fullScreen={false}
@@ -131,7 +121,7 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <DialogTitle fontSize={'20px'} sx={{ padding: '10px' }}>
-            Department
+            Category
           </DialogTitle>
           <IconButton onClick={onClose}>
             <CloseIcon />
@@ -143,20 +133,20 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
             <Grid container spacing={2}>
               <Grid item xs={9.5}>
                 <TextField
-                  error={validateNameDepartment?.err}
-                  helperText={validateNameDepartment?.msg}
+                  error={validateName?.err}
+                  helperText={validateName?.msg}
                   onChange={(e) => {
-                    if (validateNameDepartment?.err) {
-                      setValidateNameDepartment(initValidate);
+                    if (validateName?.err) {
+                      setValidateName(initValidate);
                     }
-                    setNameDepart(e?.target?.value);
+                    setName(e?.target?.value);
                   }}
                   sx={{ height: '100%' }}
                   fullWidth
-                  placeholder="Typing your name of deparment..."
+                  placeholder="Typing your name of category..."
                   size="small"
-                  value={nameDepart}
-                  label="Department"
+                  value={name}
+                  label="Category"
                   variant="outlined"
                 />
               </Grid>
@@ -174,11 +164,11 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
                 </Button>
               </Grid>
               <Grid item xs={12}>
-                <TableDepartment
+                <TableCategory
                   onClickDelete={handleClickDeleteRow}
                   selectedRow={selectedRow}
                   changeSelectedRow={onChangeSelectedRow}
-                  listDepartment={departments}
+                  listCategory={categories}
                 />
               </Grid>
             </Grid>
@@ -194,4 +184,4 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
   );
 };
 
-export default ModalDepartment;
+export default ModalCategory;

@@ -10,3 +10,4 @@ export const CART = '@customization/CART';
 export const ADD_TO_CART = '@customization/ADD_TO_CART';
 export const  UPDATE_CART_ITEM = '@customization/UPDATE_CART_ITEM';
 export const REMOVE_ITEM_CART = '@customization/REMOVE_ITEM_CART';
+export const AFTER_SAVE = '@customization/AFTER_SAVE';

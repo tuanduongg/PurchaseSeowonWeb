@@ -29,10 +29,9 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1);
   const [openSnack, setOpenSnack] = useState(false);
-  const [currentImage, setCurrentImage] = useState(0);
-  const [isViewerOpen, setIsViewerOpen] = useState(false);
   const [toggerImage, setToggerImage] = useState(false);
   const [imagesURL, setImageURL] = useState([]);
+  const [openToImage, setOpenToImage] = useState(0);
 
   const onClose = (e, reason) => {
     if (reason != 'backdropClick') {
@@ -58,23 +57,26 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
       intQuantity = 1;
       setQuantity(1);
     }
+
     const item = { ...product, quantity: intQuantity };
     dispatch({ type: UPDATE_CART_ITEM, product: item });
     setOpenSnack(true);
   };
 
-  const closeImageViewer = () => {
-    setCurrentImage(0);
-    setIsViewerOpen(false);
-  };
   const onClickImage = (index) => {
+    setOpenToImage(index);
     setToggerImage(!toggerImage);
-    // setCurrentImage(index);
-    // setIsViewerOpen(true);
   };
   return (
     <>
-      <Dialog sx={{ '& .MuiPaper-root': { minWidth: '50%' } }} maxWidth={'md'} fullScreen={fullScreen} open={open} onClose={onClose}>
+      <Dialog
+        disableEscapeKeyDown={true}
+        sx={{ '& .MuiPaper-root': { minWidth: '50%' } }}
+        maxWidth={'md'}
+        fullScreen={fullScreen}
+        open={open}
+        onClose={onClose}
+      >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <DialogTitle fontSize={'20px'} sx={{ padding: '10px' }}>
             Product detail
@@ -94,7 +96,7 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                 <Typography variant="h2" sx={{ margin: { xs: '5px', sm: '0px' } }}>
                   {product?.productName}
                 </Typography>
-                <Typography variant="h3" color={'primary'} sx={{ marginTop: '15px' }}>
+                <Typography variant="h3" color="primary" sx={{ marginTop: '15px' }}>
                   {product?.price ? `${formattingVND(product?.price)}/${product?.unit?.unitName}` : ''}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
@@ -104,7 +106,11 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                   <TextField
                     value={quantity}
                     onChange={(e) => {
-                      setQuantity(e.target.value);
+                      if (parseInt(e.target.value) > parseInt(product?.inventory)) {
+                        setQuantity(product?.inventory);
+                      } else {
+                        setQuantity(e.target.value);
+                      }
                     }}
                     type="number"
                     size="small"
@@ -120,8 +126,9 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                 </Box>
                 <Box sx={{ minHeight: '25vh' }}>
                   <Typography variant="h5" sx={{ margin: '20px 0px 0px 0px' }}>
-                    Description :
+                    Inventory : {product?.inventory}
                   </Typography>
+                  <Typography variant="h5">Description :</Typography>
                   <Typography dangerouslySetInnerHTML={{ __html: product?.description }} variant="p" sx={{ margin: '10px 0px 0px 0px' }}>
                     {/* {product?.description} */}
                   </Typography>
@@ -166,7 +173,7 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
         </DialogActions> */}
       </Dialog>
       <CustomAlert type={'success'} open={openSnack} handleClose={handleCloseSnack} content={'Add product to cart successfully!'} />
-      <PreviewImage toggler={toggerImage} imagesProp={imagesURL} />
+      <PreviewImage toggler={toggerImage} slide={openToImage} imagesProp={imagesURL} />
     </>
   );
 };

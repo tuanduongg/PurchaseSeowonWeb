@@ -30,10 +30,9 @@ import restApi from 'utils/restAPI';
 import CusomLoading from 'ui-component/loading/CustomLoading';
 import { useRef } from 'react';
 import CustomAlert from 'ui-component/alert/CustomAlert';
-import { useDispatch } from 'react-redux';
-import { CART } from 'store/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { AFTER_SAVE, CART } from 'store/actions';
 import PreviewImage from 'ui-component/cards/PreviewImage';
-
 // ==============================|| DEFAULT Homepage ||============================== //
 
 const Homepage = () => {
@@ -53,8 +52,9 @@ const Homepage = () => {
   const [listProduct, setListProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openSnack, setOpenSnack] = useState(false);
-
   const dispatch = useDispatch();
+  const customization = useSelector((state) => state.customization);
+
 
   const debounceTimeout = useRef(null);
 
@@ -93,7 +93,13 @@ const Homepage = () => {
       setLoading(false);
     }
   };
-
+  const getDataAfterSave = () => {
+    if (customization?.afterSave) {
+      getAllProduct();
+      dispatch({ type: AFTER_SAVE, afterSave: false });
+    }
+  };
+  getDataAfterSave();
   const getDataCart = () => {
     const cartStr = localStorage.getItem('CART');
     if (cartStr) {
@@ -218,7 +224,6 @@ const Homepage = () => {
         handleClose={handleCloseModelDetailPro}
       />
       <CustomAlert type={'success'} open={openSnack} handleClose={handleCloseSnack} content={'Add product to cart successfully!'} />
-      
     </>
   );
 };

@@ -33,9 +33,10 @@ import { ShowAlert, ShowQuestion } from 'utils/confirm';
 import restApi from 'utils/restAPI';
 import { DefineRouteApi } from 'DefineRouteAPI';
 import { useDispatch, useSelector } from 'react-redux';
-import { CART } from 'store/actions';
+import { AFTER_SAVE, CART } from 'store/actions';
 import CheckIcon from '@mui/icons-material/Check';
 import config from '../../../config';
+import { ConfigPath } from 'routes/DefinePath';
 
 const COLUMS = [
   { id: 'info_item', label: 'Info item' },
@@ -163,10 +164,17 @@ const DetailOrder = ({
         titleProp: 'Order',
         onClose: () => {
           dispatch({ type: CART, cart: [] });
+          if (window.location.pathname === ConfigPath.home) {
+            //
+            console.log('vao state redux');
+            dispatch({ type: AFTER_SAVE, afterSave: true });
+          }
           localStorage.removeItem('CART');
           onClose();
         }
       });
+    } else {
+      dispatch({ type: AFTER_SAVE, afterSave: false });
     }
   };
   const handleClickOrder = () => {
@@ -264,7 +272,14 @@ const DetailOrder = ({
 
   return (
     <>
-      <Dialog maxWidth={'md'} fullScreen={fullScreen} open={open} onClose={onClose} aria-labelledby="responsive-dialog-title">
+      <Dialog
+        disableEscapeKeyDown={true}
+        maxWidth={'md'}
+        fullScreen={fullScreen}
+        open={open}
+        onClose={onClose}
+        aria-labelledby="responsive-dialog-title"
+      >
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <DialogTitle fontSize={'20px'} sx={{ padding: '10px' }} id="responsive-dialog-title">
             <Stack flexDirection={'row'} alignItems={'center'}>

@@ -1,14 +1,16 @@
 export const DefineRouteApi = {
   login: '/auth/login',
   profile: '/auth/profile',
+
   getProductPubic: '/product/public',
   getAllProduct: '/product/all',
   addProduct: '/product/add',
   editProduct: '/product/edit',
   updateProduct: '/product/update',
   deleteProduct: '/product/delete',
-  getAllCategory: '/category/all',
   changePublicProduct: '/product/changePublic',
+  upLoadExcel: '/product/uploadExcel',
+
   getAllUnit: '/unit/all',
   deleteImageByProduct: '/image/delete',
   createOrder: '/order/add',
@@ -21,8 +23,12 @@ export const DefineRouteApi = {
 
   changeStatusOrder: '/order/change-status',
   allStatus: '/status/all',
-  
+
   allDepartment: '/department/all',
-  addDepartment: 'department/add',
-  updateDepartment: 'department/update',
+  addDepartment: '/department/add',
+  updateDepartment: '/department/update',
+
+  getAllCategory: '/category/all',
+  addCategory: '/category/add',
+  updateCategory: '/category/update'
 };
