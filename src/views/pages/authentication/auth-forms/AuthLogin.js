@@ -67,7 +67,6 @@ const FirebaseLogin = ({ ...others }) => {
   const customization = useSelector((state) => state.customization);
   const location = useLocation();
 
-
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -82,8 +81,8 @@ const FirebaseLogin = ({ ...others }) => {
     <>
       <Formik
         initialValues={{
-          username: 'admin',
-          password: '1234',
+          username: '',
+          password: '',
           submit: null
         }}
         validationSchema={Yup.object().shape({
@@ -134,6 +133,7 @@ const FirebaseLogin = ({ ...others }) => {
             <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-email-login">Username</InputLabel>
               <OutlinedInput
+              autoFocus
                 id="outlined-adornment-email-login"
                 type="text"
                 value={values.username}

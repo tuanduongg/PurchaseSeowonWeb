@@ -99,7 +99,7 @@ const CartSection = () => {
       <Box
         sx={{
           ml: 2,
-          mr: 0,
+          mr: 2,
           [theme.breakpoints.down('md')]: {
             mr: 0
           }

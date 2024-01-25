@@ -264,7 +264,6 @@ const ProductPage = () => {
     setOpenModalCategory(false);
   };
   const handleChangeFiles = async (e) => {
-    console.log('e', e.target.files[0]);
     const formData = new FormData();
     formData.append('file', e.target.files[0]);
     const result = await restApi.post(DefineRouteApi.upLoadExcel, formData);
