@@ -294,7 +294,7 @@ const ProductPage = () => {
             </FormControl>
           </Box>
           <Box>
-            <Button
+            {/* <Button
               onClick={() => {
                 inputRef?.current?.click();
               }}
@@ -304,7 +304,7 @@ const ProductPage = () => {
               startIcon={<AddIcon stroke={1.5} size="1.3rem" />}
             >
               Upload excel
-            </Button>
+            </Button> */}
             <Button
               onClick={handleClickAddProduct}
               sx={{ mr: 1 }}

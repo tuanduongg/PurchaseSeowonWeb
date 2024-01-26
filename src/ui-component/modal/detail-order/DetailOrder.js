@@ -218,7 +218,8 @@ const DetailOrder = ({
   const handleChangeStatus = async (type) => {
     const url = DefineRouteApi.changeStatusOrder;
     let objSend = {
-      orderID: orderSelect?.orderID
+      orderID: orderSelect?.orderID,
+      departmentID: orderSelect?.departmentID
     };
     let text = '';
     switch (type) {

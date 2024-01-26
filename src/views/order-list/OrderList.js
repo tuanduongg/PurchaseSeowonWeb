@@ -125,12 +125,17 @@ const getStatusChip2 = (order, userStatus, maxLevel) => {
           text = 'My Order';
           color = 'secondary';
         } else {
-          if (level >= userStatus?.level) {
+          if (userStatus && level >= userStatus?.level) {
             text = 'Accepted';
             color = 'info';
           } else {
-            text = 'New';
-            color = 'secondary';
+            if (userObj?.isManager && level === 3 && !userStatus) {
+              text = 'Accepted';
+              color = 'info';
+            } else {
+              text = 'New';
+              color = 'secondary';
+            }
           }
         }
       } else {
