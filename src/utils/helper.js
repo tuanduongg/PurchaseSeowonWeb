@@ -79,6 +79,7 @@ export const logout = () => {
   let assToken = getCookie(config.ASSET_TOKEN);
   localStorage.removeItem(config.DATA_USER);
   localStorage.removeItem('CART');
+  localStorage.removeItem(config.CUSTOMTHEME);
   delete_cookie(config.ASSET_TOKEN);
 };
 
@@ -155,3 +156,11 @@ export const checkIsApprover = () => {
 };
 
 export const hiddenRouteUser = [ConfigPath.userPage, ConfigPath.productPage];
+
+export const isExcelFile = (file) => {
+  // Get the MIME type of the file
+  const fileType = file.type;
+
+  // Check if the MIME type corresponds to Excel files
+  return fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+};

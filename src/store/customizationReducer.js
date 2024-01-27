@@ -1,14 +1,19 @@
 // project imports
-import config from 'config';
+import theme from 'themes';
+import config from '../config';
 
 // action - state management
 import * as actionTypes from './actions';
-
+let themeObj = {};
+const themeStr = localStorage.getItem(config.CUSTOMTHEME);
+if (themeStr) {
+  themeObj = JSON.parse(themeStr);
+}
 export const initialState = {
   isOpen: [], // for active default menu
   defaultId: 'default',
-  fontFamily: config.fontFamily,
-  borderRadius: config.borderRadius,
+  fontFamily: themeObj?.fontFamily ?? config.fontFamily,
+  borderRadius: themeObj?.borderRadius ?? config.borderRadius,
   opened: true,
   isLogin: false,
   cart: [],
@@ -32,11 +37,25 @@ const customizationReducer = (state = initialState, action) => {
         opened: action.opened
       };
     case actionTypes.SET_FONT_FAMILY:
+      localStorage.setItem(
+        config.CUSTOMTHEME,
+        JSON.stringify({
+          fontFamily: action.fontFamily,
+          borderRadius: state.borderRadius
+        })
+      );
       return {
         ...state,
         fontFamily: action.fontFamily
       };
     case actionTypes.SET_BORDER_RADIUS:
+      localStorage.setItem(
+        config.CUSTOMTHEME,
+        JSON.stringify({
+          fontFamily: state.fontFamily,
+          borderRadius: action.borderRadius
+        })
+      );
       return {
         ...state,
         borderRadius: action.borderRadius

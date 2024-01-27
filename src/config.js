@@ -10,6 +10,7 @@ const config = {
   apiImage: process.env.REACT_APP_IMAGE_URL ?? 'http://localhost:8088/',
   DATA_USER: process.env.REACT_APP_DATA_USER ?? 'DATA_USER',
   ASSET_TOKEN: 'asset_token',
-  COLOR_MAIN: '#0054a6'
+  COLOR_MAIN: '#0054a6',
+  CUSTOMTHEME: 'CUSTOMTHEME'
 };
 export default config;

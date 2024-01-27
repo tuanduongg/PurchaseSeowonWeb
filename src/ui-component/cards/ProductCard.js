@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SET_BORDER_RADIUS, UPDATE_CART_ITEM } from 'store/actions';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import config from '../../config';
+import NoImage from '../../assets/images/product/no-image.png';
 
 const ProductCard = ({ product, onShowDetail, afterAddToCart }) => {
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ const ProductCard = ({ product, onShowDetail, afterAddToCart }) => {
       >
         <CardMedia
           sx={{ height: 100, backgroundSize: 'contain' }}
-          image={product?.images ? config.apiImage + product?.images[0]?.url : ''}
+          image={product?.images?.length > 0 ? config.apiImage + product?.images[0]?.url : NoImage}
           title={product?.productName}
         />
         <CardContent

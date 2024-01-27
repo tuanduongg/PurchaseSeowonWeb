@@ -27,7 +27,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PrintIcon from '@mui/icons-material/Print';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
-import { formattingVND, truncateText, cssScrollBar, checkIsApprover } from 'utils/helper';
+import { formattingVND, truncateText, cssScrollBar, checkIsApprover, isExcelFile } from 'utils/helper';
 import AddIcon from '@mui/icons-material/Add';
 import ModalAddProduct from 'ui-component/modal/add-product/AddProduct';
 import EditIcon from '@mui/icons-material/Edit';
@@ -48,6 +48,7 @@ import { ConfigPath } from 'routes/DefinePath';
 import CategoryIcon from '@mui/icons-material/Category';
 import ModalCategory from 'ui-component/modal/category/ModalCategory';
 import { useRef } from 'react';
+import UploadIcon from '@mui/icons-material/Upload';
 
 const columns = [
   {
@@ -264,9 +265,28 @@ const ProductPage = () => {
     setOpenModalCategory(false);
   };
   const handleChangeFiles = async (e) => {
-    const formData = new FormData();
-    formData.append('file', e.target.files[0]);
-    const result = await restApi.post(DefineRouteApi.upLoadExcel, formData);
+    let file = e.target.files[0];
+    e.target.value = '';
+    if (isExcelFile(file)) {
+      setLoading(true);
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await restApi.post(DefineRouteApi.upLoadExcel, formData);
+      if (res?.status === 200) {
+        setTypeAlert('success');
+        setContentAlert('Upload product successful!');
+        getAllProduct();
+      } else {
+        setTypeAlert('error');
+        setContentAlert(res?.data?.message || 'Upload product fail!');
+      }
+      setLoading(false);
+    } else {
+      file = null;
+      setTypeAlert('error');
+      setContentAlert('Invalid type file!');
+    }
+    setOpenAlert(true);
   };
   return (
     <>
@@ -294,17 +314,17 @@ const ProductPage = () => {
             </FormControl>
           </Box>
           <Box>
-            {/* <Button
+            <Button
               onClick={() => {
                 inputRef?.current?.click();
               }}
               sx={{ mr: 1 }}
               variant="contained"
               size={'small'}
-              startIcon={<AddIcon stroke={1.5} size="1.3rem" />}
+              startIcon={<UploadIcon stroke={1.5} size="1.3rem" />}
             >
               Upload excel
-            </Button> */}
+            </Button>
             <Button
               onClick={handleClickAddProduct}
               sx={{ mr: 1 }}

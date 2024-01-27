@@ -1,6 +1,6 @@
 // material-ui
 import { useTheme, styled } from '@mui/material/styles';
-import { Avatar, Box, Button, Divider, Grid, IconButton, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, CardMedia, Divider, Grid, IconButton, TextField, Typography } from '@mui/material';
 
 // assets
 import { IconX } from '@tabler/icons';
@@ -15,6 +15,7 @@ import { CART } from 'store/actions';
 import CartEmpty from './CartEmpty';
 import { useEffect } from 'react';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import NoImage from '../../../../assets/images/product/no-image.png';
 
 // styles
 const ListItemWrapper = styled('div')(({ theme }) => ({
@@ -180,10 +181,9 @@ const ProductList = ({ onCloseDrawer }) => {
               <>
                 <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
                   <Grid item xs={5.5} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
-                    <Avatar
+                    <CardMedia
                       sx={{ width: '50px', height: '50px', marginRight: '3px' }}
-                      src={config.apiImage + item?.images?.[0]?.url}
-                      variant="square"
+                      image={item?.images?.[0]?.url ? config.apiImage + item?.images?.[0]?.url : NoImage}
                     />
                     <Typography variant="h5">{item?.productName}</Typography>
                   </Grid>

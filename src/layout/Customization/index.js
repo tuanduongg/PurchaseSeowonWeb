@@ -77,6 +77,7 @@ const Customization = ({ open = false, handleToggle }) => {
   // state - font family
   const [fontFamily, setFontFamily] = useState(initialFont);
   useEffect(() => {
+    console.log('vao day');
     let newFont;
     switch (fontFamily) {
       case 'Inter':
