@@ -13,7 +13,8 @@ export const formattingVND = (num) => {
   if (isNaN(number)) {
     return 0 + ' vnđ';
   }
-  return number.toLocaleString('it-IT', { style: 'currency', currency: 'VND' }).replace('VND', 'vnđ');
+  let result = number.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+  return isMobile() ? result.replace('VND', 'đ') : result.replace('VND', 'vnđ');
 };
 
 export const formattingVNDInput = (num) => {
@@ -27,7 +28,7 @@ export const truncateText = (str, n) => {
 
 export const cssScrollBar = {
   '&::-webkit-scrollbar': {
-    width: '2px'
+    width: '1px'
   },
   '&::-webkit-scrollbar-thumb': {
     background: 'rgba(52, 49, 76, 1)'
@@ -76,7 +77,6 @@ const delete_cookie = (name) => {
 };
 
 export const logout = () => {
-  let assToken = getCookie(config.ASSET_TOKEN);
   localStorage.removeItem(config.DATA_USER);
   localStorage.removeItem('CART');
   localStorage.removeItem(config.CUSTOMTHEME);
@@ -163,4 +163,13 @@ export const isExcelFile = (file) => {
 
   // Check if the MIME type corresponds to Excel files
   return fileType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+};
+
+export const stickyColumn = {
+  position: 'sticky',
+  left: 0,
+  background: 'white',
+  zIndex: 10
+  // boxShadow: "5px 2px 5px grey",
+  // borderRight: "2px solid black"
 };

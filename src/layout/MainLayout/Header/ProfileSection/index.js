@@ -103,6 +103,7 @@ const ProfileSection = () => {
     <>
       <Chip
         sx={{
+          marginLeft:'15px',
           height: '48px',
           alignItems: 'center',
           borderRadius: '27px',
@@ -175,7 +176,12 @@ const ProfileSection = () => {
                       <Stack direction="row" spacing={0.5} alignItems="center">
                         <Typography variant="h4">{infoUser?.username}</Typography>
                       </Stack>
-                      {infoUser?.isManager && <Typography variant="subtitle2">Manager</Typography>}
+                      {/* {infoUser?.isManager && <Typography variant="subtitle1">Per/ACC/IT</Typography>} */}
+                      {infoUser?.isManager && (
+                        <Typography color={'primary'} variant="subtitle2">
+                          Manager
+                        </Typography>
+                      )}
                     </Stack>
                     {/* <OutlinedInput
                       sx={{ width: '100%', pr: 1, pl: 2, my: 2 }}

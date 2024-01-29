@@ -27,7 +27,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import PrintIcon from '@mui/icons-material/Print';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useState } from 'react';
-import { formattingVND, truncateText, cssScrollBar, checkIsApprover } from 'utils/helper';
+import { formattingVND, truncateText, cssScrollBar, checkIsApprover, isMobile, stickyColumn } from 'utils/helper';
 import AddIcon from '@mui/icons-material/Add';
 import ModalAddProduct from 'ui-component/modal/add-product/AddProduct';
 import EditIcon from '@mui/icons-material/Edit';
@@ -60,8 +60,13 @@ const columns = [
   {
     id: 'name',
     label: 'Username',
-    // minWidth: 170,
-    align: 'left'
+    minWidth: 200,
+    align: 'left',
+    sx: {
+      ...stickyColumn,
+      top: 0,
+      zIndex: 20
+    }
   },
   { id: 'Department', label: 'Department', minWidth: 140, align: 'left' },
   {
@@ -149,7 +154,7 @@ const UserPage = () => {
     if (res?.status === 200) {
       setLoading(false);
       const data = res?.data;
-      // setTotal(data?.count);
+      setTotal(data?.count);
       setListProduct(data?.data);
     } else {
       setLoading(false);
@@ -228,9 +233,9 @@ const UserPage = () => {
       {loading && <Loader />}
       <Box>
         <Typography variant="h4">User</Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ display: { xs: 'block', sm: 'flex' }, justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
+            <FormControl sx={{ m: 1, width: { sm: '25ch', xs: '100%' } }} size="small" variant="standard">
               <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
               <Input
                 onChange={(e) => {
@@ -248,7 +253,7 @@ const UserPage = () => {
               />
             </FormControl>
           </Box>
-          <Box>
+          <Box sx={{ marginBottom: { xs: '10px', sm: '0px' }, textAlign: { xs: 'right', sm: '' } }}>
             <Button
               onClick={handleClickAddProduct}
               variant="contained"
@@ -269,12 +274,12 @@ const UserPage = () => {
           </Box>
         </Box>
         <Box sx={{ backgroundColor: 'white' }}>
-          <TableContainer sx={{ maxHeight: 440, ...cssScrollBar }}>
+          <TableContainer sx={{ maxHeight: 440 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                    <TableCell key={column.id} sx={column?.sx} align={column.align} style={{ minWidth: column.minWidth }}>
                       {column.label}
                     </TableCell>
                   ))}
@@ -286,7 +291,7 @@ const UserPage = () => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={row.productID}>
                         <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
-                        <TableCell sx={{ padding: '5px', textAlign: 'left' }}>{row?.username}</TableCell>
+                        <TableCell sx={{ padding: '5px', textAlign: 'left', ...stickyColumn }}>{row?.username}</TableCell>
                         <TableCell sx={{ padding: '5px', textAlign: 'left' }}>{row?.department?.departName}</TableCell>
                         <TableCell sx={{ padding: '5px', textAlign: 'center' }}>
                           {row?.isManager ? (
@@ -337,12 +342,12 @@ const UserPage = () => {
         </Box>
       </Box>
       <ModalAddUser
+        fullScreen={isMobile() ? true : false}
         userSelect={userSelect}
         onDeleteErr={onDeleteImageErr}
         tittle={titleModal}
         type={typeModal}
         open={openModall}
-        fullScreen={false}
         handleClose={onCloseModalAddProduct}
         afterSaved={onAfterSaved}
       />
@@ -368,7 +373,12 @@ const UserPage = () => {
       </Menu>
       <CustomLoading open={loading} />
       <CustomAlert open={openAlert} type={typeAlert} content={contentAlert} handleClose={onCloseAlert} />
-      <ModalDepartment open={openModalDeparment} afterSave={afterSave} handleClose={onCloseModalDepartment} />
+      <ModalDepartment
+        fullScreen={isMobile() ? true : false}
+        open={openModalDeparment}
+        afterSave={afterSave}
+        handleClose={onCloseModalDepartment}
+      />
     </>
   );
 };

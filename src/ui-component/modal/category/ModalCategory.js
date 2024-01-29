@@ -51,7 +51,7 @@ const initValidate = { err: false, msg: '' };
 //   return '';
 // };
 
-const ModalCategory = ({ open, handleClose, afterSave, categories, getAll }) => {
+const ModalCategory = ({ open,fullScreen, handleClose, afterSave, categories, getAll }) => {
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
   const [name, setName] = useState('');
@@ -114,7 +114,7 @@ const ModalCategory = ({ open, handleClose, afterSave, categories, getAll }) => 
         disableEscapeKeyDown={true}
         maxWidth={'sm'}
         sx={{ minHeight: '90vh' }}
-        fullScreen={false}
+        fullScreen={fullScreen}
         open={open}
         onClose={onClose}
         aria-labelledby="responsive-dialog-title"

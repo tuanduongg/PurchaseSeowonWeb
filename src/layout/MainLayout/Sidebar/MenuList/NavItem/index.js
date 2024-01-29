@@ -51,13 +51,15 @@ const NavItem = ({ item, level }) => {
     listItemProps = { component: 'a', href: item.url, target: itemTarget };
   }
 
-  
   const itemHandler = (id) => {
     if (id === 'logout') {
       handleLogout();
     } else {
       dispatch({ type: MENU_OPEN, id });
-      if (matchesSM) dispatch({ type: SET_MENU, opened: false });
+      if (matchesSM) {
+        console.log('matchesSM', matchesSM);
+        dispatch({ type: SET_MENU, opened: false });
+      }
     }
   };
 

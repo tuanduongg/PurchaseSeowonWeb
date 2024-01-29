@@ -187,7 +187,7 @@ const ModalAddUser = ({ open, handleClose, fullScreen, type, productProp, tittle
   return (
     <>
       <Dialog
-      disableEscapeKeyDown={true}
+        disableEscapeKeyDown={true}
         maxWidth={'sm'}
         sx={{ minHeight: '90vh' }}
         fullScreen={fullScreen}

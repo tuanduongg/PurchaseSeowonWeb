@@ -4,7 +4,7 @@ import { Avatar, Box, Button, CardMedia, Divider, Grid, IconButton, TextField, T
 
 // assets
 import { IconX } from '@tabler/icons';
-import { formattingVND, cssScrollBar, getTotalPrice, getSubTotal } from 'utils/helper';
+import { formattingVND, cssScrollBar, getTotalPrice, getSubTotal, isMobile } from 'utils/helper';
 import { useState } from 'react';
 import { ShowQuestion } from 'utils/confirm';
 import DetailOrder from 'ui-component/modal/detail-order/DetailOrder';
@@ -153,7 +153,7 @@ const ProductList = ({ onCloseDrawer }) => {
           </IconButton>
         </Box>
         <Grid container sx={{ width: '100%', padding: '5px' }}>
-          <Grid item xs={5.5}>
+          <Grid item xs={7.5} sm={5.5}>
             <Typography color={'primary'} variant="h4">
               Item info
             </Typography>
@@ -163,11 +163,13 @@ const ProductList = ({ onCloseDrawer }) => {
               Quantity
             </Typography>
           </Grid>
-          <Grid item xs={2}>
-            <Typography textAlign={'right'} color={'primary'} variant="h4">
-              Unit cost
-            </Typography>
-          </Grid>
+          {!isMobile() && (
+            <Grid item xs={0} sm={2}>
+              <Typography textAlign={'right'} color={'primary'} variant="h4">
+                Unit cost
+              </Typography>
+            </Grid>
+          )}
           <Grid item xs={2}>
             <Typography textAlign={'right'} color={'primary'} variant="h4">
               Total cost
@@ -175,17 +177,24 @@ const ProductList = ({ onCloseDrawer }) => {
           </Grid>
         </Grid>
         <Divider />
-        <Box sx={{ width: '100vh', overflowX: 'hidden', padding: '0px 15px', height: '80vh', ...cssScrollBar }}>
+        <Box sx={{ overflowX: 'hidden', padding: '0px 15px', height: '75vh', ...cssScrollBar }}>
           {listProduct?.length > 0 ? (
             listProduct.map((item, index) => (
               <>
                 <Grid container sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Grid item xs={5.5} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
+                  <Grid item xs={7.5} sm={5.5} sx={{ display: 'flex', alignItems: 'center', padding: '0px 3px' }}>
                     <CardMedia
-                      sx={{ width: '50px', height: '50px', marginRight: '3px' }}
+                      sx={{ width: '50px', height: '50px', marginRight: '3px', minWidth: '50px' }}
                       image={item?.images?.[0]?.url ? config.apiImage + item?.images?.[0]?.url : NoImage}
                     />
-                    <Typography variant="h5">{item?.productName}</Typography>
+                    <Box>
+                      <Typography variant="h5">{item?.productName}</Typography>
+                      {isMobile() && (
+                        <Typography color={'primary'} variant="h6">
+                          {formattingVND(item?.price)}
+                        </Typography>
+                      )}
+                    </Box>
                   </Grid>
                   <Grid item xs={2}>
                     <Box sx={{ display: 'flex', alignContent: 'center' }}>
@@ -197,7 +206,7 @@ const ProductList = ({ onCloseDrawer }) => {
                         value={item?.quantity ?? 1}
                         variant="standard"
                         min={1}
-                        sx={{ width: '60px' }}
+                        sx={{ width: { xs: '30px', sm: '60px' } }}
                         type="number"
                         onBlur={(e) => {
                           handleBlur(e, index);
@@ -205,11 +214,13 @@ const ProductList = ({ onCloseDrawer }) => {
                       />
                     </Box>
                   </Grid>
-                  <Grid item xs={2}>
-                    <Typography textAlign={'right'} variant="h5">
-                      {formattingVND(item?.price)}
-                    </Typography>
-                  </Grid>
+                  {!isMobile() && (
+                    <Grid item xs={2}>
+                      <Typography textAlign={'right'} variant="h5">
+                        {formattingVND(item?.price)}
+                      </Typography>
+                    </Grid>
+                  )}
                   <Grid item xs={2}>
                     <Typography textAlign={'right'} variant="h5">
                       {formattingVND(getTotalPrice(item?.quantity, item?.price))}
@@ -232,14 +243,22 @@ const ProductList = ({ onCloseDrawer }) => {
             <CartEmpty />
           )}
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '5px 0px', marginRight: '10px' }}>
+        <Box
+          sx={{
+            display: { sm: 'flex', xs: 'block' },
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '5px 0px',
+            marginRight: '10px'
+          }}
+        >
           <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: '5px' }}>
             <Typography variant="h4">Total to pay:</Typography>
             <Typography sx={{ marginLeft: '10px' }} color={'primary'} variant="h4">
               {formattingVND(getSubTotal(listProduct))}
             </Typography>
           </Box>
-          <Box>
+          <Box sx={{ textAlign: { xs: 'right', sm: '' } }}>
             <Button
               size="small"
               endIcon={<ClearAllIcon />}
@@ -256,7 +275,13 @@ const ProductList = ({ onCloseDrawer }) => {
           </Box>
         </Box>
       </Box>
-      <DetailOrder productProp={listProduct} open={openDetailOrder} isView={false} handleClose={onCloseModalDetailOrder} />
+      <DetailOrder
+        fullScreen={isMobile() ? true : false}
+        productProp={listProduct}
+        open={openDetailOrder}
+        isView={false}
+        handleClose={onCloseModalDetailOrder}
+      />
     </>
   );
 };

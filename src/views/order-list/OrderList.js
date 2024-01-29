@@ -26,7 +26,7 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import { IconEdit, IconTrash } from '@tabler/icons';
-import { OrderStatus, formatDateFromDB, isMobile, truncateText } from 'utils/helper';
+import { OrderStatus, formatDateFromDB, isMobile, truncateText, stickyColumn } from 'utils/helper';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DetailOrder from 'ui-component/modal/detail-order/DetailOrder';
@@ -49,11 +49,26 @@ import ProductEmpty from 'ui-component/ProductEmpty';
 
 const columns = [
   { id: 'stt', label: 'STT', align: 'center' },
-  { id: 'code', label: 'Order code' },
+  {
+    id: 'code',
+    label: 'Order code',
+    minWidth: 150,
+    sx: {
+      ...stickyColumn,
+      top: 0,
+      zIndex: 20,
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)'
+      },
+      '&.Mui-selected': {
+        backgroundColor: 'rgba(0, 0, 0, 0.04)'
+      }
+    }
+  },
   {
     id: 'name',
     label: 'Product',
-    // minWidth: 170,
+    minWidth: 200,
     align: 'left'
   },
   { id: 'create_at', label: 'Create at', minWidth: 70 },
@@ -356,7 +371,7 @@ const OrderList = () => {
               </Select>
             </FormControl> */}
 
-            <FormControl sx={{ m: 1, width: '25ch' }} size="small" variant="standard">
+            <FormControl sx={{ m: 1, width: { xs: '130px', md: '25ch' } }} size="small" variant="standard">
               <InputLabel htmlFor="standard-adornment-search">Search</InputLabel>
               <Input
                 placeholder="Search by order code..."
@@ -400,7 +415,7 @@ const OrderList = () => {
               <TableHead>
                 <TableRow>
                   {columns.map((column) => (
-                    <TableCell key={column.id} align={column.align} style={{ minWidth: column.minWidth }}>
+                    <TableCell key={column.id} sx={column?.sx} align={column.align} style={{ minWidth: column.minWidth }}>
                       {column.label}
                     </TableCell>
                   ))}
@@ -412,7 +427,7 @@ const OrderList = () => {
                     return (
                       <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                         <TableCell sx={{ padding: '10px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
-                        <TableCell sx={{ padding: '10px', textAlign: 'left' }}>
+                        <TableCell sx={{ padding: '10px', textAlign: 'left', ...stickyColumn }}>
                           <Link
                             onClick={() => onShowDetailOrder(row)}
                             underline="hover"

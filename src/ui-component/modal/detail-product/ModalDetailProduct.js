@@ -106,11 +106,11 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                   <TextField
                     value={quantity}
                     onChange={(e) => {
-                      if (parseInt(e.target.value) > parseInt(product?.inventory)) {
-                        setQuantity(product?.inventory);
-                      } else {
-                        setQuantity(e.target.value);
-                      }
+                      // if (parseInt(e.target.value) > parseInt(product?.inventory)) {
+                      //   setQuantity(product?.inventory);
+                      // } else {
+                      setQuantity(e.target.value);
+                      // }
                     }}
                     type="number"
                     size="small"
@@ -125,10 +125,10 @@ const ModalDetailProduct = ({ product, open, handleClose, fullScreen }) => {
                   />
                 </Box>
                 <Box sx={{ minHeight: '25vh' }}>
-                  <Typography variant="h5" sx={{ margin: '20px 0px 0px 0px' }}>
+                  {/* <Typography variant="h5" sx={{ margin: '20px 0px 0px 0px' }}>
                     Inventory : {product?.inventory}
-                  </Typography>
-                  <Typography variant="h5">Description :</Typography>
+                  </Typography> */}
+                  <Typography sx={{ margin: '20px 0px 0px 0px' }} variant="h5">Description :</Typography>
                   <Typography dangerouslySetInnerHTML={{ __html: product?.description }} variant="p" sx={{ margin: '10px 0px 0px 0px' }}>
                     {/* {product?.description} */}
                   </Typography>

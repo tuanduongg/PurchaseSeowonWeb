@@ -55,7 +55,6 @@ const Homepage = () => {
   const dispatch = useDispatch();
   const customization = useSelector((state) => state.customization);
 
-
   const debounceTimeout = useRef(null);
 
   const handleChangePage = (event, newPage) => {
@@ -199,7 +198,7 @@ const Homepage = () => {
         <Grid item xs={12}>
           <Grid container spacing={1}>
             {listProduct?.map((item, index) => (
-              <Grid item xs={2.4} key={index}>
+              <Grid item xs={6} sm={3} md={2.4} key={index}>
                 <ProductCard onShowDetail={onShowDetailProduct} afterAddToCart={afterAddToCart} product={item} />
               </Grid>
             ))}

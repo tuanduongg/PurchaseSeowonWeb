@@ -51,7 +51,7 @@ const formatPrice = (value) => {
   return '';
 };
 
-const ModalDepartment = ({ open, handleClose, afterSave }) => {
+const ModalDepartment = ({ open, handleClose, afterSave,fullScreen }) => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -124,7 +124,7 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
       disableEscapeKeyDown={true}
         maxWidth={'sm'}
         sx={{ minHeight: '90vh' }}
-        fullScreen={false}
+        fullScreen={fullScreen}
         open={open}
         onClose={onClose}
         aria-labelledby="responsive-dialog-title"
@@ -141,7 +141,7 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
         <DialogContent>
           <Box sx={{ width: '100%', height: '100%' }}>
             <Grid container spacing={2}>
-              <Grid item xs={9.5}>
+              <Grid item xs={9}>
                 <TextField
                   error={validateNameDepartment?.err}
                   helperText={validateNameDepartment?.msg}
@@ -160,7 +160,7 @@ const ModalDepartment = ({ open, handleClose, afterSave }) => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid item xs={2.5}>
+              <Grid item xs={3}>
                 <Button
                   sx={{ height: '40px' }}
                   size="medium"

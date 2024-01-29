@@ -140,6 +140,9 @@ const CartSection = () => {
         </Badge>
       </Box>
       <Drawer
+        PaperProps={{
+          sx: { width: { xs: '100%', sm: '80%', md: '60%' } }
+        }}
         anchor={'right'}
         open={openCartDrawer}
         onClose={() => {

@@ -131,12 +131,12 @@ const CardInfoUser = ({ user }) => {
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs={12} sm={7}>
+            <Grid item xs={12} sm={7} sx={{ textAlign: { xs: 'center', sm: '' }, marginTop: { xs: '10px', sm: '' } }}>
               <Typography gutterBottom variant="h4" component="div">
-                Change password
+                Change Password
               </Typography>
               {/* <Divider /> */}
-              <Box sx={{}}>
+              <Box>
                 <FormControl error={validatePWCurren?.err} sx={{ m: 1, width: '80%' }} size="small" variant="outlined">
                   <InputLabel>Current password</InputLabel>
                   <OutlinedInput

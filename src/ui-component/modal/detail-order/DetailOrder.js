@@ -60,25 +60,28 @@ const COLUMS = [
 const checkShowButton = (order, userStatus, maxLevel) => {
   const DATA_USER = localStorage.getItem(config.DATA_USER);
   if (order?.status?.level === 0) {
-    return false;
+    return { accpept: false, cancel: false };
   }
   if (DATA_USER) {
     const userOBJ = JSON.parse(DATA_USER);
+    if (order?.userID === userOBJ?.id && order?.status.level < maxLevel) {
+      return { accpept: false, cancel: true };
+    }
     if (order?.userID === userOBJ?.id) {
       if (order?.status?.level === 1) {
-        return false;
+        return { accpept: false, cancel: false };
       }
       if (userStatus?.level === maxLevel) {
-        return true;
+        return { accpept: true, cancel: true };
       }
-      return false;
+      return { accpept: false, cancel: false };
     }
     if (userOBJ?.isManager === true && order?.status?.level === 1) {
-      return true;
+      return { accpept: true, cancel: true };
     }
     // if (userStatus?.userID === order?.status?.userID) {
     //   console.log('case 3');
-    //   return true;
+    //   return { accpept: true, cancel: true };
     // }
     //trường hợp acceptor là manager -> duyệt -> đơn đó
     //1 đơn bt -> quản lý -> mrjung->mrsong->mrtinh
@@ -87,10 +90,10 @@ const checkShowButton = (order, userStatus, maxLevel) => {
     //mrsong->mrtinh
     //mrtinh->như bt
     if (userStatus?.level > order?.status?.level) {
-      return true;
+      return { accpept: true, cancel: true };
     }
   }
-  return false;
+  return { accpept: false, cancel: false };
 };
 
 const initValidate = { error: false, message: '' };
@@ -114,7 +117,7 @@ const DetailOrder = ({
   const [validateFullname, setValidateFullname] = useState(initValidate);
   const [validateAddress, setValidateAddress] = useState(initValidate);
   const [validateNote, setValidateNote] = useState(initValidate);
-  const [isShowButton, setIsShowButton] = useState(false);
+  const [isShowButton, setIsShowButton] = useState({ accpept: false, cancel: false });
   const customization = useSelector((state) => state.customization);
 
   const dispatch = useDispatch();
@@ -295,7 +298,7 @@ const DetailOrder = ({
           </IconButton>
         </Box>
         <Divider />
-        <DialogContent sx={{ padding: '10px', minWidth: '50vh', backgroundColor: '#ddd', ...cssScrollBar }}>
+        <DialogContent sx={{ padding: '10px', minWidth: { sm: '50vh', xs: '' }, backgroundColor: '#ddd', ...cssScrollBar }}>
           <Box>
             <Grid container spacing={1}>
               {isView && (
@@ -343,7 +346,11 @@ const DetailOrder = ({
           </Box>
         </DialogContent>
         <DialogActions>
-          <Stack flexDirection={'row'} sx={{ width: '100%' }} justifyContent={isShowButton ? 'space-between' : 'flex-end'}>
+          <Stack
+            flexDirection={'row'}
+            sx={{ width: '100%' }}
+            justifyContent={isShowButton?.accpept || isShowButton?.cancel ? 'space-between' : 'flex-end'}
+          >
             <Box>
               {!isView ? (
                 <Button size="small" variant="contained" endIcon={<ShoppingBasketIcon />} onClick={handleClickOrder}>
@@ -355,32 +362,37 @@ const DetailOrder = ({
                 </Button>
               )}
             </Box>
-            {isShowButton && (
+
+            {(isShowButton?.cancel || isShowButton?.accpept) && (
               <Box>
-                <Button
-                  size="small"
-                  color="error"
-                  sx={{ color: 'white' }}
-                  variant="contained"
-                  endIcon={<CloseIcon />}
-                  onClick={() => {
-                    onChangeStatusOrder('cancel');
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  size="small"
-                  color="success"
-                  sx={{ color: 'white', marginLeft: '10px' }}
-                  variant="contained"
-                  endIcon={<CheckIcon />}
-                  onClick={() => {
-                    onChangeStatusOrder('accept');
-                  }}
-                >
-                  Accept
-                </Button>
+                {isShowButton?.cancel && (
+                  <Button
+                    size="small"
+                    color="error"
+                    sx={{ color: 'white' }}
+                    variant="contained"
+                    endIcon={<CloseIcon />}
+                    onClick={() => {
+                      onChangeStatusOrder('cancel');
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                )}
+                {isShowButton?.accpept && (
+                  <Button
+                    size="small"
+                    color="success"
+                    sx={{ color: 'white', marginLeft: '10px' }}
+                    variant="contained"
+                    endIcon={<CheckIcon />}
+                    onClick={() => {
+                      onChangeStatusOrder('accept');
+                    }}
+                  >
+                    Accept
+                  </Button>
+                )}
               </Box>
             )}
           </Stack>

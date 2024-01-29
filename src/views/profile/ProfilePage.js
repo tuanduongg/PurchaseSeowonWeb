@@ -37,7 +37,7 @@ const ProfilePage = () => {
       </Box>
       {loading && <Loader />}
       <CustomLoading open={loading} />
-      <PreviewImage />
+      {/* <PreviewImage /> */}
     </>
   );
 };
