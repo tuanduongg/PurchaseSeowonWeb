@@ -15,7 +15,7 @@ import {
   Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { formattingVND, truncateText, cssScrollBar, getSubTotal } from 'utils/helper';
+import { formattingVND, truncateText, cssScrollBar, getSubTotal, printPageArea } from 'utils/helper';
 import ProductList from 'layout/MainLayout/Header/CartSection/ProductList';
 import { IconX } from '@tabler/icons';
 import CardInfoReceive from './component/CardInfoReceive';
@@ -273,7 +273,9 @@ const DetailOrder = ({
         break;
     }
   };
-
+  const handleClickPrint = () => {
+    printPageArea(orderSelect);
+  };
   return (
     <>
       <Dialog
@@ -317,7 +319,7 @@ const DetailOrder = ({
                   </Grid>
                 </>
               )}
-              <Grid item xs={12} md={12}>
+              <Grid id="printArea" item xs={12} md={12}>
                 <CardListProduct isView={isView} products={products} />
               </Grid>
               {!isView && (
@@ -357,7 +359,7 @@ const DetailOrder = ({
                   Order
                 </Button>
               ) : (
-                <Button sx={{ float: 'left' }} size="small" variant="contained" endIcon={<PrintIcon />} onClick={onClose}>
+                <Button sx={{ float: 'left' }} size="small" variant="contained" endIcon={<PrintIcon />} onClick={handleClickPrint}>
                   Print
                 </Button>
               )}

@@ -1,6 +1,7 @@
 import { ConfigPath } from 'routes/DefinePath';
 import config from '../config';
 import { ShowQuestion } from './confirm';
+import Logo from '../assets/images/logo/logo.png';
 function isString(x) {
   return Object.prototype.toString.call(x) === '[object String]';
 }
@@ -172,4 +173,182 @@ export const stickyColumn = {
   zIndex: 10
   // boxShadow: "5px 2px 5px grey",
   // borderRight: "2px solid black"
+};
+
+export const printPageArea = (order) => {
+  if (!order) return;
+  const orderDetail = order?.orderDetail;
+  let html = ``;
+  if (orderDetail?.length > 0) {
+    orderDetail.map((item, index) => {
+      html += `<tr>
+      <td class="text-center" >${index + 1}</td>
+      <td class="text-start">
+      ${item?.product?.productName}
+      </td>
+      <td  class="text-end">${formattingVNDInput(item?.price)}</td>
+      <td  class="text-center">${item?.quantity}</td>
+      <td class="fw-bold text-end">${formattingVNDInput(getTotalPrice(item?.quantity, item?.price))}</td>
+  </tr>`;
+    });
+  }
+  // You can customize this function to generate and format your invoice
+  const invoiceContent = `<table>
+  <thead>
+      <tr>
+          <th width="100%" colspan="4">
+              <h3 class="text-start">
+                  <img src="${Logo}" height="70px" alt="" sizes="" srcset="">
+              </h3>
+          </th>
+      </tr>
+      <tr>
+          <th width="100%" colspan="4">
+              <h2 class="text-center">HOÁ ĐƠN MUA HÀNG</h2>
+          </th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>Số hoá đơn: ${order?.code}</td>
+      </tr>
+      <tr>
+          <td>Thời gian: ${formatDateFromDB(order?.created_at)}</td>
+      </tr>
+      <tr>
+          <td>Họ và tên: ${order?.reciever}</td>
+      </tr>
+      <tr>
+          <td>Bộ phận: ${order?.address}</td>
+      </tr>
+      <tr>
+          <td>Ghi chú: ${order?.note}</td>
+      </tr>
+      <tr>
+          <td></td>
+      </tr>
+  </tbody>
+</table>
+
+<table>
+  <thead class="dotted-line-bottom dotted-line-top">
+      <tr>
+          <th class="text-center">STT</th>
+          <th class="text-start">Tên sản phẩm</th>
+          <th class="text-end">Giá</th>
+          <th class="text-center">Số lượng</th>
+          <th class="text-end">Thành tiền</th>
+      </tr>
+  </thead>
+  <tbody class="">
+  ${html}
+      <tr class="dotted-line-top">
+          <td colspan="5" class="total-heading text-end">Tổng tiền : ${formattingVND(order?.total)}</td>
+      </tr>
+  </tbody>
+</table>
+<br>
+<table>
+  <thead>
+      <tr>
+          <th class="text-center">Người mua</th>
+          <th class="text-center">Người giao</th>
+          <th class="text-center">Người duyệt</th>
+      </tr>
+  </thead>
+</table>
+</table>
+`;
+
+  // Open a new window and print the invoice
+  const printWindow = window.open('', '_blank');
+
+  // Include a style tag for print-specific styles
+  printWindow.document.write(`
+<html>
+  <head>
+    <title>Invoice</title>
+    <style>
+      @media print {
+        @page {
+          size: a4;
+          margin: 0mm;
+        }
+        body {
+          margin: 0;
+          font-family: sans-serif;
+        }
+        h1,h2,h3,h4,h5,h6,p,span,label {
+            font-family: sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0px !important;
+        }
+        table thead th {
+            height: 28px;
+            text-align: left;
+            font-size: 16px;
+            font-family: sans-serif;
+        }
+        table, th, td {
+            padding: 8px;
+            font-size: 14px;
+        }
+  
+        .heading {
+            font-size: 24px;
+            margin-top: 12px;
+            margin-bottom: 12px;
+            font-family: sans-serif;
+        }
+        .small-heading {
+            font-size: 18px;
+            font-family: sans-serif;
+        }
+        .total-heading {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: sans-serif;
+        }
+        .text-start {
+            text-align: left;
+        }
+        .text-end {
+            text-align: right;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .company-data span {
+            margin-bottom: 4px;
+            display: inline-block;
+            font-family: sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+        }
+        .no-border {
+            border: 1px solid #fff !important;
+        }
+        .bg-blue {
+            background-color: #fff;
+            color: #fff;
+        }
+        .dotted-line-bottom {
+          border-bottom: 0.5px dotted #333; /* Adjust the width and color as needed */
+      }
+        .dotted-line-top {
+          border-top: 0.5px dotted #333; /* Adjust the width and color as needed */
+      }
+      }
+    </style>
+  </head>
+  <body>
+`);
+
+  printWindow.document.write('<pre>' + invoiceContent + '</pre>');
+  printWindow.document.write('</body></html>');
+  printWindow.document.close();
+  printWindow.print();
 };

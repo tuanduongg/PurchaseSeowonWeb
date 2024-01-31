@@ -5,7 +5,7 @@ import ProductEmpty from 'ui-component/ProductEmpty';
 const columns = [
   {
     id: 'STT',
-    label: 'STT',
+    label: 'No',
     // minWidth: 170,
     align: 'center'
   },

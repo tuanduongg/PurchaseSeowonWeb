@@ -48,7 +48,7 @@ import ProductEmpty from 'ui-component/ProductEmpty';
 // ==============================|| Oderlist page ||============================== //
 
 const columns = [
-  { id: 'stt', label: 'STT', align: 'center' },
+  { id: 'stt', label: 'No', align: 'center' },
   {
     id: 'code',
     label: 'Order code',

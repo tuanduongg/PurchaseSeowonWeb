@@ -6,7 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const columns = [
   {
     id: 'STT',
-    label: 'STT',
+    label: 'No',
     // minWidth: 170,
     align: 'center'
   },

@@ -53,7 +53,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 const columns = [
   {
     id: 'STT',
-    label: 'STT',
+    label: 'No',
     // minWidth: 170,
     align: 'center'
   },

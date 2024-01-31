@@ -5,7 +5,7 @@ const CardInfoReceive = ({ createAt, createBy, reciever, address, note }) => {
     { id: 'CREATE_AT', title: 'Create at', value: createAt ? formatDateFromDB(createAt) : '' },
     { id: 'CREATE_BY', title: 'Create by', value: createBy || '' },
     { id: 'Reciever', title: 'Reciever', value: reciever || '' },
-    { id: 'Department', title: 'Address', value: address || '' },
+    { id: 'Department', title: 'Department', value: address || '' },
     { id: 'Note', title: 'Note', value: note || '' }
   ];
   return (
