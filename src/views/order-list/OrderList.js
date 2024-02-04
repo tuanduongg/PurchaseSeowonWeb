@@ -425,7 +425,7 @@ const OrderList = () => {
                 {orders?.length > 0 ? (
                   orders?.map((row, index) => {
                     return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      <TableRow  role="checkbox" tabIndex={-1} key={index}>
                         <TableCell sx={{ padding: '10px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
                         <TableCell sx={{ padding: '10px', textAlign: 'left', ...stickyColumn }}>
                           <Link

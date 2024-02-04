@@ -360,9 +360,15 @@ const ProductPage = () => {
                 {listProduct?.length > 0 ? (
                   listProduct.map((row, index) => {
                     return (
-                      <TableRow hover role="checkbox" tabIndex={-1} key={row.productID}>
+                      <TableRow role="checkbox" tabIndex={-1} key={row.productID}>
                         <TableCell sx={{ padding: '5px', textAlign: 'center' }}>{index + 1 + page * rowsPerPage}</TableCell>
-                        <TableCell sx={{ padding: '5px', ...stickyColumn }}>
+                        <TableCell
+                          sx={{
+                            padding: '5px',
+                            ...stickyColumn,
+                            
+                          }}
+                        >
                           <Stack flexDirection={'row'} alignItems={'center'}>
                             <CardMedia
                               component={'image'}
